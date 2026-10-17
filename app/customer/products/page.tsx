@@ -48,7 +48,7 @@ export default function ProductsPage() {
               placeholder="Cari produk..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-md bg-white/25 text-white placeholder-white/60 border border-white/40 focus:outline-none focus:ring-2 focus:ring-white/60 backdrop-blur-sm transition-all duration-base"
+              className="w-full pl-12 pr-4 py-3 rounded-md bg-white/25 text-white placeholder-white/90 border border-white/40 focus:outline-none focus:ring-2 focus:ring-white/60 backdrop-blur-sm transition-all duration-base"
             />
           </div>
         </div>
