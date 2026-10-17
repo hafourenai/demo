@@ -63,25 +63,25 @@ export default function EmployeeDashboard() {
       icon: <Briefcase size={24} />,
       label: 'Order Tersedia',
       value: stats.availableOrders,
-      color: 'primary',
+      iconClass: 'text-primary',
     },
     {
       icon: <Clock size={24} />,
       label: 'Order Aktif',
       value: stats.activeOrders,
-      color: 'accent',
+      iconClass: 'text-accent',
     },
     {
       icon: <Star size={24} />,
       label: 'Selesai Hari Ini',
       value: stats.completedToday,
-      color: 'success',
+      iconClass: 'text-success',
     },
     {
       icon: <TrendingUp size={24} />,
       label: 'Komisi Hari Ini',
       value: formatCurrency(stats.commissionToday),
-      color: 'primary',
+      iconClass: 'text-primary',
     },
   ];
 
@@ -100,7 +100,7 @@ export default function EmployeeDashboard() {
         <div className="grid grid-cols-2 gap-3">
           {statCards.map((stat, idx) => (
             <Card key={idx} className="flex flex-col items-center justify-center p-4">
-              <div className={`text-${stat.color} mb-2`}>{stat.icon}</div>
+              <div className={`${stat.iconClass} mb-2`}>{stat.icon}</div>
               <p className="text-xs text-text-secondary text-center">{stat.label}</p>
               <p className="font-bold text-lg text-text-primary mt-1 text-center">{stat.value}</p>
             </Card>
