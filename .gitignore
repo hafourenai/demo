@@ -37,3 +37,7 @@ next-env.d.ts
 
 # playwright cli testing artifacts
 /.playwright-cli/
+
+# opencode (local AI dev environment)
+/.opencode/
+.opencode/
