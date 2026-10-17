@@ -267,7 +267,7 @@ export default function AccountPage() {
                   <div className="flex gap-1 flex-shrink-0">
                     <button
                       onClick={() => handleEditAddress(address)}
-                      className="p-1 hover:bg-bg-alt rounded-md transition-colors duration-base"
+                      className="p-1 hover:bg-canvas-alt rounded-md transition-colors duration-base"
                       aria-label="Edit alamat"
                       style={{ minHeight: '44px', minWidth: '44px' }}
                     >

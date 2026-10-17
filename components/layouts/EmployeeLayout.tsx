@@ -31,7 +31,7 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
   ];
 
   return (
-    <div className="flex justify-center min-h-screen bg-bg-primary">
+    <div className="flex justify-center min-h-screen bg-canvas">
       <MobileFrame>
         {/* Header */}
         <header className="sticky top-0 z-40 bg-card border-b border-border px-4 py-3 flex items-center justify-between shadow-sm">
@@ -41,7 +41,7 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
           </div>
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-bg-alt rounded-md transition-colors duration-base"
+            className="p-2 hover:bg-canvas-alt rounded-md transition-colors duration-base"
             aria-label="Toggle menu"
             style={{ minHeight: '44px', minWidth: '44px' }}
           >
@@ -54,7 +54,7 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
           <div className="bg-card border-b border-border p-4 space-y-2">
             <Link
               href="/employee/account"
-              className="block px-4 py-2 text-text-primary hover:bg-bg-alt rounded-md transition-colors duration-base"
+              className="block px-4 py-2 text-text-primary hover:bg-canvas-alt rounded-md transition-colors duration-base"
             >
               Profile
             </Link>

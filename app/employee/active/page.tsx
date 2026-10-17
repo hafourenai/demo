@@ -81,7 +81,7 @@ export default function ActiveOrdersPage() {
                   </div>
 
                   {/* Details */}
-                  <div className="space-y-2 bg-bg-alt p-3 rounded-md">
+                  <div className="space-y-2 bg-canvas-alt p-3 rounded-md">
                     <div className="flex items-start gap-2">
                       <MapPin size={16} className="text-primary flex-shrink-0 mt-1" />
                       <div>
@@ -103,7 +103,7 @@ export default function ActiveOrdersPage() {
                   </div>
 
                   {/* Status Steps */}
-                  <div className="bg-bg-alt rounded-md p-3">
+                  <div className="bg-canvas-alt rounded-md p-3">
                     <p className="text-xs text-text-muted mb-2">Progress Order</p>
                     <div className="flex items-center gap-2 overflow-x-auto pb-2">
                       {statusFlow.map((status, idx) => {

@@ -68,7 +68,7 @@ export default function ReportsPage() {
             <p className="text-sm text-accent font-semibold">Total Order (All Time)</p>
             <p className="text-3xl font-bold text-accent mt-2">{orders.length}</p>
           </Card>
-          <Card className="bg-bg-alt border border-border">
+          <Card className="bg-canvas-alt border border-border">
             <p className="text-sm text-text-primary font-semibold">Total Revenue (All Time)</p>
             <p className="text-2xl font-bold text-text-primary mt-2">
               {formatCurrency(orders.reduce((sum, o) => sum + o.totalPrice, 0))}
@@ -81,7 +81,7 @@ export default function ReportsPage() {
           <h2 className="text-lg font-serif font-semibold text-text-primary mb-4">Layanan Populer</h2>
           <Card className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-bg-alt border-b border-border">
+              <thead className="bg-canvas-alt border-b border-border">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold text-text-primary">Layanan</th>
                   <th className="px-4 py-3 text-left font-semibold text-text-primary">Dipesan</th>
@@ -90,7 +90,7 @@ export default function ReportsPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {serviceStats.map((service) => (
-                  <tr key={service.id} className="hover:bg-bg-alt transition-colors duration-base">
+                  <tr key={service.id} className="hover:bg-canvas-alt transition-colors duration-base">
                     <td className="px-4 py-3 font-semibold text-text-primary">{service.name}</td>
                     <td className="px-4 py-3 font-bold text-primary">{service.count} order</td>
                     <td className="px-4 py-3 text-text-primary">{service.rating}</td>
@@ -106,7 +106,7 @@ export default function ReportsPage() {
           <h2 className="text-lg font-serif font-semibold text-text-primary mb-4">Produk Best Seller</h2>
           <Card className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-bg-alt border-b border-border">
+              <thead className="bg-canvas-alt border-b border-border">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold text-text-primary">Produk</th>
                   <th className="px-4 py-3 text-left font-semibold text-text-primary">Terjual</th>
@@ -116,7 +116,7 @@ export default function ReportsPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {productStats.map((product) => (
-                  <tr key={product.id} className="hover:bg-bg-alt transition-colors duration-base">
+                  <tr key={product.id} className="hover:bg-canvas-alt transition-colors duration-base">
                     <td className="px-4 py-3 font-semibold text-text-primary">{product.name}</td>
                     <td className="px-4 py-3 font-bold text-primary">{product.count}</td>
                     <td className="px-4 py-3 text-text-primary">{formatCurrency(product.price)}</td>
@@ -133,7 +133,7 @@ export default function ReportsPage() {
           <h2 className="text-lg font-serif font-semibold text-text-primary mb-4">Karyawan Terbaik</h2>
           <Card className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-bg-alt border-b border-border">
+              <thead className="bg-canvas-alt border-b border-border">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold text-text-primary">Nama</th>
                   <th className="px-4 py-3 text-left font-semibold text-text-primary">Pekerjaan Selesai</th>
@@ -143,7 +143,7 @@ export default function ReportsPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {employeeStats.map((employee) => (
-                  <tr key={employee.id} className="hover:bg-bg-alt transition-colors duration-base">
+                  <tr key={employee.id} className="hover:bg-canvas-alt transition-colors duration-base">
                     <td className="px-4 py-3 font-semibold text-text-primary">{employee.name}</td>
                     <td className="px-4 py-3 font-bold text-primary">{employee.ordersCount}</td>
                     <td className="px-4 py-3 text-text-primary">{formatCurrency(employee.earnings)}</td>

@@ -141,7 +141,7 @@ export default function EmployeeDashboard() {
         )}
 
         {/* Quick Action */}
-        <Card className="bg-bg-alt text-center p-6">
+        <Card className="bg-canvas-alt text-center p-6">
           <p className="text-sm text-text-secondary mb-3">
             {stats.availableOrders > 0
               ? `${stats.availableOrders} order baru menunggu Anda`

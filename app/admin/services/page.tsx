@@ -55,7 +55,7 @@ export default function ServicesPage() {
         {/* Table */}
         <Card className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-bg-alt border-b border-border">
+            <thead className="bg-canvas-alt border-b border-border">
               <tr>
                 <th className="px-4 py-3 text-left font-serif font-semibold text-text-primary">Nama</th>
                 <th className="px-4 py-3 text-left font-serif font-semibold text-text-primary">Kategori</th>
@@ -68,7 +68,7 @@ export default function ServicesPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {filteredServices.map((service) => (
-                <tr key={service.id} className="hover:bg-bg-alt transition-colors duration-base">
+                <tr key={service.id} className="hover:bg-canvas-alt transition-colors duration-base">
                   <td className="px-4 py-3 font-semibold text-text-primary">{service.name}</td>
                   <td className="px-4 py-3 text-text-secondary">{service.category}</td>
                   <td className="px-4 py-3 font-bold text-primary">{formatCurrency(service.price)}</td>

@@ -57,7 +57,7 @@ export default function ProductDetailPage({
     <CustomerLayout currentPage="products">
       <div className="relative">
         {/* Image */}
-        <div className="relative h-64 bg-bg-alt overflow-hidden">
+        <div className="relative h-64 bg-canvas-alt overflow-hidden">
           <img
             src={product.image}
             alt={product.name}
@@ -138,7 +138,7 @@ export default function ProductDetailPage({
           {product.stock > 0 && (
             <div>
               <h3 className="font-serif font-semibold text-text-primary mb-3">Jumlah</h3>
-              <div className="flex items-center gap-3 bg-bg-alt p-2 rounded-md w-fit">
+              <div className="flex items-center gap-3 bg-canvas-alt p-2 rounded-md w-fit">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="w-8 h-8 flex items-center justify-center hover:bg-card rounded-sm transition-colors duration-base"

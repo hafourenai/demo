@@ -96,7 +96,7 @@ export default function LoginPage() {
   if (role) {
     const users = role === 'customer' ? seedCustomers : seedEmployees;
     return (
-      <div className="min-h-screen bg-bg-primary flex items-center justify-center p-4">
+      <div className="min-h-screen bg-canvas flex items-center justify-center p-4">
         <div className="bg-card rounded-lg p-8 shadow-md max-w-md w-full border border-border-primary">
           <h2 className="text-2xl font-serif font-bold text-text-primary mb-1">
             {role === 'customer' ? 'Pilih Akun Customer' : 'Pilih Akun Karyawan'}
@@ -113,7 +113,7 @@ export default function LoginPage() {
                 className={`w-full p-3 rounded-sm text-left transition-colors duration-base ${
                   selectedUser === user.id
                     ? 'bg-primary text-white shadow-md'
-                    : 'bg-bg-alt text-text-primary hover:bg-primary/10'
+                    : 'bg-canvas-alt text-text-primary hover:bg-primary/10'
                 }`}
               >
                 <div className="font-semibold flex items-center justify-between">
@@ -131,7 +131,7 @@ export default function LoginPage() {
                 setRole(null);
                 setSelectedUser(null);
               }}
-              className="flex-1 py-3 px-4 bg-bg-alt text-text-primary rounded-sm font-semibold hover:bg-primary/10 transition-colors duration-base"
+              className="flex-1 py-3 px-4 bg-canvas-alt text-text-primary rounded-sm font-semibold hover:bg-primary/10 transition-colors duration-base"
             >
               Kembali
             </button>
@@ -150,7 +150,7 @@ export default function LoginPage() {
 
   // ---------- Landing + documentation screen ----------
   return (
-    <div className="min-h-screen bg-bg-primary">
+    <div className="min-h-screen bg-canvas">
       <div className="min-h-screen flex justify-center p-4 py-8">
         <div className="w-full max-w-3xl space-y-4">
           {/* Hero + Demo notice */}
@@ -244,7 +244,7 @@ export default function LoginPage() {
               {ROLE_DOCS.map((doc) => {
                 const Icon = doc.icon;
                 return (
-                  <div key={doc.role} className="rounded-md border border-border-primary bg-bg-alt p-4">
+                  <div key={doc.role} className="rounded-md border border-border-primary bg-canvas-alt p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <div
                         className={`w-9 h-9 rounded-sm ${doc.tile} flex items-center justify-center`}

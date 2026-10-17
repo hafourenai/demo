@@ -152,7 +152,7 @@ export default function AdminDashboard() {
           <h2 className="text-lg font-serif font-semibold text-text-primary mb-4">Order Terbaru</h2>
           <Card className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-bg-alt border-b border-border">
+              <thead className="bg-canvas-alt border-b border-border">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold text-text-primary">ID Order</th>
                   <th className="px-4 py-3 text-left font-semibold text-text-primary">Customer</th>
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
                   const employee = employees.find((e) => e.id === order.employeeId);
 
                   return (
-                    <tr key={order.id} className="hover:bg-bg-alt transition-colors duration-base">
+                    <tr key={order.id} className="hover:bg-canvas-alt transition-colors duration-base">
                       <td className="px-4 py-3 font-mono text-xs text-text-muted">
                         #{order.id.slice(0, 8).toUpperCase()}
                       </td>

@@ -19,7 +19,7 @@ export const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children, curren
   ];
 
   return (
-    <div className="flex justify-center min-h-screen bg-bg-primary">
+    <div className="flex justify-center min-h-screen bg-canvas">
       <MobileFrame>
         {/* Main Content */}
         <main className="flex-1">{children}</main>

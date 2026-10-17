@@ -46,7 +46,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="flex h-screen bg-bg-primary">
+    <div className="flex h-screen bg-canvas">
       {/* Sidebar */}
       <aside
         className={`${

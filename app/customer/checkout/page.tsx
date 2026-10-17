@@ -154,7 +154,7 @@ export default function CheckoutPage() {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => updateCartItem(item.id, Math.max(1, item.quantity - 1))}
-                      className="p-1 hover:bg-bg-alt rounded-sm transition-colors duration-base"
+                      className="p-1 hover:bg-canvas-alt rounded-sm transition-colors duration-base"
                       aria-label="Kurangi jumlah"
                       style={{ minHeight: '44px', minWidth: '44px' }}
                     >
@@ -163,7 +163,7 @@ export default function CheckoutPage() {
                     <span className="w-6 text-center text-sm font-semibold text-text-primary">{item.quantity}</span>
                     <button
                       onClick={() => updateCartItem(item.id, item.quantity + 1)}
-                      className="p-1 hover:bg-bg-alt rounded-sm transition-colors duration-base"
+                      className="p-1 hover:bg-canvas-alt rounded-sm transition-colors duration-base"
                       aria-label="Tambah jumlah"
                       style={{ minHeight: '44px', minWidth: '44px' }}
                     >
@@ -251,7 +251,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Price Summary */}
-        <Card className="bg-bg-alt border border-border">
+        <Card className="bg-canvas-alt border border-border">
           <div className="space-y-2 text-sm">
             <div className="flex justify-between text-text-secondary">
               <span>Subtotal</span>

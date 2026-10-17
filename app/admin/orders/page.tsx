@@ -65,7 +65,7 @@ export default function OrdersPage() {
                 className={`px-4 py-2 rounded-sm font-semibold text-sm transition-colors duration-base ${
                   filterStatus === null
                     ? 'bg-primary text-white'
-                    : 'bg-bg-alt text-text-primary hover:bg-primary/10'
+                    : 'bg-canvas-alt text-text-primary hover:bg-primary/10'
                 }`}
               >
                 Semua
@@ -77,7 +77,7 @@ export default function OrdersPage() {
                   className={`px-4 py-2 rounded-sm font-semibold text-sm transition-colors duration-base ${
                     filterStatus === status
                       ? 'bg-primary text-white'
-                      : 'bg-bg-alt text-text-primary hover:bg-primary/10'
+                      : 'bg-canvas-alt text-text-primary hover:bg-primary/10'
                   }`}
                 >
                   {getStatusLabel(status)}
@@ -90,7 +90,7 @@ export default function OrdersPage() {
         {/* Table */}
         <Card className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-bg-alt border-b border-border">
+            <thead className="bg-canvas-alt border-b border-border">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold text-text-primary">ID Order</th>
                 <th className="px-4 py-3 text-left font-semibold text-text-primary">Customer</th>
@@ -106,7 +106,7 @@ export default function OrdersPage() {
                 const employee = employees.find((e) => e.id === order.employeeId);
 
                 return (
-                  <tr key={order.id} className="hover:bg-bg-alt transition-colors duration-base">
+                  <tr key={order.id} className="hover:bg-canvas-alt transition-colors duration-base">
                     <td className="px-4 py-3 font-mono text-xs text-primary font-bold">
                       #{order.id.slice(0, 8).toUpperCase()}
                     </td>

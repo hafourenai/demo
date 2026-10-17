@@ -151,7 +151,7 @@ export default function OrderDetailPage({
                   <span className="text-xs text-text-secondary">({employee.totalJobs} pekerjaan)</span>
                 </div>
               </div>
-              <button className="p-2 hover:bg-bg-alt rounded-md transition-colors duration-base" aria-label="Hubungi karyawan">
+              <button className="p-2 hover:bg-canvas-alt rounded-md transition-colors duration-base" aria-label="Hubungi karyawan">
                 <MessageCircle size={20} className="text-text-secondary" />
               </button>
             </div>
@@ -207,7 +207,7 @@ export default function OrderDetailPage({
         </Card>
 
         {/* Price Summary */}
-        <Card className="bg-bg-alt border border-border">
+        <Card className="bg-canvas-alt border border-border">
           <div className="space-y-2 text-sm">
             <div className="flex justify-between text-text-secondary">
               <span>Subtotal</span>
@@ -227,7 +227,7 @@ export default function OrderDetailPage({
         </Card>
 
         {/* Order Meta */}
-        <Card className="bg-bg-alt">
+        <Card className="bg-canvas-alt">
           <div className="space-y-2 text-xs">
             <div className="flex justify-between text-text-secondary">
               <span>No. Pesanan</span>

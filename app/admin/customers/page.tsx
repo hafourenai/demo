@@ -39,7 +39,7 @@ export default function CustomersPage() {
         {/* Table */}
         <Card className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-bg-alt border-b border-border">
+            <thead className="bg-canvas-alt border-b border-border">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold text-text-primary">Nama</th>
                 <th className="px-4 py-3 text-left font-semibold text-text-primary">Email</th>
@@ -50,7 +50,7 @@ export default function CustomersPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {filteredCustomers.map((customer) => (
-                <tr key={customer.id} className="hover:bg-bg-alt transition-colors duration-base">
+                <tr key={customer.id} className="hover:bg-canvas-alt transition-colors duration-base">
                   <td className="px-4 py-3 font-semibold text-text-primary">{customer.name}</td>
                   <td className="px-4 py-3 text-text-secondary">{customer.email}</td>
                   <td className="px-4 py-3 text-text-secondary">{customer.phone}</td>

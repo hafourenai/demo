@@ -56,7 +56,7 @@ export default function ServiceDetailPage({
     <CustomerLayout currentPage="services">
       <div className="relative">
         {/* Image */}
-        <div className="relative h-48 bg-bg-alt overflow-hidden">
+        <div className="relative h-48 bg-canvas-alt overflow-hidden">
           <img
             src={service.image}
             alt={service.name}

@@ -55,7 +55,7 @@ export default function ProductsPage() {
         {/* Table */}
         <Card className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-bg-alt border-b border-border">
+            <thead className="bg-canvas-alt border-b border-border">
               <tr>
                 <th className="px-4 py-3 text-left font-serif font-semibold text-text-primary">Nama</th>
                 <th className="px-4 py-3 text-left font-serif font-semibold text-text-primary">Kategori</th>
@@ -68,7 +68,7 @@ export default function ProductsPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {filteredProducts.map((product) => (
-                <tr key={product.id} className="hover:bg-bg-alt transition-colors duration-base">
+                <tr key={product.id} className="hover:bg-canvas-alt transition-colors duration-base">
                   <td className="px-4 py-3 font-semibold text-text-primary">{product.name}</td>
                   <td className="px-4 py-3 text-text-secondary">{product.category}</td>
                   <td className="px-4 py-3">

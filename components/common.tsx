@@ -107,7 +107,7 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   fallback?: string;
 }
 
-export const Image: React.FC<ImageProps> = ({ src, alt, fallback = 'bg-bg-alt', ...props }) => (
+export const Image: React.FC<ImageProps> = ({ src, alt, fallback = 'bg-canvas-alt', ...props }) => (
   <img src={src} alt={alt} className={`object-cover ${fallback}`} {...props} />
 );
 
@@ -148,7 +148,7 @@ export const Chip: React.FC<ChipProps> = ({ label, selected = false, onClick, ic
     className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-base whitespace-nowrap ${
       selected
         ? 'bg-primary text-white'
-        : 'bg-bg-alt text-text-primary hover:bg-border-primary'
+        : 'bg-canvas-alt text-text-primary hover:bg-border-primary'
     }`}
     aria-pressed={selected}
     style={{ minHeight: '44px' }}

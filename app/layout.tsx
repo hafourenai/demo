@@ -29,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${playfair.variable} ${inter.variable}`}>
-      <body className="bg-bg-primary">
+      <body className="bg-canvas">
         <StorageSyncProvider>
           {children}
         </StorageSyncProvider>

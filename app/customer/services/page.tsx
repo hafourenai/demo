@@ -51,7 +51,7 @@ export default function ServicesPage() {
               className={`px-4 py-2 rounded-full whitespace-nowrap font-semibold text-sm transition-colors duration-base ${
                 selectedCategory === null
                   ? 'bg-primary text-white'
-                  : 'bg-bg-alt text-text-primary hover:bg-border-primary'
+                  : 'bg-canvas-alt text-text-primary hover:bg-border-primary'
               }`}
               style={{ minHeight: '44px' }}
             >
@@ -64,7 +64,7 @@ export default function ServicesPage() {
                 className={`px-4 py-2 rounded-full whitespace-nowrap font-semibold text-sm transition-colors duration-base ${
                   selectedCategory === cat
                     ? 'bg-primary text-white'
-                    : 'bg-bg-alt text-text-primary hover:bg-border-primary'
+                    : 'bg-canvas-alt text-text-primary hover:bg-border-primary'
                 }`}
                 style={{ minHeight: '44px' }}
               >

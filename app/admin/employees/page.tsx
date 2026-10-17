@@ -63,7 +63,7 @@ export default function EmployeesPage() {
         {/* Table */}
         <Card className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-bg-alt border-b border-border">
+            <thead className="bg-canvas-alt border-b border-border">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold text-text-primary">Nama</th>
                 <th className="px-4 py-3 text-left font-semibold text-text-primary">Role</th>
@@ -78,7 +78,7 @@ export default function EmployeesPage() {
               {filteredEmployees.map((employee) => {
                 const stats = getEmployeeStats(employee.id);
                 return (
-                  <tr key={employee.id} className="hover:bg-bg-alt transition-colors duration-base">
+                  <tr key={employee.id} className="hover:bg-canvas-alt transition-colors duration-base">
                     <td className="px-4 py-3 font-semibold text-text-primary">{employee.name}</td>
                     <td className="px-4 py-3 text-text-secondary">{employee.role}</td>
                     <td className="px-4 py-3">

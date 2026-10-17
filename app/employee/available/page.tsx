@@ -136,7 +136,7 @@ export default function AvailableOrdersPage() {
                     </div>
 
                     {/* Customer Info */}
-                    <div className="bg-bg-alt rounded-md p-2">
+                    <div className="bg-canvas-alt rounded-md p-2">
                       <p className="text-xs text-text-muted">Penerima</p>
                       <p className="font-semibold text-text-primary text-sm">
                         {order.address.recipientName}

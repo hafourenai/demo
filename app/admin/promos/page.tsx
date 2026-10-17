@@ -37,7 +37,7 @@ export default function PromosPage() {
         {/* Table */}
         <Card className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-bg-alt border-b border-border">
+            <thead className="bg-canvas-alt border-b border-border">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold text-text-primary">Nama</th>
                 <th className="px-4 py-3 text-left font-semibold text-text-primary">Kode</th>
@@ -50,7 +50,7 @@ export default function PromosPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {filteredPromos.map((promo) => (
-                <tr key={promo.id} className="hover:bg-bg-alt transition-colors duration-base">
+                <tr key={promo.id} className="hover:bg-canvas-alt transition-colors duration-base">
                   <td className="px-4 py-3 font-semibold text-text-primary">{promo.name}</td>
                   <td className="px-4 py-3 font-mono text-primary font-bold">{promo.code}</td>
                   <td className="px-4 py-3 text-text-secondary capitalize">
