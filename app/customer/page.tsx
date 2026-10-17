@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Bell, MapPin, Star, ArrowRight } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { CustomerLayout } from '@/components/layouts/CustomerLayout';
@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { Promo, Product, Service } from '@/lib/types';
 
 const CAROUSEL_INTERVAL = 6000;
+const CAROUSEL_TRANSITION_MS = 350;
 
 const PROMO_COLORS = [
   'bg-primary',
@@ -44,93 +45,221 @@ function Carousel({
   className?: string;
   dotColor?: string;
 }) {
-  const [index, setIndex] = useState(0);
+  // `pos` is the position inside the extended track:
+  //   0            → a clone of the last slide (for seamless swiping backwards)
+  //   1 .. count   → the real slides
+  //   count + 1    → a clone of the first slide (for seamless wrapping forwards)
+  const multi = count > 1;
+  const [pos, setPos] = useState(() => (multi ? 1 : 0));
+  const [animate, setAnimate] = useState(true);
   const [paused, setPaused] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState(0);
+  const [hoverCapable, setHoverCapable] = useState(false);
+
   const startX = useRef(0);
+  const startY = useRef(0);
+  const offset = useRef(0);
+  const dragging = useRef(false);
+  const axis = useRef<'x' | 'y' | null>(null);
   const dragged = useRef(false);
+  const trackRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (paused || isDragging || count <= 1) return;
-    const id = setInterval(() => setIndex((p) => (p + 1) % count), CAROUSEL_INTERVAL);
-    return () => clearInterval(id);
-  }, [paused, isDragging, count]);
+  // Set the initial track position synchronously on mount so the leading clone
+  // is never visible for a frame before the first effect runs.
+  const setTrackRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      trackRef.current = el;
+      if (el && el.dataset.ready !== '1') {
+        el.dataset.ready = '1';
+        el.style.transition = 'none';
+        el.style.transform = `translateX(calc(-${(multi ? 1 : 0) * 100}% + 0px))`;
+      }
+    },
+    [multi]
+  );
 
-  useEffect(() => {
-    setIndex((p) => (count ? p % count : 0));
+  const activeIndex = count > 0 ? ((pos - 1) % count + count) % count : 0;
+
+  // Slide order rendered in the track, including the two clones.
+  const items = useMemo(() => {
+    if (count <= 0) return [];
+    if (count === 1) return [0];
+    return [count - 1, ...Array.from({ length: count }, (_, i) => i), 0];
   }, [count]);
 
-  const go = (dir: 'left' | 'right') =>
-    setIndex((p) => (dir === 'left' ? (p + 1) % count : (p - 1 + count) % count));
+  const applyTransform = useCallback((p: number, dx: number, withTransition: boolean) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.style.transition = withTransition
+      ? `transform ${CAROUSEL_TRANSITION_MS}ms ease`
+      : 'none';
+    el.style.transform = `translateX(calc(-${p * 100}% + ${dx}px))`;
+  }, []);
+
+  // Keep the track in sync with the committed position. This deliberately does
+  // not run while dragging, so an in-progress drag never gets reset.
+  useEffect(() => {
+    applyTransform(pos, 0, animate);
+  }, [pos, animate, applyTransform, count]);
+
+  // Pause-on-hover only where a real pointer can hover. On touch devices the
+  // emulated mouseenter never gets a mouseleave, which used to leave the
+  // carousel permanently "paused" (stuck after the user touched a slide).
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const update = () => setHoverCapable(mq.matches);
+    update();
+    mq.addEventListener?.('change', update);
+    return () => mq.removeEventListener?.('change', update);
+  }, []);
+
+  // Restart the auto-advance timer whenever the slide or interaction state
+  // changes, so it never fires immediately after a manual swipe.
+  useEffect(() => {
+    if (!multi || paused) return;
+    const id = setInterval(() => {
+      if (dragging.current) return;
+      setPos((p) => Math.min(p + 1, count + 1));
+    }, CAROUSEL_INTERVAL);
+    return () => clearInterval(id);
+  }, [multi, paused, pos, count]);
+
+  // Reset to the first real slide when the slide set changes.
+  useEffect(() => {
+    setPos(multi ? 1 : 0);
+  }, [count, multi]);
+
+  // Seamless loop: when a cloned edge slide is showing, silently snap to the
+  // matching real slide. Without this the track would blur backwards across
+  // every slide when wrapping from the last slide to the first.
+  useEffect(() => {
+    if (!multi || (pos !== 0 && pos !== count + 1)) return;
+    const id = setTimeout(() => {
+      setAnimate(false);
+      setPos(pos === count + 1 ? 1 : count);
+    }, CAROUSEL_TRANSITION_MS + 60);
+    return () => clearTimeout(id);
+  }, [pos, count, multi]);
+
+  // Re-enable the transition after a silent snap (wait for the browser to
+  // paint the new position first).
+  useEffect(() => {
+    if (animate) return;
+    let raf = requestAnimationFrame(() => {
+      raf = requestAnimationFrame(() => setAnimate(true));
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [animate]);
+
+  const endDrag = () => {
+    dragging.current = false;
+    axis.current = null;
+    offset.current = 0;
+  };
+
+  const step = (dir: 1 | -1) =>
+    setPos((p) => Math.max(0, Math.min(p + dir, count + 1)));
 
   return (
-    <div
-      className={`select-none ${className}`}
-      style={{ touchAction: 'pan-y' }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onPointerDown={(e) => {
-        try {
-          e.currentTarget.setPointerCapture(e.pointerId);
-        } catch {}
-        startX.current = e.clientX;
-        dragged.current = false;
-        setIsDragging(true);
-        setDragOffset(0);
-      }}
-      onPointerMove={(e) => {
-        if (!isDragging) return;
-        const dx = e.clientX - startX.current;
-        if (Math.abs(dx) > 10) dragged.current = true;
-        setDragOffset(dx);
-      }}
-      onPointerUp={(e) => {
-        const dx = e.clientX - startX.current;
-        if (dx < -40) go('left');
-        else if (dx > 40) go('right');
-        setIsDragging(false);
-        setDragOffset(0);
-      }}
-      onPointerCancel={() => {
-        setIsDragging(false);
-        setDragOffset(0);
-      }}
-      onClickCapture={(e) => {
-        if (dragged.current) {
-          e.preventDefault();
-          e.stopPropagation();
+    <div className={`select-none ${className}`}>
+      <div
+        className="overflow-hidden"
+        style={{ touchAction: 'pan-y' }}
+        onMouseEnter={() => {
+          if (hoverCapable) setPaused(true);
+        }}
+        onMouseLeave={() => {
+          if (hoverCapable) setPaused(false);
+        }}
+        onPointerDown={(e) => {
+          if (!multi) return;
+          dragging.current = true;
+          axis.current = null;
           dragged.current = false;
-        }
-      }}
-    >
-      {/* Sliding track */}
-      <div className="overflow-hidden">
+          offset.current = 0;
+          startX.current = e.clientX;
+          startY.current = e.clientY;
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch {}
+        }}
+        onPointerMove={(e) => {
+          if (!dragging.current) return;
+          const dx = e.clientX - startX.current;
+          const dy = e.clientY - startY.current;
+          if (axis.current === null) {
+            if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+            axis.current = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+          }
+          // Let the page scroll vertically instead of fighting the carousel.
+          if (axis.current === 'y') {
+            endDrag();
+            return;
+          }
+          if (Math.abs(dx) > 8) dragged.current = true;
+          offset.current = dx;
+          applyTransform(pos, dx, false);
+        }}
+        onPointerUp={() => {
+          if (!dragging.current) return;
+          const dx = offset.current;
+          endDrag();
+          if (dx < -40) step(1);
+          else if (dx > 40) step(-1);
+          else applyTransform(pos, 0, true);
+        }}
+        onPointerCancel={() => {
+          if (!dragging.current) return;
+          endDrag();
+          applyTransform(pos, 0, true);
+        }}
+        onClickCapture={(e) => {
+          // A swipe should not also trigger the slide's link.
+          if (dragged.current) {
+            e.preventDefault();
+            e.stopPropagation();
+            dragged.current = false;
+          }
+        }}
+      >
+        {/* Sliding track */}
         <div
+          ref={setTrackRef}
           className="flex"
-          style={{
-            transform: `translateX(calc(${-index * 100}% + ${dragOffset}px))`,
-            transition: isDragging ? 'none' : 'transform 0.35s ease',
-          }}
+          style={{ willChange: 'transform' }}
         >
-          {Array.from({ length: count }).map((_, i) => (
-            <div key={i} className="min-w-full flex-shrink-0">
-              {renderSlide(i)}
-            </div>
-          ))}
+          {items.map((slideIndex, p) => {
+            const isClone = multi && (p === 0 || p === count + 1);
+            return (
+              <div
+                key={p}
+                className="min-w-full flex-shrink-0"
+                aria-hidden={isClone || undefined}
+              >
+                {renderSlide(slideIndex)}
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Dots */}
-      {count > 1 && (
+      {multi && (
         <div className="flex flex-wrap justify-center gap-1.5 mt-3">
           {Array.from({ length: count }).map((_, i) => (
             <button
               key={i}
-              onClick={() => setIndex(i)}
+              type="button"
+              onClick={() => {
+                if (i === activeIndex) return;
+                // Jump instantly instead of blurring through every slide.
+                setAnimate(false);
+                setPos(i + 1);
+              }}
               aria-label={`Slide ${i + 1}`}
+              aria-current={i === activeIndex}
               className={`h-1.5 rounded-full transition-all ${
-                i === index ? `w-6 ${dotColor}` : 'w-1.5 bg-text-muted/30'
+                i === activeIndex ? `w-6 ${dotColor}` : 'w-1.5 bg-text-muted/30'
               }`}
             />
           ))}
