@@ -40,32 +40,32 @@ export default function OrdersPage() {
     <AdminLayout>
       <div className="p-6 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Manajemen Order</h1>
-          <p className="text-gray-600 mt-1">Total: {orders.length} order</p>
+          <h1 className="text-2xl font-serif font-semibold text-text-primary">Manajemen Order</h1>
+          <p className="text-text-secondary mt-1">Total: {orders.length} order</p>
         </div>
 
         {/* Filters */}
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-semibold text-gray-700">Cari Order</label>
+            <label className="text-sm font-semibold text-text-primary">Cari Order</label>
             <input
               type="text"
               placeholder="ID order atau nama customer..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full mt-2 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full mt-2 px-4 py-3 border border-border rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <div>
-            <label className="text-sm font-semibold text-gray-700">Status</label>
+            <label className="text-sm font-semibold text-text-primary">Status</label>
             <div className="flex flex-wrap gap-2 mt-2">
               <button
                 onClick={() => setFilterStatus(null)}
-                className={`px-4 py-2 rounded-lg font-semibold text-sm transition ${
+                className={`px-4 py-2 rounded-sm font-semibold text-sm transition-colors duration-base ${
                   filterStatus === null
                     ? 'bg-primary text-white'
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                    : 'bg-bg-alt text-text-primary hover:bg-primary/10'
                 }`}
               >
                 Semua
@@ -74,10 +74,10 @@ export default function OrdersPage() {
                 <button
                   key={status}
                   onClick={() => setFilterStatus(status)}
-                  className={`px-4 py-2 rounded-lg font-semibold text-sm transition ${
+                  className={`px-4 py-2 rounded-sm font-semibold text-sm transition-colors duration-base ${
                     filterStatus === status
                       ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                      : 'bg-bg-alt text-text-primary hover:bg-primary/10'
                   }`}
                 >
                   {getStatusLabel(status)}
@@ -90,28 +90,28 @@ export default function OrdersPage() {
         {/* Table */}
         <Card className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-bg-alt border-b border-border">
               <tr>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">ID Order</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Customer</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Karyawan</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Total</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Status</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Tanggal</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">ID Order</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Customer</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Karyawan</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Total</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Status</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Tanggal</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-border">
               {filteredOrders.map((order) => {
                 const customer = customers.find((c) => c.id === order.customerId);
                 const employee = employees.find((e) => e.id === order.employeeId);
 
                 return (
-                  <tr key={order.id} className="hover:bg-gray-50 transition">
+                  <tr key={order.id} className="hover:bg-bg-alt transition-colors duration-base">
                     <td className="px-4 py-3 font-mono text-xs text-primary font-bold">
                       #{order.id.slice(0, 8).toUpperCase()}
                     </td>
-                    <td className="px-4 py-3 text-gray-800">{customer?.name}</td>
-                    <td className="px-4 py-3 text-gray-600">{employee?.name || '-'}</td>
+                    <td className="px-4 py-3 text-text-primary">{customer?.name}</td>
+                    <td className="px-4 py-3 text-text-secondary">{employee?.name || '-'}</td>
                     <td className="px-4 py-3 font-bold text-primary">{formatCurrency(order.totalPrice)}</td>
                     <td className="px-4 py-3">
                       <Badge
@@ -126,7 +126,7 @@ export default function OrdersPage() {
                         {getStatusLabel(order.status)}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{formatDate(order.createdAt)}</td>
+                    <td className="px-4 py-3 text-text-secondary">{formatDate(order.createdAt)}</td>
                   </tr>
                 );
               })}
@@ -136,7 +136,7 @@ export default function OrdersPage() {
 
         {filteredOrders.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-600">Tidak ada order ditemukan</p>
+            <p className="text-text-secondary">Tidak ada order ditemukan</p>
           </div>
         )}
       </div>

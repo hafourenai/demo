@@ -27,7 +27,7 @@ const ROLE_DOCS = [
   {
     role: 'Customer',
     icon: ShoppingBag,
-    color: 'from-pink-500 to-pink-600',
+    tile: 'bg-primary/10 text-primary',
     points: [
       'Katalog layanan (dengan varian) & produk',
       'Keranjang, checkout, alamat pengiriman',
@@ -38,7 +38,7 @@ const ROLE_DOCS = [
   {
     role: 'Employee',
     icon: Briefcase,
-    color: 'from-purple-500 to-purple-600',
+    tile: 'bg-accent/10 text-accent',
     points: [
       'Lihat daftar order yang tersedia',
       'Ambil order — siapa cepat dia dapat',
@@ -49,7 +49,7 @@ const ROLE_DOCS = [
   {
     role: 'Administrator',
     icon: LayoutDashboard,
-    color: 'from-gray-700 to-gray-900',
+    tile: 'bg-text-primary/10 text-text-primary',
     points: [
       'Dashboard KPI & aktivitas order',
       'Kelola customer, karyawan, layanan, produk, promo',
@@ -96,12 +96,12 @@ export default function LoginPage() {
   if (role) {
     const users = role === 'customer' ? seedCustomers : seedEmployees;
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary to-secondary flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl p-8 shadow-2xl max-w-md w-full">
-          <h2 className="text-2xl font-bold text-gray-800 mb-1">
+      <div className="min-h-screen bg-bg-primary flex items-center justify-center p-4">
+        <div className="bg-card rounded-lg p-8 shadow-md max-w-md w-full border border-border-primary">
+          <h2 className="text-2xl font-serif font-bold text-text-primary mb-1">
             {role === 'customer' ? 'Pilih Akun Customer' : 'Pilih Akun Karyawan'}
           </h2>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-text-secondary mb-6">
             Ini data dummy — pilih salah satu untuk masuk.
           </p>
 
@@ -110,10 +110,10 @@ export default function LoginPage() {
               <button
                 key={user.id}
                 onClick={() => setSelectedUser(user.id)}
-                className={`w-full p-3 rounded-lg text-left transition ${
+                className={`w-full p-3 rounded-sm text-left transition-colors duration-base ${
                   selectedUser === user.id
-                    ? 'bg-primary text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                    ? 'bg-primary text-white shadow-md'
+                    : 'bg-bg-alt text-text-primary hover:bg-primary/10'
                 }`}
               >
                 <div className="font-semibold flex items-center justify-between">
@@ -131,14 +131,14 @@ export default function LoginPage() {
                 setRole(null);
                 setSelectedUser(null);
               }}
-              className="flex-1 py-3 px-4 bg-gray-100 text-gray-800 rounded-lg font-semibold hover:bg-gray-200 transition"
+              className="flex-1 py-3 px-4 bg-bg-alt text-text-primary rounded-sm font-semibold hover:bg-primary/10 transition-colors duration-base"
             >
               Kembali
             </button>
             <button
               onClick={handleLogin}
               disabled={!selectedUser}
-              className="flex-1 py-3 px-4 bg-primary text-white rounded-lg font-semibold hover:bg-pink-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 py-3 px-4 bg-primary text-white rounded-sm font-semibold hover:bg-primary-dark transition-colors duration-base disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Masuk
             </button>
@@ -150,46 +150,46 @@ export default function LoginPage() {
 
   // ---------- Landing + documentation screen ----------
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary to-secondary">
+    <div className="min-h-screen bg-bg-primary">
       <div className="min-h-screen flex justify-center p-4 py-8">
         <div className="w-full max-w-3xl space-y-4">
           {/* Hero + Demo notice */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl">
+          <div className="bg-card rounded-lg p-6 sm:p-8 shadow-md border border-border-primary">
             <div className="flex items-center gap-3">
-              <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center flex-shrink-0">
+              <div className="w-14 h-14 bg-primary rounded-md flex items-center justify-center flex-shrink-0">
                 <User className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-800">Salon &amp; Beauty</h1>
-                <p className="text-sm text-gray-600">Home Service Beauty &amp; Commerce Platform</p>
+                <h1 className="text-2xl font-serif font-bold text-text-primary">Salon &amp; Beauty</h1>
+                <p className="text-sm text-text-secondary">Home Service Beauty &amp; Commerce Platform</p>
               </div>
             </div>
 
             {/* Demo notice */}
-            <div className="mt-5 bg-amber-50 border border-amber-200 rounded-2xl p-4">
-              <div className="flex items-center gap-2 text-amber-800 font-bold text-sm">
+            <div className="mt-5 bg-warning/10 border border-warning/20 rounded-md p-4">
+              <div className="flex items-center gap-2 text-warning font-bold text-sm">
                 <AlertTriangle size={18} />
                 Ini Versi DEMO — bukan aplikasi produksi
               </div>
-              <ul className="mt-2 text-sm text-amber-800/90 space-y-1">
+              <ul className="mt-2 text-sm text-text-secondary space-y-1">
                 <li className="flex items-start gap-2">
-                  <Check size={15} className="mt-0.5 flex-shrink-0" />
+                  <Check size={15} className="mt-0.5 flex-shrink-0 text-warning" />
                   Semua data hanya <strong>contoh (dummy)</strong>.
                 </li>
                 <li className="flex items-start gap-2">
-                  <Check size={15} className="mt-0.5 flex-shrink-0" />
+                  <Check size={15} className="mt-0.5 flex-shrink-0 text-warning" />
                   <span>
                     <strong>Tidak ada pembayaran asli</strong> — tidak ada uang sungguhan yang
                     berpindah.
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Check size={15} className="mt-0.5 flex-shrink-0" />
+                  <Check size={15} className="mt-0.5 flex-shrink-0 text-warning" />
                   Data tersimpan di <strong>browser kamu (localStorage)</strong> dan bisa direset
                   kapan saja.
                 </li>
               </ul>
-              <p className="mt-3 text-xs text-amber-700/90">
+              <p className="mt-3 text-xs text-text-muted">
                 Tujuan halaman ini: memperagakan <strong>alur &amp; fitur</strong>, bukan tampilan
                 akhir.
               </p>
@@ -197,11 +197,11 @@ export default function LoginPage() {
 
             {/* Role quick login */}
             <div className="mt-6">
-              <p className="text-sm font-semibold text-gray-700 mb-3">Masuk sebagai:</p>
+              <p className="text-sm font-semibold text-text-primary mb-3">Masuk sebagai:</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   onClick={() => setRole('customer')}
-                  className="flex items-center gap-3 py-3 px-4 bg-gradient-to-r from-primary to-pink-500 text-white rounded-xl font-semibold hover:shadow-lg transition"
+                  className="flex items-center gap-3 py-3 px-4 bg-primary text-white rounded-md font-semibold hover:bg-primary-dark transition-colors duration-base"
                 >
                   <ShoppingBag size={18} />
                   <span className="text-left leading-tight">
@@ -211,7 +211,7 @@ export default function LoginPage() {
                 </button>
                 <button
                   onClick={() => setRole('employee')}
-                  className="flex items-center gap-3 py-3 px-4 bg-gradient-to-r from-secondary to-purple-500 text-white rounded-xl font-semibold hover:shadow-lg transition"
+                  className="flex items-center gap-3 py-3 px-4 bg-accent text-white rounded-md font-semibold hover:bg-accent-light transition-colors duration-base"
                 >
                   <Briefcase size={18} />
                   <span className="text-left leading-tight">
@@ -221,7 +221,7 @@ export default function LoginPage() {
                 </button>
                 <button
                   onClick={loginAdmin}
-                  className="flex items-center gap-3 py-3 px-4 bg-gradient-to-r from-gray-700 to-gray-900 text-white rounded-xl font-semibold hover:shadow-lg transition"
+                  className="flex items-center gap-3 py-3 px-4 bg-text-primary text-white rounded-md font-semibold hover:opacity-90 transition-opacity duration-base"
                 >
                   <LayoutDashboard size={18} />
                   <span className="text-left leading-tight">
@@ -234,28 +234,28 @@ export default function LoginPage() {
           </div>
 
           {/* Key feature highlight */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl">
+          <div className="bg-card rounded-lg p-6 sm:p-8 shadow-md border border-border-primary">
             <div className="flex items-center gap-2 mb-4">
               <Sparkles size={20} className="text-primary" />
-              <h2 className="text-lg font-bold text-gray-800">Fitur Utama yang Bisa Dicoba</h2>
+              <h2 className="text-lg font-serif font-bold text-text-primary">Fitur Utama yang Bisa Dicoba</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {ROLE_DOCS.map((doc) => {
                 const Icon = doc.icon;
                 return (
-                  <div key={doc.role} className="rounded-2xl border border-gray-100 bg-gray-50/60 p-4">
+                  <div key={doc.role} className="rounded-md border border-border-primary bg-bg-alt p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <div
-                        className={`w-9 h-9 rounded-lg bg-gradient-to-br ${doc.color} flex items-center justify-center`}
+                        className={`w-9 h-9 rounded-sm ${doc.tile} flex items-center justify-center`}
                       >
-                        <Icon size={18} className="text-white" />
+                        <Icon size={18} />
                       </div>
-                      <span className="font-bold text-gray-800">{doc.role}</span>
+                      <span className="font-bold text-text-primary">{doc.role}</span>
                     </div>
                     <ul className="space-y-2">
                       {doc.points.map((p) => (
-                        <li key={p} className="flex items-start gap-2 text-sm text-gray-700">
+                        <li key={p} className="flex items-start gap-2 text-sm text-text-secondary">
                           <Check size={15} className="mt-0.5 text-primary flex-shrink-0" />
                           <span>{p}</span>
                         </li>
@@ -267,10 +267,10 @@ export default function LoginPage() {
             </div>
 
             {/* Signature feature */}
-            <div className="mt-4 flex items-start gap-3 bg-pink-50 border border-pink-100 rounded-2xl p-4">
+            <div className="mt-4 flex items-start gap-3 bg-primary/5 border border-primary/20 rounded-md p-4">
               <Zap size={20} className="text-primary flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-gray-700">
-                <p className="font-bold text-gray-800">Sistem Ambil Order Anti-Bentrok</p>
+              <div className="text-sm text-text-secondary">
+                <p className="font-bold text-text-primary">Sistem Ambil Order Anti-Bentrok</p>
                 <p className="mt-0.5">
                   Saat beberapa karyawan menekan &quot;Ambil Order&quot; pada order yang sama,
                   hanya <strong>satu</strong> yang berhasil — karyawan lain langsung melihat pesan
@@ -281,10 +281,10 @@ export default function LoginPage() {
           </div>
 
           {/* How to try */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl">
+          <div className="bg-card rounded-lg p-6 sm:p-8 shadow-md border border-border-primary">
             <div className="flex items-center gap-2 mb-4">
               <PlayCircle size={20} className="text-primary" />
-              <h2 className="text-lg font-bold text-gray-800">Cara Mencoba (1 menit)</h2>
+              <h2 className="text-lg font-serif font-bold text-text-primary">Cara Mencoba (1 menit)</h2>
             </div>
             <ol className="space-y-3">
               {[
@@ -311,17 +311,17 @@ export default function LoginPage() {
                       {i + 1}
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-800 flex items-center gap-1.5 text-sm">
-                        <Icon size={15} className="text-gray-500" />
+                      <p className="font-semibold text-text-primary flex items-center gap-1.5 text-sm">
+                        <Icon size={15} className="text-text-muted" />
                         {step.title}
                       </p>
-                      <p className="text-sm text-gray-600">{step.desc}</p>
+                      <p className="text-sm text-text-secondary">{step.desc}</p>
                     </div>
                   </li>
                 );
               })}
             </ol>
-            <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
+            <div className="mt-4 flex items-center gap-2 text-xs text-text-muted">
               <Smartphone size={14} />
               Tips: buka Customer &amp; Employee di <strong>dua tab/jendela berbeda</strong> untuk
               melihat data tersinkron antar tab.
@@ -340,19 +340,19 @@ export default function LoginPage() {
               return (
                 <div
                   key={s.label}
-                  className="bg-white/90 backdrop-blur rounded-2xl p-3 shadow-lg flex items-center gap-2"
+                  className="bg-card rounded-md p-3 shadow-sm border border-border-primary flex items-center gap-2"
                 >
                   <Icon size={18} className="text-primary flex-shrink-0" />
                   <div className="leading-tight">
-                    <p className="text-sm font-bold text-gray-800">{s.label}</p>
-                    <p className="text-[11px] text-gray-500">{s.sub}</p>
+                    <p className="text-sm font-bold text-text-primary">{s.label}</p>
+                    <p className="text-[11px] text-text-muted">{s.sub}</p>
                   </div>
                 </div>
               );
             })}
           </div>
 
-          <div className="flex items-center justify-center gap-2 text-white/90 text-xs py-2">
+          <div className="flex items-center justify-center gap-2 text-text-muted text-xs py-2">
             <Lock size={13} />
             Demo Version • Tidak ada pembayaran asli • Data dummy
             <Clock size={13} className="ml-1" />

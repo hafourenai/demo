@@ -4,11 +4,20 @@ import { useState } from 'react';
 import { ArrowLeft, Trash2, Plus, Minus } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { CustomerLayout } from '@/components/layouts/CustomerLayout';
-import { Card, Button } from '@/components/common';
+import { Card, Button, EmptyState } from '@/components/common';
 import { formatCurrency, generateId } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Order } from '@/lib/types';
+
+const labelText = (label: string) =>
+  label === 'home' ? 'Rumah' : label === 'office' ? 'Kantor' : 'Lainnya';
+
+const PAYMENT_OPTIONS = [
+  { value: 'qris', label: 'QRIS', desc: 'Scan QR Code' },
+  { value: 'transfer', label: 'Transfer Bank', desc: 'Virtual Account' },
+  { value: 'cash', label: 'Cash', desc: 'Bayar di tempat' },
+] as const;
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -81,35 +90,41 @@ export default function CheckoutPage() {
     return (
       <CustomerLayout currentPage="orders">
         <div className="px-4 py-4">
-          <Link href="/customer/services" className="flex items-center gap-2 mb-6">
+          <Link href="/customer/services" className="flex items-center gap-2 mb-6 text-primary hover:text-primary-dark transition-colors duration-base">
             <ArrowLeft size={24} />
             <span className="font-semibold">Kembali</span>
           </Link>
-          <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">Keranjang Anda kosong</p>
-            <Link href="/customer/services" className="mt-4 inline-block">
-              <Button>Mulai Berbelanja</Button>
-            </Link>
-          </div>
+          <EmptyState
+            title="Keranjang Anda kosong"
+            description="Yuk mulai pilih layanan atau produk favoritmu"
+            action={{ label: 'Mulai Berbelanja', onClick: () => router.push('/customer/services') }}
+          />
         </div>
       </CustomerLayout>
     );
   }
 
+  const selectableClass = (selected: boolean) =>
+    `w-full p-3 rounded-md border-2 transition-all duration-base text-left ${
+      selected
+        ? 'border-primary bg-primary/5'
+        : 'border-border bg-card hover:border-border-primary'
+    }`;
+
   return (
     <CustomerLayout currentPage="orders">
       <div className="px-4 py-4 space-y-4">
         {/* Header */}
-        <Link href="/customer/products" className="flex items-center gap-2 mb-6">
+        <Link href="/customer/products" className="flex items-center gap-2 mb-6 text-primary hover:text-primary-dark transition-colors duration-base">
           <ArrowLeft size={24} />
           <span className="font-semibold">Kembali</span>
         </Link>
 
-        <h1 className="text-2xl font-bold text-gray-800">Checkout</h1>
+        <h1 className="text-2xl font-serif font-bold text-text-primary">Checkout</h1>
 
         {/* Items */}
         <div>
-          <h3 className="font-semibold text-gray-800 mb-3">Pesanan Anda</h3>
+          <h3 className="font-serif font-semibold text-text-primary mb-3">Pesanan Anda</h3>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {cart.map((item) => {
               const service = services.find((s) => s.id === item.itemId);
@@ -123,12 +138,12 @@ export default function CheckoutPage() {
                   <img
                     src={itemData.image}
                     alt={itemData.name}
-                    className="w-16 h-16 object-cover rounded"
+                    className="w-16 h-16 object-cover rounded-md flex-shrink-0"
                   />
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-800 text-sm">{itemData.name}</h4>
+                    <h4 className="font-serif font-semibold text-text-primary text-sm">{itemData.name}</h4>
                     {service && item.variationId && (
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-text-secondary">
                         {service.variations.find((v) => v.id === item.variationId)?.name}
                       </p>
                     )}
@@ -136,23 +151,29 @@ export default function CheckoutPage() {
                       {formatCurrency(item.price)} x {item.quantity}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
                     <button
                       onClick={() => updateCartItem(item.id, Math.max(1, item.quantity - 1))}
-                      className="p-1 hover:bg-gray-100 rounded"
+                      className="p-1 hover:bg-bg-alt rounded-sm transition-colors duration-base"
+                      aria-label="Kurangi jumlah"
+                      style={{ minHeight: '44px', minWidth: '44px' }}
                     >
                       <Minus size={16} />
                     </button>
-                    <span className="w-6 text-center text-sm font-semibold">{item.quantity}</span>
+                    <span className="w-6 text-center text-sm font-semibold text-text-primary">{item.quantity}</span>
                     <button
                       onClick={() => updateCartItem(item.id, item.quantity + 1)}
-                      className="p-1 hover:bg-gray-100 rounded"
+                      className="p-1 hover:bg-bg-alt rounded-sm transition-colors duration-base"
+                      aria-label="Tambah jumlah"
+                      style={{ minHeight: '44px', minWidth: '44px' }}
                     >
                       <Plus size={16} />
                     </button>
                     <button
                       onClick={() => removeFromCart(item.id)}
-                      className="p-1 hover:bg-red-50 rounded text-red-600 ml-2"
+                      className="p-1 hover:bg-danger/10 rounded-sm text-danger ml-1 transition-colors duration-base"
+                      aria-label="Hapus item"
+                      style={{ minHeight: '44px', minWidth: '44px' }}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -165,96 +186,85 @@ export default function CheckoutPage() {
 
         {/* Address Selection */}
         <div>
-          <h3 className="font-semibold text-gray-800 mb-3">Alamat Pengiriman</h3>
+          <h3 className="font-serif font-semibold text-text-primary mb-3">Alamat Pengiriman</h3>
           <div className="space-y-2">
             {customer?.addresses.map((address) => (
               <button
                 key={address.id}
                 onClick={() => setSelectedAddress(address.id)}
-                className={`w-full p-3 rounded-lg border-2 transition text-left ${
-                  selectedAddress === address.id
-                    ? 'border-primary bg-primary/5'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
-                }`}
+                className={selectableClass(selectedAddress === address.id)}
               >
-                <div className="font-semibold text-gray-800">
-                  {address.label === 'home' ? '🏠 Rumah' : address.label === 'office' ? '🏢 Kantor' : '📍 Lainnya'}
+                <div className="font-semibold text-text-primary">
+                  {labelText(address.label)}
                 </div>
-                <p className="text-xs text-gray-600 mt-1">{address.detail}</p>
-                <p className="text-xs text-gray-500 mt-1">{address.recipientName} • {address.phone}</p>
+                <p className="text-xs text-text-secondary mt-1">{address.detail}</p>
+                <p className="text-xs text-text-muted mt-1">{address.recipientName} • {address.phone}</p>
               </button>
             ))}
+            {customer?.addresses.length === 0 && (
+              <p className="text-sm text-text-secondary">Belum ada alamat. Tambahkan di halaman Akun.</p>
+            )}
           </div>
         </div>
 
         {/* Promo Code */}
-        <div>
-          <h3 className="font-semibold text-gray-800 mb-3">Kode Promo</h3>
-          <div className="space-y-2">
-            {promos.map((promo) => (
-              <button
-                key={promo.id}
-                onClick={() => setSelectedPromo(promo.id)}
-                className={`w-full p-3 rounded-lg border-2 transition text-left ${
-                  selectedPromo === promo.id
-                    ? 'border-primary bg-primary/5'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
-                }`}
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="font-semibold text-gray-800">{promo.name}</div>
-                    <p className="text-xs text-gray-600 mt-1">{promo.code}</p>
+        {promos.length > 0 && (
+          <div>
+            <h3 className="font-serif font-semibold text-text-primary mb-3">Kode Promo</h3>
+            <div className="space-y-2">
+              {promos.map((promo) => (
+                <button
+                  key={promo.id}
+                  onClick={() => setSelectedPromo(selectedPromo === promo.id ? null : promo.id)}
+                  className={selectableClass(selectedPromo === promo.id)}
+                >
+                  <div className="flex justify-between items-start gap-2">
+                    <div>
+                      <div className="font-semibold text-text-primary">{promo.name}</div>
+                      <p className="text-xs text-text-secondary mt-1">{promo.code}</p>
+                    </div>
+                    <div className="badge badge-success text-xs">
+                      {promo.type === 'percentage' ? `${promo.value}%` : formatCurrency(promo.value)}
+                    </div>
                   </div>
-                  <div className="badge badge-success text-xs">
-                    {promo.type === 'percentage' ? `${promo.value}%` : formatCurrency(promo.value)}
-                  </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Payment Method */}
         <div>
-          <h3 className="font-semibold text-gray-800 mb-3">Metode Pembayaran</h3>
+          <h3 className="font-serif font-semibold text-text-primary mb-3">Metode Pembayaran</h3>
           <div className="space-y-2">
-            {[
-              { value: 'qris', label: '📱 QRIS', desc: 'Scan QR Code' },
-              { value: 'transfer', label: '🏦 Transfer Bank', desc: 'Virtual Account' },
-              { value: 'cash', label: '💵 Cash', desc: 'Bayar di tempat' },
-            ].map(({ value, label, desc }) => (
+            {PAYMENT_OPTIONS.map(({ value, label, desc }) => (
               <button
                 key={value}
-                onClick={() => setPaymentMethod(value as any)}
-                className={`w-full p-3 rounded-lg border-2 transition text-left ${
-                  paymentMethod === value
-                    ? 'border-primary bg-primary/5'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
-                }`}
+                onClick={() => setPaymentMethod(value)}
+                className={selectableClass(paymentMethod === value)}
               >
-                <div className="font-semibold text-gray-800">{label}</div>
-                <p className="text-xs text-gray-600 mt-1">{desc}</p>
+                <div className="font-semibold text-text-primary">{label}</div>
+                <p className="text-xs text-text-secondary mt-1">{desc}</p>
               </button>
             ))}
           </div>
         </div>
 
         {/* Price Summary */}
-        <Card className="bg-gray-50 border-gray-300">
+        <Card className="bg-bg-alt border border-border">
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-text-secondary">
               <span>Subtotal</span>
               <span>{formatCurrency(subtotal)}</span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-green-600 font-semibold">
+              <div className="flex justify-between text-success font-semibold">
                 <span>Diskon</span>
                 <span>-{formatCurrency(discount)}</span>
               </div>
             )}
-            <div className="border-t pt-2 flex justify-between font-bold text-lg">
-              <span>Total</span>
+            <div className="border-t border-border pt-2 flex justify-between font-bold text-lg">
+              <span className="text-text-primary">Total</span>
               <span className="text-primary">{formatCurrency(total)}</span>
             </div>
           </div>
@@ -266,7 +276,7 @@ export default function CheckoutPage() {
           disabled={isProcessing || !selectedAddress}
           className="w-full text-lg"
         >
-          {isProcessing ? 'Memproses...' : `Lanjut Pembayaran`}
+          {isProcessing ? 'Memproses...' : 'Lanjut Pembayaran'}
         </Button>
 
         <div className="h-8" />

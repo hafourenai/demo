@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { MapPin, Clock, DollarSign, Zap } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { EmployeeLayout } from '@/components/layouts/EmployeeLayout';
-import { Card, Button } from '@/components/common';
+import { Card, Button, EmptyState } from '@/components/common';
 import { formatCurrency } from '@/lib/utils';
 
 export default function AvailableOrdersPage() {
@@ -41,9 +41,9 @@ export default function AvailableOrdersPage() {
 
       if (success) {
         setClaimedOrders([...claimedOrders, orderId]);
-        alert('Order berhasil diambil! 🎉');
+        alert('Order berhasil diambil!');
       } else {
-        alert('Maaf, order telah diambil karyawan lain 😢');
+        alert('Maaf, order telah diambil karyawan lain');
       }
 
       setClaming(null);
@@ -53,20 +53,20 @@ export default function AvailableOrdersPage() {
   return (
     <EmployeeLayout currentPage="available">
       <div className="px-4 py-4 space-y-4">
-        <h1 className="text-2xl font-bold text-gray-800">Order Tersedia</h1>
+        <h1 className="text-2xl font-serif font-bold text-text-primary">Order Tersedia</h1>
 
         {availableOrders.length === 0 ? (
-          <div className="text-center py-12">
-            <Zap size={48} className="text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-600">Tidak ada order tersedia saat ini</p>
-            <p className="text-xs text-gray-500 mt-2">Refresh halaman untuk melihat update terbaru</p>
-          </div>
+          <EmptyState
+            icon={<Zap size={48} />}
+            title="Tidak ada order tersedia"
+            description="Refresh halaman untuk melihat update terbaru"
+          />
         ) : (
           <div className="space-y-3">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex gap-2 items-start">
-              <Zap size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-blue-700">
-                <strong>{availableOrders.length}</strong> order menunggu. Klik "Ambil Order" untuk mendapatkan pekerjaan.
+            <div className="bg-primary/5 border border-primary/20 rounded-md p-3 flex gap-2 items-start">
+              <Zap size={18} className="text-primary flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-text-secondary">
+                <strong className="text-text-primary">{availableOrders.length}</strong> order menunggu. Klik "Ambil Order" untuk mendapatkan pekerjaan.
               </p>
             </div>
 
@@ -79,13 +79,13 @@ export default function AvailableOrdersPage() {
               return (
                 <Card
                   key={order.id}
-                  className="border-l-4 border-primary hover:shadow-md transition"
+                  className="border-l-4 border-primary hover:shadow-md transition-shadow duration-base"
                 >
                   <div className="space-y-3">
                     {/* Header */}
                     <div>
-                      <h3 className="font-bold text-gray-800 text-lg">{orderService?.name}</h3>
-                      <p className="text-xs text-gray-600 mt-1">{orderService?.description}</p>
+                      <h3 className="font-serif font-semibold text-text-primary text-lg">{orderService?.name}</h3>
+                      <p className="text-xs text-text-secondary mt-1">{orderService?.description}</p>
                     </div>
 
                     {/* Details Grid */}
@@ -94,8 +94,8 @@ export default function AvailableOrdersPage() {
                       <div className="flex gap-2">
                         <MapPin size={16} className="text-primary flex-shrink-0 mt-1" />
                         <div>
-                          <p className="text-xs text-gray-600">Lokasi</p>
-                          <p className="font-semibold text-gray-800 text-sm">
+                          <p className="text-xs text-text-muted">Lokasi</p>
+                          <p className="font-semibold text-text-primary text-sm">
                             {order.address.detail.split(',')[0]}
                           </p>
                         </div>
@@ -103,10 +103,10 @@ export default function AvailableOrdersPage() {
 
                       {/* Duration */}
                       <div className="flex gap-2">
-                        <Clock size={16} className="text-secondary flex-shrink-0 mt-1" />
+                        <Clock size={16} className="text-accent flex-shrink-0 mt-1" />
                         <div>
-                          <p className="text-xs text-gray-600">Durasi</p>
-                          <p className="font-semibold text-gray-800 text-sm">
+                          <p className="text-xs text-text-muted">Durasi</p>
+                          <p className="font-semibold text-text-primary text-sm">
                             {orderService?.duration} menit
                           </p>
                         </div>
@@ -114,9 +114,9 @@ export default function AvailableOrdersPage() {
 
                       {/* Price */}
                       <div className="flex gap-2">
-                        <DollarSign size={16} className="text-green-600 flex-shrink-0 mt-1" />
+                        <DollarSign size={16} className="text-success flex-shrink-0 mt-1" />
                         <div>
-                          <p className="text-xs text-gray-600">Harga</p>
+                          <p className="text-xs text-text-muted">Harga</p>
                           <p className="font-bold text-primary text-sm">
                             {formatCurrency(order.totalPrice)}
                           </p>
@@ -125,10 +125,10 @@ export default function AvailableOrdersPage() {
 
                       {/* Commission */}
                       <div className="flex gap-2">
-                        <Zap size={16} className="text-yellow-600 flex-shrink-0 mt-1" />
+                        <Zap size={16} className="text-warning flex-shrink-0 mt-1" />
                         <div>
-                          <p className="text-xs text-gray-600">Komisi (20%)</p>
-                          <p className="font-bold text-yellow-600 text-sm">
+                          <p className="text-xs text-text-muted">Komisi (20%)</p>
+                          <p className="font-bold text-warning text-sm">
                             {formatCurrency(order.totalPrice * 0.2)}
                           </p>
                         </div>
@@ -136,21 +136,21 @@ export default function AvailableOrdersPage() {
                     </div>
 
                     {/* Customer Info */}
-                    <div className="bg-gray-50 rounded p-2">
-                      <p className="text-xs text-gray-600">Penerima</p>
-                      <p className="font-semibold text-gray-800 text-sm">
+                    <div className="bg-bg-alt rounded-md p-2">
+                      <p className="text-xs text-text-muted">Penerima</p>
+                      <p className="font-semibold text-text-primary text-sm">
                         {order.address.recipientName}
                       </p>
-                      <p className="text-xs text-gray-600 mt-1">{order.address.phone}</p>
+                      <p className="text-xs text-text-secondary mt-1">{order.address.phone}</p>
                     </div>
 
                     {/* Claim Button */}
                     <Button
                       onClick={() => handleClaimOrder(order.id)}
                       disabled={isProcessing}
-                      className="w-full bg-gradient-to-r from-primary to-pink-500 hover:shadow-lg transition"
+                      className="w-full"
                     >
-                      {isProcessing ? '⏳ Memproses...' : '🎯 Ambil Order'}
+                      {isProcessing ? 'Memproses...' : 'Ambil Order'}
                     </Button>
                   </div>
                 </Card>

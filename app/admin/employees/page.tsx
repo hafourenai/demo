@@ -5,6 +5,7 @@ import useAppStore from '@/lib/store';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { Card, Button, Badge } from '@/components/common';
 import { formatCurrency } from '@/lib/utils';
+import { Star } from 'lucide-react';
 
 export default function EmployeesPage() {
   const { employees, orders } = useAppStore();
@@ -42,8 +43,8 @@ export default function EmployeesPage() {
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">Manajemen Karyawan</h1>
-            <p className="text-gray-600 mt-1">Total: {employees.length} karyawan</p>
+            <h1 className="text-2xl font-serif font-semibold text-text-primary">Manajemen Karyawan</h1>
+            <p className="text-text-secondary mt-1">Total: {employees.length} karyawan</p>
           </div>
           <Button>+ Tambah Karyawan</Button>
         </div>
@@ -55,38 +56,41 @@ export default function EmployeesPage() {
             placeholder="Cari karyawan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-4 py-3 border border-border rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
         {/* Table */}
         <Card className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-bg-alt border-b border-border">
               <tr>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Nama</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Role</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Rating</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Pekerjaan</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Aktif</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Komisi</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Aksi</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Nama</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Role</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Rating</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Pekerjaan</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Aktif</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Komisi</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-border">
               {filteredEmployees.map((employee) => {
                 const stats = getEmployeeStats(employee.id);
                 return (
-                  <tr key={employee.id} className="hover:bg-gray-50 transition">
-                    <td className="px-4 py-3 font-semibold text-gray-800">{employee.name}</td>
-                    <td className="px-4 py-3 text-gray-600">{employee.role}</td>
+                  <tr key={employee.id} className="hover:bg-bg-alt transition-colors duration-base">
+                    <td className="px-4 py-3 font-semibold text-text-primary">{employee.name}</td>
+                    <td className="px-4 py-3 text-text-secondary">{employee.role}</td>
                     <td className="px-4 py-3">
-                      <span className="font-bold text-gray-800">{employee.rating} ⭐</span>
+                      <span className="font-bold text-text-primary inline-flex items-center gap-1">
+                        {employee.rating}
+                        <Star size={14} className="text-warning fill-warning" />
+                      </span>
                     </td>
                     <td className="px-4 py-3">
                       <div className="text-xs">
-                        <p className="text-gray-800">Total: {stats.total}</p>
-                        <p className="text-green-600">Selesai: {stats.completed}</p>
+                        <p className="text-text-primary">Total: {stats.total}</p>
+                        <p className="text-success">Selesai: {stats.completed}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -94,9 +98,9 @@ export default function EmployeesPage() {
                         {employee.isActive ? 'Aktif' : 'Nonaktif'}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 font-bold text-green-600">{formatCurrency(stats.commission)}</td>
+                    <td className="px-4 py-3 font-bold text-success">{formatCurrency(stats.commission)}</td>
                     <td className="px-4 py-3">
-                      <button className="text-primary hover:underline font-semibold text-sm">Edit</button>
+                      <button className="text-primary hover:text-primary-dark transition-colors duration-base font-semibold text-sm">Edit</button>
                     </td>
                   </tr>
                 );
@@ -107,7 +111,7 @@ export default function EmployeesPage() {
 
         {filteredEmployees.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-600">Tidak ada karyawan ditemukan</p>
+            <p className="text-text-secondary">Tidak ada karyawan ditemukan</p>
           </div>
         )}
       </div>

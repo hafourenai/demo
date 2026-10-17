@@ -4,9 +4,12 @@ import { useState } from 'react';
 import { Edit2, Plus, Trash2, MapPin } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { CustomerLayout } from '@/components/layouts/CustomerLayout';
-import { Card, Button } from '@/components/common';
+import { Card, Button, EmptyState } from '@/components/common';
 import { generateId } from '@/lib/utils';
 import { Address } from '@/lib/types';
+
+const labelText = (label: string) =>
+  label === 'home' ? 'Rumah' : label === 'office' ? 'Kantor' : 'Lainnya';
 
 export default function AccountPage() {
   const { currentUser, customers, updateAddress } = useAppStore();
@@ -22,14 +25,16 @@ export default function AccountPage() {
     phone: currentUser?.phone || '',
   });
 
-  const [addressForm, setAddressForm] = useState<Partial<Address>>({
+  const emptyAddress: Partial<Address> = {
     label: 'home',
     recipientName: '',
     phone: '',
     detail: '',
     notes: '',
     isDefault: false,
-  });
+  };
+
+  const [addressForm, setAddressForm] = useState<Partial<Address>>(emptyAddress);
 
   const handleSaveProfile = () => {
     setEditingProfile(false);
@@ -55,14 +60,7 @@ export default function AccountPage() {
     updateAddress(customer?.id || '', address);
     setAddingAddress(false);
     setEditingAddressId(null);
-    setAddressForm({
-      label: 'home',
-      recipientName: '',
-      phone: '',
-      detail: '',
-      notes: '',
-      isDefault: false,
-    });
+    setAddressForm(emptyAddress);
   };
 
   const handleDeleteAddress = () => {
@@ -77,18 +75,23 @@ export default function AccountPage() {
     setAddingAddress(true);
   };
 
+  const inputClass =
+    'w-full mt-1 p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm';
+
   return (
     <CustomerLayout currentPage="account">
       <div className="px-4 py-4 space-y-4">
-        <h1 className="text-2xl font-bold text-gray-800">Akun Saya</h1>
+        <h1 className="text-2xl font-serif font-bold text-text-primary">Akun Saya</h1>
 
         {/* Profile Section */}
         <Card>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-800">Profil</h3>
+            <h3 className="font-serif font-semibold text-text-primary">Profil</h3>
             <button
               onClick={() => setEditingProfile(!editingProfile)}
-              className="text-primary hover:bg-primary/10 p-2 rounded transition"
+              className="text-primary hover:bg-primary/10 p-2 rounded-md transition-colors duration-base"
+              aria-label="Edit profil"
+              style={{ minHeight: '44px', minWidth: '44px' }}
             >
               <Edit2 size={18} />
             </button>
@@ -97,30 +100,30 @@ export default function AccountPage() {
           {editingProfile ? (
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-semibold text-gray-600">Nama</label>
+                <label className="text-xs font-semibold text-text-secondary">Nama</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full mt-1 p-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  className={inputClass}
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-600">Email</label>
+                <label className="text-xs font-semibold text-text-secondary">Email</label>
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full mt-1 p-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  className={inputClass}
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-600">Nomor HP</label>
+                <label className="text-xs font-semibold text-text-secondary">Nomor HP</label>
                 <input
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full mt-1 p-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  className={inputClass}
                 />
               </div>
               <Button onClick={handleSaveProfile} className="w-full">
@@ -130,16 +133,16 @@ export default function AccountPage() {
           ) : (
             <div className="space-y-2 text-sm">
               <div>
-                <p className="text-gray-600 text-xs font-semibold">Nama</p>
-                <p className="font-semibold text-gray-800 mt-1">{currentUser?.name}</p>
+                <p className="text-text-muted text-xs font-semibold">Nama</p>
+                <p className="font-semibold text-text-primary mt-1">{currentUser?.name}</p>
               </div>
               <div>
-                <p className="text-gray-600 text-xs font-semibold">Email</p>
-                <p className="font-semibold text-gray-800 mt-1">{currentUser?.email}</p>
+                <p className="text-text-muted text-xs font-semibold">Email</p>
+                <p className="font-semibold text-text-primary mt-1">{currentUser?.email}</p>
               </div>
               <div>
-                <p className="text-gray-600 text-xs font-semibold">Nomor HP</p>
-                <p className="font-semibold text-gray-800 mt-1">{currentUser?.phone}</p>
+                <p className="text-text-muted text-xs font-semibold">Nomor HP</p>
+                <p className="font-semibold text-text-primary mt-1">{currentUser?.phone}</p>
               </div>
             </div>
           )}
@@ -148,22 +151,17 @@ export default function AccountPage() {
         {/* Address Section */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-gray-800">Alamat Saya</h3>
+            <h3 className="font-serif font-semibold text-text-primary">Alamat Saya</h3>
             {!addingAddress && customer?.addresses.length! < 3 && (
               <button
                 onClick={() => {
                   setAddingAddress(true);
                   setEditingAddressId(null);
-                  setAddressForm({
-                    label: 'home',
-                    recipientName: '',
-                    phone: '',
-                    detail: '',
-                    notes: '',
-                    isDefault: false,
-                  });
+                  setAddressForm(emptyAddress);
                 }}
-                className="text-primary hover:bg-primary/10 p-2 rounded transition"
+                className="text-primary hover:bg-primary/10 p-2 rounded-md transition-colors duration-base"
+                aria-label="Tambah alamat"
+                style={{ minHeight: '44px', minWidth: '44px' }}
               >
                 <Plus size={18} />
               </button>
@@ -173,11 +171,11 @@ export default function AccountPage() {
           {addingAddress ? (
             <Card className="space-y-3">
               <div>
-                <label className="text-xs font-semibold text-gray-600">Label</label>
+                <label className="text-xs font-semibold text-text-secondary">Label</label>
                 <select
                   value={addressForm.label}
                   onChange={(e) => setAddressForm({ ...addressForm, label: e.target.value as any })}
-                  className="w-full mt-1 p-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  className={inputClass}
                 >
                   <option value="home">Rumah</option>
                   <option value="office">Kantor</option>
@@ -185,40 +183,40 @@ export default function AccountPage() {
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-600">Nama Penerima</label>
+                <label className="text-xs font-semibold text-text-secondary">Nama Penerima</label>
                 <input
                   type="text"
                   value={addressForm.recipientName}
                   onChange={(e) => setAddressForm({ ...addressForm, recipientName: e.target.value })}
-                  className="w-full mt-1 p-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  className={inputClass}
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-600">Nomor HP</label>
+                <label className="text-xs font-semibold text-text-secondary">Nomor HP</label>
                 <input
                   type="tel"
                   value={addressForm.phone}
                   onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
-                  className="w-full mt-1 p-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  className={inputClass}
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-600">Detail Alamat</label>
+                <label className="text-xs font-semibold text-text-secondary">Detail Alamat</label>
                 <textarea
                   value={addressForm.detail}
                   onChange={(e) => setAddressForm({ ...addressForm, detail: e.target.value })}
-                  className="w-full mt-1 p-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  className={inputClass}
                   rows={3}
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-600">Catatan</label>
+                <label className="text-xs font-semibold text-text-secondary">Catatan</label>
                 <input
                   type="text"
                   value={addressForm.notes}
                   onChange={(e) => setAddressForm({ ...addressForm, notes: e.target.value })}
                   placeholder="Contoh: Dekat masjid"
-                  className="w-full mt-1 p-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  className={inputClass}
                 />
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
@@ -228,7 +226,7 @@ export default function AccountPage() {
                   onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
                   className="rounded"
                 />
-                <span className="text-sm text-gray-700">Jadikan alamat utama</span>
+                <span className="text-sm text-text-primary">Jadikan alamat utama</span>
               </label>
               <div className="flex gap-2 pt-2">
                 <Button
@@ -253,37 +251,41 @@ export default function AccountPage() {
                   <div className="flex gap-3 flex-1">
                     <MapPin size={20} className="text-primary flex-shrink-0 mt-1" />
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-800">
-                        {address.label === 'home' ? '🏠 Rumah' : address.label === 'office' ? '🏢 Kantor' : '📍 Lainnya'}
+                      <h4 className="font-serif font-semibold text-text-primary">
+                        {labelText(address.label)}
                         {address.isDefault && (
                           <span className="badge badge-primary text-xs ml-2">Utama</span>
                         )}
                       </h4>
-                      <p className="text-xs text-gray-600 mt-1">{address.detail}</p>
-                      <p className="text-xs text-gray-500 mt-1">{address.recipientName} • {address.phone}</p>
+                      <p className="text-xs text-text-secondary mt-1">{address.detail}</p>
+                      <p className="text-xs text-text-muted mt-1">{address.recipientName} • {address.phone}</p>
                       {address.notes && (
-                        <p className="text-xs text-gray-500 mt-1">Catatan: {address.notes}</p>
+                        <p className="text-xs text-text-muted mt-1">Catatan: {address.notes}</p>
                       )}
                     </div>
                   </div>
                   <div className="flex gap-1 flex-shrink-0">
                     <button
                       onClick={() => handleEditAddress(address)}
-                      className="p-1 hover:bg-gray-100 rounded transition"
+                      className="p-1 hover:bg-bg-alt rounded-md transition-colors duration-base"
+                      aria-label="Edit alamat"
+                      style={{ minHeight: '44px', minWidth: '44px' }}
                     >
-                      <Edit2 size={16} className="text-gray-600" />
+                      <Edit2 size={16} className="text-text-secondary" />
                     </button>
                     <button
                       onClick={() => handleDeleteAddress()}
-                      className="p-1 hover:bg-red-50 rounded transition"
+                      className="p-1 hover:bg-danger/10 rounded-md transition-colors duration-base"
+                      aria-label="Hapus alamat"
+                      style={{ minHeight: '44px', minWidth: '44px' }}
                     >
-                      <Trash2 size={16} className="text-red-600" />
+                      <Trash2 size={16} className="text-danger" />
                     </button>
                   </div>
                 </Card>
               ))}
               {customer?.addresses.length === 0 && (
-                <p className="text-sm text-gray-600 text-center py-4">Belum ada alamat</p>
+                <EmptyState title="Belum ada alamat" description="Tambahkan alamat untuk memesan layanan home service" />
               )}
             </div>
           )}

@@ -21,8 +21,8 @@ export default function CustomersPage() {
     <AdminLayout>
       <div className="p-6 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Manajemen Customer</h1>
-          <p className="text-gray-600 mt-1">Total: {customers.length} customer</p>
+          <h1 className="text-2xl font-serif font-semibold text-text-primary">Manajemen Customer</h1>
+          <p className="text-text-secondary mt-1">Total: {customers.length} customer</p>
         </div>
 
         {/* Search */}
@@ -32,31 +32,31 @@ export default function CustomersPage() {
             placeholder="Cari customer..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-4 py-3 border border-border rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
         {/* Table */}
         <Card className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-bg-alt border-b border-border">
               <tr>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Nama</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Email</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">No. HP</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Terdaftar</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">Aksi</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Nama</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Email</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">No. HP</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Terdaftar</th>
+                <th className="px-4 py-3 text-left font-semibold text-text-primary">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-border">
               {filteredCustomers.map((customer) => (
-                <tr key={customer.id} className="hover:bg-gray-50 transition">
-                  <td className="px-4 py-3 font-semibold text-gray-800">{customer.name}</td>
-                  <td className="px-4 py-3 text-gray-600">{customer.email}</td>
-                  <td className="px-4 py-3 text-gray-600">{customer.phone}</td>
-                  <td className="px-4 py-3 text-gray-600">{formatDate(customer.createdAt)}</td>
+                <tr key={customer.id} className="hover:bg-bg-alt transition-colors duration-base">
+                  <td className="px-4 py-3 font-semibold text-text-primary">{customer.name}</td>
+                  <td className="px-4 py-3 text-text-secondary">{customer.email}</td>
+                  <td className="px-4 py-3 text-text-secondary">{customer.phone}</td>
+                  <td className="px-4 py-3 text-text-secondary">{formatDate(customer.createdAt)}</td>
                   <td className="px-4 py-3">
-                    <button className="text-primary hover:underline font-semibold text-sm">Detail</button>
+                    <button className="text-primary hover:text-primary-dark transition-colors duration-base font-semibold text-sm">Detail</button>
                   </td>
                 </tr>
               ))}
@@ -66,7 +66,7 @@ export default function CustomersPage() {
 
         {filteredCustomers.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-600">Tidak ada customer ditemukan</p>
+            <p className="text-text-secondary">Tidak ada customer ditemukan</p>
           </div>
         )}
       </div>

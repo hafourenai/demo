@@ -130,7 +130,7 @@ function Carousel({
               onClick={() => setIndex(i)}
               aria-label={`Slide ${i + 1}`}
               className={`h-1.5 rounded-full transition-all ${
-                i === index ? `w-6 ${dotColor}` : 'w-1.5 bg-gray-300'
+                i === index ? `w-6 ${dotColor}` : 'w-1.5 bg-text-muted/30'
               }`}
             />
           ))}
