@@ -215,13 +215,13 @@ export default function CustomerDashboard() {
 
           {/* Search */}
           <div className="relative mt-4">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white pointer-events-none z-10" size={20} />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-muted pointer-events-none z-10" size={20} />
             <input
               type="text"
               placeholder="Cari layanan atau produk..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-md bg-white/25 text-white placeholder-white/90 border border-white/40 focus:outline-none focus:ring-2 focus:ring-white/60 backdrop-blur-sm transition-all duration-base"
+              className="w-full pl-12 pr-4 py-3 rounded-md bg-card text-text-primary placeholder-text-muted border border-white focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-base"
             />
           </div>
         </div>

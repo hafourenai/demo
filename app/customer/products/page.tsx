@@ -42,13 +42,13 @@ export default function ProductsPage() {
         <div className="bg-primary text-white px-5 py-6 shadow-md">
           <h2 className="text-2xl font-serif font-bold mb-4">Produk Kecantikan</h2>
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white pointer-events-none z-10" size={20} />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-muted pointer-events-none z-10" size={20} />
             <input
               type="text"
               placeholder="Cari produk..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-md bg-white/25 text-white placeholder-white/90 border border-white/40 focus:outline-none focus:ring-2 focus:ring-white/60 backdrop-blur-sm transition-all duration-base"
+              className="w-full pl-12 pr-4 py-3 rounded-md bg-card text-text-primary placeholder-text-muted border border-white focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-base"
             />
           </div>
         </div>

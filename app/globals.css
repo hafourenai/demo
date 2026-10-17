@@ -265,10 +265,6 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(180, 87, 107, 0.1);
 }
 
-input::placeholder {
-  color: var(--color-text-muted);
-}
-
 /* Skeleton loading */
 @keyframes skeleton-loading {
   0% { background-color: var(--color-border-light); }
