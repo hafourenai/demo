@@ -3,12 +3,12 @@ import { Customer, Employee, Service, Product, Bundle, Promo } from './types';
 
 // Placeholder image generator (offline-friendly, on-brand colors)
 const PALETTE = {
-  hair: 'FF6B9D',
-  skin: 'A78BFA',
-  nail: '06B6D4',
-  makeup: 'F472B6',
-  tools: '8B5CF6',
-  staff: 'A78BFA',
+  hair: 'B4576B',
+  skin: 'A68B5B',
+  nail: 'D4889A',
+  makeup: '8B3F52',
+  tools: 'C9A875',
+  staff: 'A68B5B',
 } as const;
 
 const img = (text: string, color: string = PALETTE.hair, size: number = 500) =>
