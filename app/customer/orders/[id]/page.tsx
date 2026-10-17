@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ArrowLeft, MapPin, Star, MessageCircle } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { CustomerLayout } from '@/components/layouts/CustomerLayout';
-import { Card, Button, Badge } from '@/components/common';
-import { formatCurrency, formatDate, getStatusLabel, getStatusColor } from '@/lib/utils';
+import { Card, Button, StatusBadge } from '@/components/common';
+import { formatCurrency, formatDate, getStatusLabel } from '@/lib/utils';
 import Link from 'next/link';
 import { OrderStatus } from '@/lib/types';
 
@@ -34,14 +34,20 @@ export default function OrderDetailPage({
     return (
       <CustomerLayout currentPage="orders">
         <div className="px-4 py-4">
-          <p>Order not found</p>
+          <p className="text-text-secondary">Pesanan tidak ditemukan</p>
         </div>
       </CustomerLayout>
     );
   }
 
   const employee = order.employeeId ? employees.find((e) => e.id === order.employeeId) : null;
-  const statusColor = getStatusColor(order.status);
+
+  const getStatusForBadge = (status: string): 'active' | 'pending' | 'completed' | 'cancelled' => {
+    if (status === 'completed') return 'completed';
+    if (status === 'cancelled_customer' || status === 'cancelled_admin') return 'cancelled';
+    if (status === 'waiting_employee' || status === 'waiting_confirmation') return 'pending';
+    return 'active';
+  };
 
   const handleCancel = () => {
     if (order.status === 'waiting_employee') {
@@ -73,34 +79,25 @@ export default function OrderDetailPage({
 
   const currentStepIndex = statusSteps.indexOf(order.status);
 
-  // Simulate order progression
-  useEffect(() => {
-    if (order.status === 'waiting_employee' && Math.random() > 0.7) {
-      // Randomly simulate employee claiming order
-    }
-  }, []);
-
   return (
     <CustomerLayout currentPage="orders">
       <div className="px-4 py-4 space-y-4">
         {/* Header */}
-        <Link href="/customer/orders" className="flex items-center gap-2 mb-4">
+        <Link href="/customer/orders" className="flex items-center gap-2 mb-4 text-primary hover:text-primary-dark transition-colors duration-base">
           <ArrowLeft size={24} />
           <span className="font-semibold">Kembali</span>
         </Link>
 
-        <h1 className="text-2xl font-bold text-gray-800">Detail Pesanan</h1>
+        <h1 className="text-2xl font-serif font-bold text-text-primary">Detail Pesanan</h1>
 
         {/* Order Status */}
-        <Card className={`bg-${statusColor}-50 border-${statusColor}-200`}>
+        <Card className="bg-primary/5 border border-primary/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-600">Status Pesanan</p>
-              <p className="font-bold text-lg text-gray-800 mt-1">{getStatusLabel(order.status)}</p>
+              <p className="text-xs text-text-secondary">Status Pesanan</p>
+              <p className="font-bold text-lg text-text-primary mt-1">{getStatusLabel(order.status)}</p>
             </div>
-            <Badge variant={statusColor === 'green' ? 'success' : statusColor === 'red' ? 'danger' : 'warning'}>
-              {getStatusLabel(order.status)}
-            </Badge>
+            <StatusBadge status={getStatusForBadge(order.status)} label={getStatusLabel(order.status)} />
           </div>
         </Card>
 
@@ -110,24 +107,24 @@ export default function OrderDetailPage({
             <div key={step} className="flex gap-3">
               <div className="flex flex-col items-center">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-base ${
                     index <= currentStepIndex
                       ? 'bg-primary text-white'
-                      : 'bg-gray-200 text-gray-600'
+                      : 'bg-border text-text-muted'
                   }`}
                 >
                   {index <= currentStepIndex ? '✓' : index + 1}
                 </div>
                 {index < statusSteps.length - 1 && (
                   <div
-                    className={`w-0.5 h-12 my-1 transition ${
-                      index < currentStepIndex ? 'bg-primary' : 'bg-gray-200'
+                    className={`w-0.5 h-12 my-1 transition-colors duration-base ${
+                      index < currentStepIndex ? 'bg-primary' : 'bg-border'
                     }`}
                   />
                 )}
               </div>
               <div className="pb-3">
-                <p className={`font-semibold ${index <= currentStepIndex ? 'text-gray-800' : 'text-gray-500'}`}>
+                <p className={`font-semibold ${index <= currentStepIndex ? 'text-text-primary' : 'text-text-muted'}`}>
                   {getStatusLabel(step)}
                 </p>
               </div>
@@ -138,24 +135,24 @@ export default function OrderDetailPage({
         {/* Employee Info */}
         {employee && (
           <Card>
-            <h3 className="font-semibold text-gray-800 mb-3">Karyawan Anda</h3>
+            <h3 className="font-serif font-semibold text-text-primary mb-3">Karyawan Anda</h3>
             <div className="flex gap-3">
               <img
                 src={employee.photo || 'https://via.placeholder.com/60'}
                 alt={employee.name}
-                className="w-16 h-16 object-cover rounded-full"
+                className="w-16 h-16 object-cover rounded-md flex-shrink-0"
               />
               <div className="flex-1">
-                <h4 className="font-bold text-gray-800">{employee.name}</h4>
-                <p className="text-xs text-gray-600">{employee.role}</p>
+                <h4 className="font-serif font-semibold text-text-primary">{employee.name}</h4>
+                <p className="text-xs text-text-secondary">{employee.role}</p>
                 <div className="flex items-center gap-1 mt-1">
-                  <Star size={14} className="text-yellow-400 fill-yellow-400" />
-                  <span className="text-xs font-semibold text-gray-800">{employee.rating}</span>
-                  <span className="text-xs text-gray-600">({employee.totalJobs} pekerjaan)</span>
+                  <Star size={14} className="text-warning fill-warning" />
+                  <span className="text-xs font-semibold text-text-primary">{employee.rating}</span>
+                  <span className="text-xs text-text-secondary">({employee.totalJobs} pekerjaan)</span>
                 </div>
               </div>
-              <button className="p-2 hover:bg-gray-100 rounded-full transition">
-                <MessageCircle size={20} className="text-gray-600" />
+              <button className="p-2 hover:bg-bg-alt rounded-md transition-colors duration-base" aria-label="Hubungi karyawan">
+                <MessageCircle size={20} className="text-text-secondary" />
               </button>
             </div>
           </Card>
@@ -163,7 +160,7 @@ export default function OrderDetailPage({
 
         {/* Items */}
         <div>
-          <h3 className="font-semibold text-gray-800 mb-3">Pesanan</h3>
+          <h3 className="font-serif font-semibold text-text-primary mb-3">Pesanan</h3>
           <div className="space-y-2">
             {order.items.map((item) => {
               const service = services.find((s) => s.id === item.itemId);
@@ -177,12 +174,12 @@ export default function OrderDetailPage({
                   <img
                     src={itemData.image}
                     alt={itemData.name}
-                    className="w-16 h-16 object-cover rounded"
+                    className="w-16 h-16 object-cover rounded-md flex-shrink-0"
                   />
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-800 text-sm">{itemData.name}</h4>
+                    <h4 className="font-serif font-semibold text-text-primary text-sm">{itemData.name}</h4>
                     {service && item.variationId && (
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-text-secondary">
                         {service.variations.find((v) => v.id === item.variationId)?.name}
                       </p>
                     )}
@@ -198,51 +195,51 @@ export default function OrderDetailPage({
 
         {/* Delivery Address */}
         <Card>
-          <h3 className="font-semibold text-gray-800 mb-3">Alamat Pengiriman</h3>
+          <h3 className="font-serif font-semibold text-text-primary mb-3">Alamat Pengiriman</h3>
           <div className="flex gap-2">
             <MapPin size={20} className="text-primary flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-gray-800">{order.address.detail}</p>
-              <p className="text-xs text-gray-600 mt-1">{order.address.recipientName}</p>
-              <p className="text-xs text-gray-600">{order.address.phone}</p>
+              <p className="font-semibold text-text-primary">{order.address.detail}</p>
+              <p className="text-xs text-text-secondary mt-1">{order.address.recipientName}</p>
+              <p className="text-xs text-text-secondary">{order.address.phone}</p>
             </div>
           </div>
         </Card>
 
         {/* Price Summary */}
-        <Card className="bg-gray-50 border-gray-300">
+        <Card className="bg-bg-alt border border-border">
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-text-secondary">
               <span>Subtotal</span>
               <span>{formatCurrency(order.totalPrice + order.promoDiscount)}</span>
             </div>
             {order.promoDiscount > 0 && (
-              <div className="flex justify-between text-green-600 font-semibold">
+              <div className="flex justify-between text-success font-semibold">
                 <span>Diskon</span>
                 <span>-{formatCurrency(order.promoDiscount)}</span>
               </div>
             )}
-            <div className="border-t pt-2 flex justify-between font-bold text-lg">
-              <span>Total</span>
+            <div className="border-t border-border pt-2 flex justify-between font-bold text-lg">
+              <span className="text-text-primary">Total</span>
               <span className="text-primary">{formatCurrency(order.totalPrice)}</span>
             </div>
           </div>
         </Card>
 
         {/* Order Meta */}
-        <Card className="bg-gray-50">
+        <Card className="bg-bg-alt">
           <div className="space-y-2 text-xs">
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-text-secondary">
               <span>No. Pesanan</span>
-              <span className="font-mono font-bold text-gray-800">#{order.id.toUpperCase()}</span>
+              <span className="font-mono font-bold text-text-primary">#{order.id.toUpperCase()}</span>
             </div>
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-text-secondary">
               <span>Tanggal Pesan</span>
-              <span className="font-semibold text-gray-800">{formatDate(order.createdAt)}</span>
+              <span className="font-semibold text-text-primary">{formatDate(order.createdAt)}</span>
             </div>
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-text-secondary">
               <span>Metode Pembayaran</span>
-              <span className="font-semibold text-gray-800">
+              <span className="font-semibold text-text-primary">
                 {order.paymentMethod === 'cash' ? 'Cash' : order.paymentMethod === 'qris' ? 'QRIS' : 'Transfer'}
               </span>
             </div>
@@ -258,16 +255,17 @@ export default function OrderDetailPage({
 
         {showRating && (
           <Card>
-            <h3 className="font-semibold text-gray-800 mb-3">Berikan Rating</h3>
+            <h3 className="font-serif font-semibold text-text-primary mb-3">Berikan Rating</h3>
             <div className="space-y-3">
               <div className="flex gap-2 justify-center mb-4">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
                     onClick={() => setRating(star)}
-                    className="text-2xl transition hover:scale-110"
+                    className="text-2xl transition-transform duration-base hover:scale-110"
+                    aria-label={`Rating ${star} bintang`}
                   >
-                    {star <= rating ? '⭐' : '☆'}
+                    {star <= rating ? <Star size={28} className="fill-warning text-warning" /> : <Star size={28} className="text-text-muted" />}
                   </button>
                 ))}
               </div>
@@ -275,7 +273,7 @@ export default function OrderDetailPage({
                 placeholder="Tulis ulasan Anda..."
                 value={review}
                 onChange={(e) => setReview(e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                className="w-full p-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 rows={3}
               />
               <Button className="w-full" onClick={() => setShowRating(false)}>
@@ -290,7 +288,7 @@ export default function OrderDetailPage({
           <Button
             onClick={() => setShowCancelConfirm(true)}
             variant="secondary"
-            className="w-full text-red-600 border-red-200"
+            className="w-full text-danger border-danger/20"
           >
             Batalkan Pesanan
           </Button>
@@ -298,15 +296,15 @@ export default function OrderDetailPage({
 
         {/* Cancel Confirmation */}
         {showCancelConfirm && (
-          <Card className="bg-red-50 border-red-200">
-            <h3 className="font-semibold text-red-800 mb-3">Batalkan Pesanan?</h3>
+          <Card className="bg-danger/5 border border-danger/20">
+            <h3 className="font-serif font-semibold text-danger mb-3">Batalkan Pesanan?</h3>
             {order.status !== 'waiting_employee' && (
               <div className="mb-3">
-                <label className="text-sm text-gray-700 font-semibold">Alasan Pembatalan</label>
+                <label className="text-sm text-text-primary font-semibold">Alasan Pembatalan</label>
                 <select
                   value={cancelReason}
                   onChange={(e) => setCancelReason(e.target.value)}
-                  className="w-full mt-2 p-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                  className="w-full mt-2 p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-danger text-sm"
                 >
                   <option value="">Pilih alasan</option>
                   <option value="wrong_service">Salah memilih layanan</option>
@@ -327,7 +325,7 @@ export default function OrderDetailPage({
               </Button>
               <Button
                 onClick={handleCancel}
-                className="flex-1 bg-red-600 hover:bg-red-700"
+                className="flex-1 bg-danger hover:bg-danger/80"
               >
                 Ya, Batalkan
               </Button>

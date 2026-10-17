@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Star, Briefcase, TrendingUp, Clock } from 'lucide-react';
+import { Star, Briefcase, TrendingUp, Clock, ArrowRight } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { EmployeeLayout } from '@/components/layouts/EmployeeLayout';
 import { Card } from '@/components/common';
@@ -69,13 +69,13 @@ export default function EmployeeDashboard() {
       icon: <Clock size={24} />,
       label: 'Order Aktif',
       value: stats.activeOrders,
-      color: 'secondary',
+      color: 'accent',
     },
     {
       icon: <Star size={24} />,
       label: 'Selesai Hari Ini',
       value: stats.completedToday,
-      color: 'accent',
+      color: 'success',
     },
     {
       icon: <TrendingUp size={24} />,
@@ -90,35 +90,37 @@ export default function EmployeeDashboard() {
       <div className="px-4 py-4 space-y-4">
         {/* Welcome Header */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-serif font-bold text-text-primary">
             Selamat pagi, {employee?.name?.split(' ')[0]}
           </h2>
-          <p className="text-sm text-gray-600 mt-1">{employee?.role}</p>
+          <p className="text-sm text-text-secondary mt-1">{employee?.role}</p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
           {statCards.map((stat, idx) => (
             <Card key={idx} className="flex flex-col items-center justify-center p-4">
-              <div className={`text-primary mb-2`}>{stat.icon}</div>
-              <p className="text-xs text-gray-600 text-center">{stat.label}</p>
-              <p className="font-bold text-lg text-gray-800 mt-1 text-center">{stat.value}</p>
+              <div className={`text-${stat.color} mb-2`}>{stat.icon}</div>
+              <p className="text-xs text-text-secondary text-center">{stat.label}</p>
+              <p className="font-bold text-lg text-text-primary mt-1 text-center">{stat.value}</p>
             </Card>
           ))}
         </div>
 
         {/* Rating Card */}
-        <Card className="bg-gradient-to-r from-primary to-pink-500 text-white">
+        <Card className="bg-primary text-white">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm opacity-90">Rating Anda</p>
               <div className="flex items-center gap-1 mt-1">
                 <span className="text-2xl font-bold">{employee?.rating}</span>
-                <span className="text-xl">⭐</span>
+                <Star size={20} className="fill-accent text-accent" />
               </div>
               <p className="text-xs opacity-75 mt-1">{employee?.totalJobs} pekerjaan selesai</p>
             </div>
-            <div className="text-4xl opacity-20">⭐</div>
+            <div className="text-4xl opacity-20">
+              <Star className="fill-white" />
+            </div>
           </div>
         </Card>
 
@@ -131,22 +133,22 @@ export default function EmployeeDashboard() {
             o.status === 'in_progress'
         ) && (
           <Card className="border-l-4 border-primary">
-            <h3 className="font-semibold text-gray-800 mb-2">Order Aktif</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="font-serif font-semibold text-text-primary mb-2">Order Aktif</h3>
+            <p className="text-sm text-text-secondary">
               Anda memiliki {stats.activeOrders} order yang sedang dikerjakan
             </p>
           </Card>
         )}
 
         {/* Quick Action */}
-        <Card className="bg-gray-50 text-center p-6">
-          <p className="text-sm text-gray-600 mb-3">
+        <Card className="bg-bg-alt text-center p-6">
+          <p className="text-sm text-text-secondary mb-3">
             {stats.availableOrders > 0
               ? `${stats.availableOrders} order baru menunggu Anda`
               : 'Tidak ada order baru saat ini'}
           </p>
-          <a href="/employee/available" className="text-primary font-semibold hover:underline">
-            Lihat Order Tersedia →
+          <a href="/employee/available" className="text-primary font-semibold hover:text-primary-dark transition-colors duration-base inline-flex items-center gap-1">
+            Lihat Order Tersedia <ArrowRight size={16} />
           </a>
         </Card>
 

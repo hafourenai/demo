@@ -46,19 +46,21 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-bg-primary">
       {/* Sidebar */}
       <aside
         className={`${
           sidebarOpen ? 'w-64' : 'w-20'
-        } bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-lg transition-all duration-300 flex flex-col`}
+        } bg-text-primary text-white shadow-lg transition-all duration-300 flex flex-col`}
       >
         {/* Header */}
-        <div className="p-4 border-b border-gray-700 flex items-center justify-between">
-          {sidebarOpen && <h1 className="font-bold text-lg">Salon Admin</h1>}
+        <div className="p-4 border-b border-text-secondary/20 flex items-center justify-between">
+          {sidebarOpen && <h1 className="font-serif font-bold text-lg">Salon Admin</h1>}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1 hover:bg-gray-700 rounded transition"
+            className="p-1 hover:bg-white/10 rounded-md transition-colors duration-base"
+            aria-label="Toggle sidebar"
+            style={{ minHeight: '44px', minWidth: '44px' }}
           >
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -72,10 +74,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 transition rounded-lg mx-2 ${
+                className={`flex items-center gap-3 px-4 py-3 transition-colors duration-base rounded-md mx-2 ${
                   isActive
                     ? 'bg-primary text-white'
-                    : 'text-gray-300 hover:bg-gray-700'
+                    : 'text-white/70 hover:bg-white/10'
                 }`}
               >
                 {item.icon}
@@ -86,10 +88,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         </nav>
 
         {/* Logout */}
-        <div className="p-4 border-t border-gray-700">
+        <div className="p-4 border-t border-text-secondary/20">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 text-gray-300 hover:bg-red-600 rounded-lg transition text-sm font-medium"
+            className="flex items-center gap-3 w-full px-4 py-3 text-white/70 hover:bg-danger/20 hover:text-danger rounded-md transition-colors duration-base text-sm font-medium"
+            style={{ minHeight: '44px' }}
           >
             <LogOut size={20} />
             {sidebarOpen && <span>Logout</span>}
@@ -100,8 +103,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 shadow-sm px-6 py-4">
-          <h2 className="text-xl font-bold text-gray-800">Dashboard Administrator</h2>
+        <div className="bg-card border-b border-border shadow-sm px-6 py-4">
+          <h2 className="text-xl font-semibold text-text-primary font-serif">Dashboard Administrator</h2>
         </div>
 
         {/* Content */}

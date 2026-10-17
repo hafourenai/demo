@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Users, Briefcase, TrendingUp, DollarSign } from 'lucide-react';
+import { Users, Briefcase, TrendingUp, DollarSign, ShoppingBag, Package } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { Card } from '@/components/common';
@@ -47,25 +47,29 @@ export default function AdminDashboard() {
       icon: <Users className="w-6 h-6" />,
       label: 'Total Customer',
       value: kpis.totalCustomers,
-      color: 'blue',
+      bgClass: 'bg-primary/10',
+      iconClass: 'text-primary',
     },
     {
       icon: <Briefcase className="w-6 h-6" />,
       label: 'Total Karyawan',
       value: kpis.totalEmployees,
-      color: 'purple',
+      bgClass: 'bg-accent/10',
+      iconClass: 'text-accent',
     },
     {
       icon: <TrendingUp className="w-6 h-6" />,
       label: 'Karyawan Available',
       value: kpis.availableEmployees,
-      color: 'green',
+      bgClass: 'bg-success/10',
+      iconClass: 'text-success',
     },
     {
       icon: <TrendingUp className="w-6 h-6" />,
       label: 'Karyawan Busy',
       value: kpis.busyEmployees,
-      color: 'orange',
+      bgClass: 'bg-warning/10',
+      iconClass: 'text-warning',
     },
   ];
 
@@ -74,25 +78,29 @@ export default function AdminDashboard() {
       icon: <ShoppingBag className="w-6 h-6" />,
       label: 'Order Hari Ini',
       value: kpis.todayOrdersCount,
-      color: 'indigo',
+      bgClass: 'bg-primary/10',
+      iconClass: 'text-primary',
     },
     {
       icon: <Briefcase className="w-6 h-6" />,
       label: 'Order Berlangsung',
       value: kpis.ongoingOrders,
-      color: 'red',
+      bgClass: 'bg-warning/10',
+      iconClass: 'text-warning',
     },
     {
       icon: <Package className="w-6 h-6" />,
       label: 'Penjualan Produk',
       value: kpis.productSales,
-      color: 'teal',
+      bgClass: 'bg-accent/10',
+      iconClass: 'text-accent',
     },
     {
       icon: <DollarSign className="w-6 h-6" />,
       label: 'Pendapatan Hari Ini',
       value: formatCurrency(kpis.todayRevenue),
-      color: 'emerald',
+      bgClass: 'bg-success/10',
+      iconClass: 'text-success',
     },
   ];
 
@@ -101,16 +109,16 @@ export default function AdminDashboard() {
       <div className="p-6 space-y-6">
         {/* KPI Cards */}
         <div>
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Status Sistem</h2>
+          <h2 className="text-lg font-serif font-semibold text-text-primary mb-4">Status Sistem</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {statCards.map((stat, idx) => (
-              <Card key={idx} className="bg-white">
+              <Card key={idx}>
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm text-gray-600 font-semibold">{stat.label}</p>
-                    <p className={`text-3xl font-bold mt-2 text-${stat.color}-600`}>{stat.value}</p>
+                    <p className="text-sm text-text-secondary font-semibold">{stat.label}</p>
+                    <p className="text-3xl font-bold mt-2 text-text-primary">{stat.value}</p>
                   </div>
-                  <div className={`p-3 bg-${stat.color}-100 rounded-lg text-${stat.color}-600`}>
+                  <div className={`p-3 ${stat.bgClass} rounded-md ${stat.iconClass}`}>
                     {stat.icon}
                   </div>
                 </div>
@@ -121,16 +129,16 @@ export default function AdminDashboard() {
 
         {/* Order Stats */}
         <div>
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Aktivitas Order</h2>
+          <h2 className="text-lg font-serif font-semibold text-text-primary mb-4">Aktivitas Order</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {orderStats.map((stat, idx) => (
-              <Card key={idx} className="bg-white">
+              <Card key={idx}>
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm text-gray-600 font-semibold">{stat.label}</p>
-                    <p className={`text-3xl font-bold mt-2 text-${stat.color}-600`}>{stat.value}</p>
+                    <p className="text-sm text-text-secondary font-semibold">{stat.label}</p>
+                    <p className="text-3xl font-bold mt-2 text-text-primary">{stat.value}</p>
                   </div>
-                  <div className={`p-3 bg-${stat.color}-100 rounded-lg text-${stat.color}-600`}>
+                  <div className={`p-3 ${stat.bgClass} rounded-md ${stat.iconClass}`}>
                     {stat.icon}
                   </div>
                 </div>
@@ -141,38 +149,38 @@ export default function AdminDashboard() {
 
         {/* Recent Orders */}
         <div>
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Order Terbaru</h2>
+          <h2 className="text-lg font-serif font-semibold text-text-primary mb-4">Order Terbaru</h2>
           <Card className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-bg-alt border-b border-border">
                 <tr>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">ID Order</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Customer</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Karyawan</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Total</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Status</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Tanggal</th>
+                  <th className="px-4 py-3 text-left font-semibold text-text-primary">ID Order</th>
+                  <th className="px-4 py-3 text-left font-semibold text-text-primary">Customer</th>
+                  <th className="px-4 py-3 text-left font-semibold text-text-primary">Karyawan</th>
+                  <th className="px-4 py-3 text-left font-semibold text-text-primary">Total</th>
+                  <th className="px-4 py-3 text-left font-semibold text-text-primary">Status</th>
+                  <th className="px-4 py-3 text-left font-semibold text-text-primary">Tanggal</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-border">
                 {todayOrders.slice(0, 10).map((order) => {
                   const customer = customers.find((c) => c.id === order.customerId);
                   const employee = employees.find((e) => e.id === order.employeeId);
 
                   return (
-                    <tr key={order.id} className="hover:bg-gray-50 transition">
-                      <td className="px-4 py-3 font-mono text-xs text-gray-600">
+                    <tr key={order.id} className="hover:bg-bg-alt transition-colors duration-base">
+                      <td className="px-4 py-3 font-mono text-xs text-text-muted">
                         #{order.id.slice(0, 8).toUpperCase()}
                       </td>
-                      <td className="px-4 py-3 text-gray-800">{customer?.name}</td>
-                      <td className="px-4 py-3 text-gray-800">{employee?.name || '-'}</td>
+                      <td className="px-4 py-3 text-text-primary">{customer?.name}</td>
+                      <td className="px-4 py-3 text-text-primary">{employee?.name || '-'}</td>
                       <td className="px-4 py-3 font-bold text-primary">{formatCurrency(order.totalPrice)}</td>
                       <td className="px-4 py-3">
-                        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
+                        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
                           {order.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-600">{formatDate(order.createdAt)}</td>
+                      <td className="px-4 py-3 text-text-secondary">{formatDate(order.createdAt)}</td>
                     </tr>
                   );
                 })}
@@ -183,22 +191,20 @@ export default function AdminDashboard() {
 
         {/* Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-            <h3 className="font-semibold text-blue-900 mb-2">Total Layanan</h3>
-            <p className="text-3xl font-bold text-blue-600">{services.length}</p>
+          <Card className="bg-primary/5 border border-primary/20">
+            <h3 className="font-serif font-semibold text-text-primary mb-2">Total Layanan</h3>
+            <p className="text-3xl font-bold text-primary">{services.length}</p>
           </Card>
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-            <h3 className="font-semibold text-green-900 mb-2">Total Produk</h3>
-            <p className="text-3xl font-bold text-green-600">{products.length}</p>
+          <Card className="bg-success/5 border border-success/20">
+            <h3 className="font-serif font-semibold text-text-primary mb-2">Total Produk</h3>
+            <p className="text-3xl font-bold text-success">{products.length}</p>
           </Card>
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-            <h3 className="font-semibold text-purple-900 mb-2">Total Order (Semua)</h3>
-            <p className="text-3xl font-bold text-purple-600">{orders.length}</p>
+          <Card className="bg-accent/5 border border-accent/20">
+            <h3 className="font-serif font-semibold text-text-primary mb-2">Total Order (Semua)</h3>
+            <p className="text-3xl font-bold text-accent">{orders.length}</p>
           </Card>
         </div>
       </div>
     </AdminLayout>
   );
 }
-
-import { ShoppingBag, Package } from 'lucide-react';

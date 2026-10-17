@@ -31,17 +31,19 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
   ];
 
   return (
-    <div className="flex justify-center min-h-screen bg-gray-100">
+    <div className="flex justify-center min-h-screen bg-bg-primary">
       <MobileFrame>
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+        <header className="sticky top-0 z-40 bg-card border-b border-border px-4 py-3 flex items-center justify-between shadow-sm">
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-gray-800">Salon & Beauty</h1>
-            <p className="text-xs text-gray-500">Employee • {currentUser?.name}</p>
+            <h1 className="text-lg font-semibold text-text-primary font-serif">Salon & Beauty</h1>
+            <p className="text-xs text-text-muted">Employee • {currentUser?.name}</p>
           </div>
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition"
+            className="p-2 hover:bg-bg-alt rounded-md transition-colors duration-base"
+            aria-label="Toggle menu"
+            style={{ minHeight: '44px', minWidth: '44px' }}
           >
             {showMenu ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -49,16 +51,16 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
 
         {/* Mobile Menu */}
         {showMenu && (
-          <div className="bg-white border-b border-gray-200 p-4 space-y-2">
+          <div className="bg-card border-b border-border p-4 space-y-2">
             <Link
               href="/employee/account"
-              className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-lg"
+              className="block px-4 py-2 text-text-primary hover:bg-bg-alt rounded-md transition-colors duration-base"
             >
               Profile
             </Link>
             <button
               onClick={handleLogout}
-              className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2"
+              className="w-full text-left px-4 py-2 text-danger hover:bg-danger/10 rounded-md transition-colors duration-base flex items-center gap-2"
             >
               <LogOut size={18} /> Logout
             </button>
