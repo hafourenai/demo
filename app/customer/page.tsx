@@ -5,6 +5,7 @@ import { Bell, MapPin, Star, Search, Clock, Users } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { CustomerLayout } from '@/components/layouts/CustomerLayout';
 import { SectionHeader } from '@/components/common';
+import { ServiceImage } from '@/components/ServiceImage';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -312,7 +313,7 @@ export default function CustomerDashboard() {
                 return (
                   <Link href={`/customer/services/${slide.id.replace('svc-', '')}`} draggable={false}>
                     <div className="bg-card rounded-md overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                      <img src={slide.image} alt={slide.name} className="w-full h-40 object-cover" />
+                      <ServiceImage src={slide.image} alt={slide.name} category="Home Service" />
                       <div className="p-3">
                         <h4 className="font-semibold text-text-primary text-sm">{slide.name}</h4>
                         <div className="flex items-center justify-between mt-2">
@@ -339,7 +340,7 @@ export default function CustomerDashboard() {
                 <Link key={service.id} href={`/customer/services/${service.id}`}>
                   <div className="bg-card rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-border">
                     <div className="flex gap-3 p-3">
-                      <img src={service.image} alt={service.name} className="w-24 h-24 object-cover rounded-md flex-shrink-0" />
+                      <ServiceImage src={service.image} alt={service.name} category={service.category} className="w-24 h-24 object-cover rounded-md flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <h4 className="font-serif font-semibold text-text-primary text-sm">{service.name}</h4>
                         <p className="text-xs text-text-secondary mt-1 line-clamp-2">{service.description}</p>

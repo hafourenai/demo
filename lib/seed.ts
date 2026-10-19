@@ -1,13 +1,13 @@
 // Seed data untuk demo aplikasi - Home Service Marketplace
 import { Customer, Employee, Service, Product, Bundle, Promo } from './types';
-import { generateAvatarDataUri } from './avatars';
+import { generateAvatarUrl } from './avatars';
 
 // Local image paths
 const IMAGES = {
   services: (id: string) => `/images/services/${id}.jpg`,
   products: (id: string) => `/images/products/${id}.jpg`,
   bundles: (id: string) => `/images/bundles/${id}.jpg`,
-  staff: (name: string) => generateAvatarDataUri(name, 'A68B5B'),
+  staff: (name: string) => generateAvatarUrl(name, '#A68B5B'),
 } as const;
 
 // 4 Employees: 2 Home Cleaning experts + 2 Nail Art experts
