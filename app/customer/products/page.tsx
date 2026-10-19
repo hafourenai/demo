@@ -39,12 +39,20 @@ export default function ProductsPage() {
     <CustomerLayout currentPage="products">
       <div className="pb-8">
         {/* Search Header */}
-        <div className="bg-primary text-white px-5 py-6 shadow-md">
-          <h2 className="text-2xl font-serif font-bold mb-4">Produk Kecantikan</h2>
-          <div className="relative">
+        <div className="relative isolate overflow-hidden bg-primary-dark text-white px-5 py-8 sm:py-12 shadow-md">
+          <img
+            src="/images/products/prod1.jpg"
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-[center_55%] opacity-50"
+          />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-r from-primary-dark/60 via-primary-dark/20 to-transparent" />
+          <h2 className="relative z-10 text-white text-2xl font-serif font-bold mb-4">Produk Kecantikan</h2>
+          <div className="relative z-10">
             <input
               type="text"
               placeholder="Cari produk..."
+              aria-label="Cari produk"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-4 pr-4 py-3 rounded-md bg-card text-text-primary placeholder-text-muted border border-white focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-base"
@@ -83,7 +91,7 @@ export default function ProductsPage() {
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
               <Link key={product.id} href={`/customer/products/${product.id}`}>
                 <Card className="cursor-pointer hover:shadow-md transition-shadow duration-base h-full flex flex-col">

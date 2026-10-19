@@ -28,6 +28,8 @@ interface AppState {
   isAuthenticated: boolean;
   login: (user: User) => void;
   logout: () => void;
+  updateProfile: (profile: Pick<User, 'name' | 'email' | 'phone'>) => void;
+  deleteAddress: (customerId: string, addressId: string) => void;
 
   // Data
   employees: Employee[];
@@ -73,7 +75,8 @@ const useAppStore = create<AppState>()(
       isAuthenticated: false,
 
       login: (user: User) => {
-        set({ currentUser: user, isAuthenticated: true });
+        const savedCustomer = get().customers.find(c => c.id === user.id);
+        set({ currentUser: user.role === 'customer' && savedCustomer ? savedCustomer : user, isAuthenticated: true });
       },
 
       logout: () => {
@@ -81,6 +84,18 @@ const useAppStore = create<AppState>()(
       },
 
       // Data initialization
+      updateProfile: (profile) => set((state) => ({
+        currentUser: state.currentUser ? { ...state.currentUser, ...profile } : null,
+        customers: state.customers.map(c => c.id === state.currentUser?.id ? { ...c, ...profile } : c),
+      })),
+      deleteAddress: (customerId, addressId) => set(state => ({
+        customers: state.customers.map(c => {
+          if (c.id !== customerId) return c;
+          const addresses = c.addresses.filter(a => a.id !== addressId);
+          if (addresses.length && !addresses.some(a => a.isDefault)) addresses[0] = { ...addresses[0], isDefault: true };
+          return { ...c, addresses };
+        }),
+      })),
       employees: seedEmployees,
       services: seedServices,
       products: seedProducts,
@@ -220,8 +235,8 @@ const useAppStore = create<AppState>()(
               ? {
                   ...customer,
                   addresses: customer.addresses.some((a) => a.id === address.id)
-                    ? customer.addresses.map((a) => (a.id === address.id ? address : a))
-                    : [...customer.addresses, address],
+                    ? customer.addresses.map((a) => (a.id === address.id ? { ...address, isDefault: address.isDefault || (a.isDefault && !customer.addresses.some(other => other.id !== a.id && other.isDefault)) } : address.isDefault ? { ...a, isDefault: false } : a))
+                    : [...customer.addresses.map(a => address.isDefault ? { ...a, isDefault: false } : a), { ...address, isDefault: address.isDefault || customer.addresses.length === 0 }],
                 }
               : customer
           ),

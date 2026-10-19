@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Star } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { CustomerLayout } from '@/components/layouts/CustomerLayout';
@@ -12,6 +12,11 @@ export default function ServicesPage() {
   const { services } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setSearchQuery(params.get('q') || '');
+    setSelectedCategory(params.get('category'));
+  }, []);
 
   const categories = Array.from(new Set(services.map((s) => s.category)));
 
@@ -23,18 +28,26 @@ export default function ServicesPage() {
       const matchesCategory = !selectedCategory || service.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, services]);
 
   return (
     <CustomerLayout currentPage="services">
       <div className="pb-8">
         {/* Search Header */}
-        <div className="bg-primary text-white px-5 py-6 shadow-md">
-          <h2 className="text-2xl font-serif font-bold mb-4">Layanan Kami</h2>
+        <div className="relative isolate overflow-hidden bg-primary-dark text-white px-5 py-8 sm:py-12 shadow-md">
+          <img
+            src="/images/hero/spa-treatment.jpg"
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover object-[center_45%] opacity-50 mix-blend-luminosity"
+          />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-primary-dark/80 via-primary-dark/40 to-transparent" />
+          <h2 className="relative text-white text-2xl font-serif font-bold mb-4">Layanan Kami</h2>
           <div className="relative">
             <input
               type="text"
               placeholder="Cari layanan..."
+              aria-label="Cari layanan"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-4 pr-4 py-3 rounded-md bg-card text-text-primary placeholder-text-muted border border-white focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-base"
@@ -73,20 +86,20 @@ export default function ServicesPage() {
           </div>
 
           {/* Services List */}
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredServices.map((service) => (
               <Link key={service.id} href={`/customer/services/${service.id}`}>
-                <Card className="cursor-pointer hover:shadow-md transition-shadow duration-base overflow-hidden">
+                <Card className="h-full cursor-pointer hover:shadow-md transition-shadow duration-base overflow-hidden">
                   <div className="flex gap-3">
                     <img
                       src={service.image}
                       alt={service.name}
                       className="w-24 h-24 object-cover rounded-md flex-shrink-0"
                     />
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col items-start gap-2">
                         <div>
-                          <h4 className="font-serif font-semibold text-text-primary">{service.name}</h4>
+                          <h4 className="text-base font-serif font-semibold text-text-primary">{service.name}</h4>
                           <p className="text-xs text-text-secondary mt-1 line-clamp-2">{service.description}</p>
                         </div>
                         <span className="badge badge-primary text-xs flex-shrink-0">{service.category}</span>
