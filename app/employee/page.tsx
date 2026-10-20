@@ -1,158 +1,218 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Star, Briefcase, TrendingUp, Clock, ArrowRight } from 'lucide-react';
+import { useMemo } from 'react';
+import {
+  ArrowRight,
+  ShieldCheck,
+  Percent,
+} from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { EmployeeLayout } from '@/components/layouts/EmployeeLayout';
-import { Card } from '@/components/common';
 import { formatCurrency } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function EmployeeDashboard() {
-  const { currentUser, orders, employees } = useAppStore();
-  const [stats, setStats] = useState({
-    availableOrders: 0,
-    activeOrders: 0,
-    completedToday: 0,
-    commissionToday: 0,
-  });
+  const { currentUser, cleaningOrders, employees } = useAppStore();
 
-  const employee = employees.find((e) => e.id === currentUser?.id);
-  const employeeOrders = orders.filter((o) => o.employeeId === currentUser?.id);
+  const employee = employees.find((e) => e.id === currentUser?.id) || employees[0];
 
-  useEffect(() => {
-    const today = new Date().toDateString();
-    const todayOrders = employeeOrders.filter(
-      (o) => new Date(o.createdAt).toDateString() === today
+  // Available orders for employee based on skill & searching status
+  const availableOrders = useMemo(() => {
+    return cleaningOrders.filter(
+      (o) =>
+        o.status === 'searching_employee' &&
+        (!employee?.skills || employee.skills.length === 0 || employee.skills.includes(o.serviceName))
     );
+  }, [cleaningOrders, employee]);
 
-    const available = orders.filter(
+  // Current active job for this employee
+  const activeOrder = useMemo(() => {
+    return cleaningOrders.find(
       (o) =>
-        o.status === 'waiting_employee' &&
-        employee?.skills.some(() =>
-          o.items.some(
-            (item) =>
-              orders
-                .find((ord) => ord.items.some((i) => i.itemId === item.itemId))
-                ?.items.some((i) => i.itemId === item.itemId)
-          )
-        )
-    ).length;
+        o.employeeId === employee?.id &&
+        ['assigned', 'on_the_way', 'arrived', 'in_service'].includes(o.status)
+    );
+  }, [cleaningOrders, employee]);
 
-    const active = employeeOrders.filter(
-      (o) =>
-        o.status === 'accepted' ||
-        o.status === 'going_to_location' ||
-        o.status === 'arrived' ||
-        o.status === 'in_progress'
-    ).length;
-
-    const completed = todayOrders.filter((o) => o.status === 'completed').length;
-
-    const commission = todayOrders.reduce((sum, order) => sum + order.totalPrice * 0.2, 0);
-
-    setStats({
-      availableOrders: available,
-      activeOrders: active,
-      completedToday: completed,
-      commissionToday: commission,
-    });
-  }, [orders, employee, employeeOrders, currentUser?.id]);
-
-  const statCards = [
-    {
-      icon: <Briefcase size={24} />,
-      label: 'Order Tersedia',
-      value: stats.availableOrders,
-      iconClass: 'text-primary',
-    },
-    {
-      icon: <Clock size={24} />,
-      label: 'Order Aktif',
-      value: stats.activeOrders,
-      iconClass: 'text-accent',
-    },
-    {
-      icon: <Star size={24} />,
-      label: 'Selesai Hari Ini',
-      value: stats.completedToday,
-      iconClass: 'text-success',
-    },
-    {
-      icon: <TrendingUp size={24} />,
-      label: 'Komisi Hari Ini',
-      value: formatCurrency(stats.commissionToday),
-      iconClass: 'text-primary',
-    },
-  ];
+  const grossToday = employee?.grossRevenueToday || 350000;
+  const grossMonth = employee?.grossRevenueMonth || 10000000;
+  const settlementRate = employee?.settlementRate || 3.0;
+  const settlementDue = Math.round(grossMonth * (settlementRate / 100));
+  const estimatedNet = grossMonth - settlementDue;
 
   return (
     <EmployeeLayout currentPage="home">
-      <div className="px-4 py-4 space-y-4">
-        {/* Welcome Header */}
-        <div>
-          <h2 className="text-2xl font-serif font-bold text-text-primary">
-            Selamat pagi, {employee?.name?.split(' ')[0]}
-          </h2>
-          <p className="text-sm text-text-secondary mt-1">{employee?.role}</p>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          {statCards.map((stat, idx) => (
-            <Card key={idx} className="flex flex-col items-center justify-center p-4">
-              <div className={`${stat.iconClass} mb-2`}>{stat.icon}</div>
-              <p className="text-xs text-text-secondary text-center">{stat.label}</p>
-              <p className="font-bold text-lg text-text-primary mt-1 text-center">{stat.value}</p>
-            </Card>
-          ))}
-        </div>
-
-        {/* Rating Card */}
-        <Card className="bg-primary text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm opacity-90">Rating Anda</p>
-              <div className="flex items-center gap-1 mt-1">
-                <span className="text-2xl font-bold">{employee?.rating}</span>
-                <Star size={20} className="fill-accent text-accent" />
-              </div>
-              <p className="text-xs opacity-75 mt-1">{employee?.totalJobs} pekerjaan selesai</p>
-            </div>
-            <div className="text-4xl opacity-20">
-              <Star className="fill-white" />
-            </div>
+      <div className="customer-page space-y-4">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-800 text-white rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-white/80 flex items-center gap-1.5">
+              <ShieldCheck size={14} /> Partner Cleaning Terverifikasi
+            </span>
+            <span className="text-xs bg-white/20 px-2.5 py-0.5 rounded-full font-bold">
+              ★ {employee?.rating || 4.9}
+            </span>
           </div>
-        </Card>
+          <h1 className="text-xl font-serif font-bold">
+            Halo, {employee?.name} 👋
+          </h1>
+          <p className="text-xs text-white/85 mt-0.5">
+            {employee?.specialization || 'Home Cleaning Specialist'} • 100% Gross Revenue
+          </p>
 
-        {/* Active Order */}
-        {employeeOrders.some(
-          (o) =>
-            o.status === 'accepted' ||
-            o.status === 'going_to_location' ||
-            o.status === 'arrived' ||
-            o.status === 'in_progress'
-        ) && (
-          <Card className="border-l-4 border-primary">
-            <h3 className="font-serif font-semibold text-text-primary mb-2">Order Aktif</h3>
-            <p className="text-sm text-text-secondary">
-              Anda memiliki {stats.activeOrders} order yang sedang dikerjakan
-            </p>
-          </Card>
+          <div className="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs">
+            <span>Status Kemitraan:</span>
+            <span className="font-bold bg-white text-emerald-800 px-2 py-0.5 rounded-full text-[11px]">
+              Aktif Bekerja
+            </span>
+          </div>
+        </div>
+
+        {/* Active Job Alert Card */}
+        {activeOrder ? (
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 p-4 rounded-2xl shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white px-2 py-0.5 rounded-full animate-pulse">
+                PEKERJAAN AKTIF
+              </span>
+              <span className="font-mono text-xs font-bold text-blue-900">
+                {activeOrder.invoiceNumber}
+              </span>
+            </div>
+
+            <div>
+              <h3 className="font-bold text-sm text-text-primary">
+                {activeOrder.serviceName} ({activeOrder.propertyDetails.buildingSize} m²)
+              </h3>
+              <p className="text-xs text-text-secondary mt-0.5">
+                Alamat: {activeOrder.address.detail}
+              </p>
+              <div className="mt-2 text-xs font-semibold text-blue-700">
+                Status saat ini: {activeOrder.status.replace('_', ' ').toUpperCase()}
+              </div>
+            </div>
+
+            <Link
+              href="/employee/active"
+              className="w-full py-2.5 px-4 bg-blue-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-blue-700 transition-colors shadow-sm"
+            >
+              Lanjutkan Pekerjaan Ini <ArrowRight size={14} />
+            </Link>
+          </div>
+        ) : (
+          <div className="bg-white p-3.5 rounded-2xl border border-border flex items-center justify-between">
+            <div>
+              <p className="font-bold text-xs text-text-primary">Tidak Ada Pekerjaan Berjalan</p>
+              <p className="text-[11px] text-text-secondary">
+                {availableOrders.length} order baru sedang mencari partner.
+              </p>
+            </div>
+            {availableOrders.length > 0 && (
+              <Link
+                href="/employee/available"
+                className="py-1.5 px-3 bg-primary text-white rounded-xl text-xs font-semibold shadow-sm"
+              >
+                Ambil Order
+              </Link>
+            )}
+          </div>
         )}
 
-        {/* Quick Action */}
-        <Card className="bg-canvas-alt text-center p-6">
-          <p className="text-sm text-text-secondary mb-3">
-            {stats.availableOrders > 0
-              ? `${stats.availableOrders} order baru menunggu Anda`
-              : 'Tidak ada order baru saat ini'}
-          </p>
-          <a href="/employee/available" className="text-primary font-semibold hover:text-primary-dark transition-colors duration-base inline-flex items-center gap-1">
-            Lihat Order Tersedia <ArrowRight size={16} />
-          </a>
-        </Card>
+        {/* Financial Summary Card (PRD Section 58) */}
+        <div className="bg-white p-4 rounded-2xl border border-border space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-text-primary">
+              Ringkasan Finansial &amp; Setoran (Settlement)
+            </h2>
+            <Link href="/employee/history" className="text-xs font-semibold text-emerald-700 hover:underline">
+              Detail &gt;
+            </Link>
+          </div>
 
-        <div className="h-8" />
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="p-3 rounded-xl bg-canvas border border-border">
+              <span className="text-[10px] text-text-muted block">Gross Hari Ini</span>
+              <p className="font-bold text-sm text-text-primary mt-0.5">
+                {formatCurrency(grossToday)}
+              </p>
+              <span className="text-[9px] text-emerald-600 font-semibold block mt-1">
+                100% Masuk ke Anda
+              </span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-canvas border border-border">
+              <span className="text-[10px] text-text-muted block">Gross Bulan Ini</span>
+              <p className="font-bold text-sm text-text-primary mt-0.5">
+                {formatCurrency(grossMonth)}
+              </p>
+              <span className="text-[9px] text-text-muted block mt-1">
+                Total bruto berjalan
+              </span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-amber-900 font-semibold block">Kewajiban Setoran ({settlementRate}%)</span>
+                <Percent size={12} className="text-amber-700" />
+              </div>
+              <p className="font-bold text-sm text-amber-900 mt-0.5">
+                {formatCurrency(settlementDue)}
+              </p>
+              <span className="text-[9px] text-amber-700 block mt-1">
+                Disetor ke perusahaan
+              </span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+              <span className="text-[10px] text-emerald-900 font-semibold block">Estimasi Net Bersih</span>
+              <p className="font-bold text-sm text-emerald-900 mt-0.5">
+                {formatCurrency(estimatedNet)}
+              </p>
+              <span className="text-[9px] text-emerald-700 block mt-1">
+                Setelah setoran 3%
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions Shortcuts */}
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            href="/employee/available"
+            className="p-4 rounded-2xl bg-white border border-border shadow-sm hover:border-primary transition-all flex flex-col justify-between"
+          >
+            <div>
+              <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-2 font-bold">
+                {availableOrders.length}
+              </div>
+              <h3 className="font-bold text-xs text-text-primary">Order Tersedia</h3>
+              <p className="text-[11px] text-text-secondary mt-0.5">
+                Ambil order secepatnya
+              </p>
+            </div>
+            <span className="text-xs font-semibold text-primary mt-3 flex items-center gap-1">
+              Buka Order <ArrowRight size={13} />
+            </span>
+          </Link>
+
+          <Link
+            href="/employee/account"
+            className="p-4 rounded-2xl bg-white border border-border shadow-sm hover:border-emerald-600 transition-all flex flex-col justify-between"
+          >
+            <div>
+              <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-2 font-bold">
+                💳
+              </div>
+              <h3 className="font-bold text-xs text-text-primary">Rekening &amp; QRIS</h3>
+              <p className="text-[11px] text-text-secondary mt-0.5">
+                {employee?.paymentProfile?.bankName} ({employee?.paymentProfile?.bankAccountNumber})
+              </p>
+            </div>
+            <span className="text-xs font-semibold text-emerald-700 mt-3 flex items-center gap-1">
+              Kelola <ArrowRight size={13} />
+            </span>
+          </Link>
+        </div>
       </div>
     </EmployeeLayout>
   );

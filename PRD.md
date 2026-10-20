@@ -1,316 +1,215 @@
-# PRODUCT REQUIREMENTS DOCUMENT (PRD)
+# PRODUCT REQUIREMENTS DOCUMENT (PRD) V2
 
-## Aplikasi Home Service Salon & Beauty Commerce
+## Home Cleaning & Nail Art Commerce Platform
 
-**Versi:** 1.0  
-**Status:** Draft untuk Demo / MVP  
-**Platform Demo:** Mobile-First Web Application  
-**Deployment Rekomendasi:** Vercel  
-**Target Device Utama:** Smartphone  
-**Role Utama:** Customer, Karyawan, Administrator / Owner  
+**Versi:** 2.0  
+**Status:** Production-Ready Requirement  
+**Platform:** Customer Mobile App, Employee Mobile App, Admin Web  
+**Target Utama:** Android  
+**Admin Platform:** Web Dashboard  
+**Primary Business:** Home Cleaning Service  
+**Secondary Business:** Nail Art Product Commerce
 
 ---
 
 # 1. Product Overview
 
-Aplikasi ini merupakan platform digital untuk layanan salon berbasis home service yang memungkinkan customer memesan layanan kecantikan ke rumah, membeli produk kecantikan, serta memantau status pesanan melalui satu aplikasi.
+Aplikasi merupakan platform layanan **home cleaning on-demand** dan **e-commerce produk Nail Art**.
 
-Selain melayani customer, aplikasi juga memiliki sistem operasional untuk karyawan salon. Ketika terdapat permintaan home service, sistem akan mendistribusikan informasi order secara realtime kepada karyawan yang memenuhi syarat berdasarkan jenis skill dan jarak.
+Sistem terdiri dari tiga aplikasi utama:
 
-Karyawan yang paling cepat mengambil order akan mendapatkan pekerjaan tersebut.
+1. **Customer App**
+2. **Employee App**
+3. **Admin Web Dashboard**
 
-Administrator atau Owner memiliki akses ke dashboard khusus untuk melakukan monitoring terhadap customer, karyawan, produk, layanan, promo, transaksi, serta aktivitas operasional aplikasi.
+Customer dapat memesan layanan home cleaning berdasarkan ukuran rumah, lokasi, jadwal, serta tambahan layanan tertentu.
 
-Versi awal aplikasi dibuat sebagai **demo berbasis web yang dirancang mobile-first**, sehingga ketika diakses melalui smartphone memiliki tampilan dan pengalaman seperti aplikasi mobile.
+Order home cleaning akan dikirim secara realtime kepada employee yang memenuhi kriteria.
 
----
+Employee yang paling cepat mengambil order akan memperoleh pekerjaan tersebut.
 
-# 2. Tujuan Produk
+Setelah order diterima, customer dapat melihat informasi employee dan melakukan **live tracking posisi employee selama perjalanan menuju lokasi customer**.
 
-Tujuan utama produk adalah menyediakan satu platform yang mampu:
+Selain layanan cleaning, Customer App menyediakan katalog produk Nail Art dalam beberapa kategori dengan pola transaksi seperti marketplace/e-commerce.
 
-1. Mempermudah customer memesan layanan salon ke rumah.
-2. Mempermudah customer membeli produk kecantikan.
-3. Mempercepat proses distribusi order kepada karyawan.
-4. Memberikan sistem monitoring kepada administrator.
-5. Memberikan pengalaman pemesanan yang cepat dan sederhana.
-6. Menyediakan sistem realtime untuk proses perebutan order karyawan.
-7. Memberikan transparansi status pemesanan kepada customer.
-8. Menjadi prototype atau demo awal sebelum dikembangkan menjadi aplikasi production.
+Seluruh sistem terhubung menggunakan backend, database, authentication, payment record, notification, location service, dan realtime communication yang sama.
 
 ---
 
-# 3. Target User
+# 2. Product Objective
 
-Aplikasi memiliki tiga kelompok pengguna utama.
+Tujuan aplikasi adalah:
 
-## 3.1 Customer
+1. Mempermudah customer memesan layanan home cleaning.
+2. Memberikan transparansi harga cleaning.
+3. Menghitung harga berdasarkan ukuran rumah dan jarak.
+4. Mendistribusikan order secara realtime kepada employee.
+5. Memungkinkan customer melakukan live tracking employee.
+6. Mendukung pembayaran langsung kepada employee.
+7. Mencatat pendapatan employee secara otomatis.
+8. Menghitung kewajiban setoran employee kepada perusahaan.
+9. Mempermudah perusahaan memonitor operasional.
+10. Menyediakan marketplace produk Nail Art.
+11. Memberikan transparansi transaksi melalui invoice.
+12. Menyediakan sistem yang dapat dikembangkan menjadi layanan multi-area dan multi-branch.
 
-Customer merupakan pengguna utama aplikasi yang melakukan pemesanan layanan dan pembelian produk.
+---
 
-Customer dapat:
+# 3. System Architecture Overview
 
-- Membuat akun.
-- Login menggunakan nomor HP dan OTP.
-- Login menggunakan akun Gmail.
-- Mengatur profil.
-- Menyimpan maksimal 3 alamat.
-- Melihat layanan.
-- Membeli produk.
-- Menambahkan produk ke wishlist.
-- Menambahkan produk ke keranjang.
-- Memesan layanan home service.
-- Memesan layanan sekarang.
-- Menjadwalkan layanan.
-- Membeli bundle layanan dan produk.
-- Menggunakan promo.
-- Melakukan pembayaran simulasi.
-- Membatalkan pesanan.
-- Melihat status order.
-- Melihat informasi karyawan.
-- Memberikan rating dan review.
-- Melihat history transaksi.
+Sistem terdiri dari:
+
+## 3.1 Customer App
+
+Aplikasi Android yang digunakan customer untuk:
+
+- Memesan cleaning.
+- Membeli Nail Art.
+- Melakukan pembayaran.
+- Live tracking employee.
+- Mengelola alamat.
+- Melihat transaksi.
+- Memberikan rating.
+- Melihat invoice.
+
+---
+
+## 3.2 Employee App
+
+Aplikasi Android khusus employee cleaning.
+
+Digunakan untuk:
+
+- Menerima order.
+- Mengambil order.
+- Navigasi menuju customer.
+- Mengirim lokasi realtime.
+- Mengubah status pekerjaan.
+- Upload foto before/after.
+- Mengelola pembayaran.
+- Melihat pendapatan.
+- Melihat kewajiban settlement.
+- Melihat rating.
+
+---
+
+## 3.3 Admin Web
+
+Digunakan Administrator / Owner untuk:
+
+- Monitoring order.
+- Monitoring employee.
+- Mengatur customer.
+- Mengatur harga.
+- Mengatur employee.
+- Mengatur katalog Nail Art.
+- Mengatur stok.
+- Mengatur promo.
+- Monitoring pembayaran.
+- Monitoring settlement.
+- Melihat laporan.
+- Mengelola seluruh konfigurasi sistem.
 
 ---
 
 # 4. User Roles
 
+Sistem memiliki tiga role utama.
+
 ## 4.1 Customer
 
-Customer merupakan pengguna yang menggunakan aplikasi untuk melakukan transaksi.
+Customer merupakan pengguna yang:
 
-Hak akses utama:
-
-- Mengakses dashboard customer.
-- Mengelola profil.
-- Mengelola alamat.
-- Melihat layanan.
-- Melihat produk.
-- Melakukan pemesanan.
-- Membatalkan pemesanan.
+- Memesan home cleaning.
+- Membeli produk Nail Art.
 - Melakukan checkout.
-- Menggunakan voucher.
-- Melihat status pesanan.
-- Memberikan review.
+- Melakukan pembayaran.
+- Melacak employee.
+- Memberikan rating dan review.
 
 ---
 
-## 4.2 Karyawan
+## 4.2 Employee
 
-Karyawan merupakan pekerja salon yang dapat menerima order home service.
+Employee hanya menangani **Home Cleaning**.
 
-Karyawan tidak dapat melakukan registrasi secara mandiri.
+Employee tidak menangani Nail Art.
 
-Akun hanya dapat dibuat melalui administrator setelah calon karyawan melakukan proses pendaftaran atau verifikasi secara langsung melalui head office.
+Akun Employee hanya dapat dibuat oleh Administrator.
 
-Karyawan memiliki:
+Employee tidak dapat melakukan registrasi mandiri.
+
+Employee memiliki:
 
 - Nama.
+- Foto.
 - Nomor HP.
 - Email.
-- Foto profil.
-- Role pekerjaan.
-- Skill.
+- Alamat.
 - Rating.
-- Jumlah pekerjaan.
-- History pekerjaan.
-- Informasi komisi.
-
-Contoh role karyawan:
-
-- Hair Stylist.
-- Nail Artist.
-- Makeup Artist.
-- Beautician.
-
-Seorang karyawan dapat memiliki lebih dari satu skill.
+- Skill.
+- Riwayat pekerjaan.
+- Pendapatan.
+- Rekening bank.
+- QRIS.
+- Status pembayaran.
+- Status settlement.
 
 ---
 
 ## 4.3 Administrator / Owner
 
-Administrator merupakan role dengan akses tertinggi.
-
-Administrator dapat:
-
-- Melihat seluruh aktivitas sistem.
-- Mengelola customer.
-- Mengelola karyawan.
-- Membuat akun karyawan.
-- Mengatur role karyawan.
-- Mengatur skill karyawan.
-- Mengatur layanan.
-- Mengatur variasi layanan.
-- Mengatur bundle.
-- Mengelola produk.
-- Mengatur stok.
-- Mengatur promo.
-- Mengelola order.
-- Melihat komisi.
-- Melihat laporan.
-- Monitoring transaksi.
-- Melihat statistik aplikasi.
+Administrator memiliki akses tertinggi dan dapat mengelola seluruh data operasional.
 
 ---
 
-# 5. Platform dan Interface
+# 5. Customer App Navigation
 
-Aplikasi demo menggunakan dua jenis tampilan utama.
+Navigasi utama:
 
-## 5.1 Customer dan Karyawan
-
-Customer dan karyawan menggunakan interface **mobile-first**.
-
-Contoh URL:
-
-`app.domain.com`
-
-Desain dibuat menyerupai aplikasi mobile dengan:
-
-- Bottom navigation.
-- Full-screen layout.
-- Card interface.
-- Bottom sheet.
-- Modal.
-- Toast notification.
-- Skeleton loading.
-- Status indicator.
-- Responsive layout.
+**Home | Cleaning | Belanja | Pesanan | Akun**
 
 ---
 
-## 5.2 Administrator
+# 6. Employee App Navigation
 
-Administrator menggunakan dashboard web desktop.
+Navigasi utama:
 
-Contoh URL:
+**Home | Order | Pekerjaan | Pendapatan | Akun**
 
-`admin.domain.com`
+---
 
-Dashboard administrator menggunakan sidebar navigation.
+# 7. Admin Web Navigation
 
 Menu utama:
 
-- Dashboard.
-- Customer.
-- Karyawan.
-- Layanan.
-- Produk.
-- Pesanan.
-- Promo.
-- Laporan.
-- Pengaturan.
+- Dashboard
+- Cleaning Orders
+- Product Orders
+- Customers
+- Employees
+- Employee Settlement
+- Cleaning Services
+- Pricing Rules
+- Nail Art Products
+- Categories
+- Inventory
+- Promotions
+- Payments
+- Invoices
+- Ratings & Reviews
+- Reports
+- Settings
 
 ---
 
-# 6. Navigasi Customer
+# 8. Authentication
 
-Navigasi utama customer terdiri dari:
+## 8.1 Customer
 
-**Home | Layanan | Produk | Pesanan | Akun**
+Customer dapat login menggunakan:
 
----
-
-# 7. Dashboard Customer
-
-Dashboard merupakan halaman pertama setelah customer login.
-
-Dashboard menampilkan:
-
-## 7.1 Header
-
-- Foto profil.
-- Nama customer.
-- Lokasi aktif.
-- Notification icon.
-
-Contoh:
-
-> Selamat pagi, Sarah  
-> Rumah — Bogor
-
----
-
-## 7.2 Search
-
-Customer dapat mencari:
-
-- Layanan.
-- Produk.
-- Kategori.
-
----
-
-## 7.3 Banner Promo
-
-Banner menampilkan promo aktif.
-
-Contoh:
-
-> Diskon 20% Home Service  
-> Weekend Beauty Deal
-
----
-
-## 7.4 Kategori Layanan
-
-Contoh:
-
-- Hair Care.
-- Nail Care.
-- Makeup.
-- Facial.
-- Treatment.
-
----
-
-## 7.5 Layanan Paling Sering Dipesan
-
-Menampilkan layanan populer berdasarkan data dummy demo.
-
----
-
-## 7.6 Best Seller Product
-
-Menampilkan produk yang paling banyak dibeli.
-
----
-
-## 7.7 Bundle
-
-Menampilkan paket layanan + produk.
-
-Contoh:
-
-**Hair Spa Package**
-
-Hair Spa + Premium Hair Serum.
-
----
-
-## 7.8 Order Aktif
-
-Apabila customer memiliki order aktif, dashboard menampilkan informasi:
-
-- Nama layanan.
-- Nama karyawan.
-- Status.
-- Estimasi kedatangan.
-- Tombol lihat detail.
-
-Contoh:
-
-> Hair Spa Home Service  
-> Sarah sedang menuju lokasi Anda  
-> Estimasi 12 menit
-
----
-
-# 8. Authentication Customer
-
-Customer dapat melakukan login menggunakan:
-
-## 8.1 Nomor HP + OTP
+### Nomor HP + OTP
 
 Flow:
 
@@ -318,154 +217,334 @@ Nomor HP
 → Kirim OTP  
 → Masukkan OTP  
 → Verifikasi  
-→ Login berhasil
+→ Login
+
+Customer juga dapat login menggunakan:
+
+**Google Account**
 
 ---
 
-## 8.2 Google / Gmail
+## 8.2 Employee
 
-Customer dapat login menggunakan akun Google.
+Employee menggunakan nomor HP dan OTP.
 
-Untuk versi demo, autentikasi dapat menggunakan simulasi atau provider development.
+Namun akun harus terlebih dahulu dibuat oleh administrator.
+
+Flow:
+
+Admin membuat akun  
+→ Employee menerima nomor terdaftar  
+→ Login nomor HP  
+→ OTP  
+→ Authentication berhasil.
+
+---
+
+## 8.3 Administrator
+
+Admin login menggunakan email dan password.
+
+Disarankan menggunakan:
+
+- Multi-factor authentication.
+- Role-based authorization.
+- Session expiration.
 
 ---
 
 # 9. Customer Profile
 
-Informasi customer terdiri dari:
+Customer memiliki:
 
 - Nama.
 - Nomor HP.
 - Email.
 - Foto profil.
 
-Customer dapat melakukan perubahan informasi profil.
+Customer dapat mengubah informasi profil tertentu.
 
 ---
 
-# 10. Address Management
+# 10. Customer Address
 
-Customer dapat menyimpan maksimal **3 alamat**.
+Customer dapat menyimpan maksimal:
 
-Setiap alamat memiliki:
+**3 alamat**
 
-- Label alamat.
-- Nama penerima.
-- Nomor HP.
-- Detail alamat.
-- Lokasi map.
-- Pin lokasi.
-- Catatan.
-
-Label alamat:
+Jenis label:
 
 - Rumah.
 - Kantor.
 - Lainnya.
 
-Customer dapat:
+Informasi alamat:
 
-- Menambahkan alamat.
-- Mengedit alamat.
-- Menghapus alamat.
-- Menentukan alamat utama.
+- Nama penerima.
+- Nomor HP.
+- Alamat lengkap.
+- Detail tambahan.
+- Latitude.
+- Longitude.
+- Label alamat.
+- Catatan lokasi.
 
-Customer juga dapat menggunakan:
+Customer dapat menggunakan:
 
 **Gunakan Lokasi Saat Ini**
 
-untuk menentukan lokasi melalui GPS.
+atau memilih titik melalui map.
 
 ---
 
-# 11. Layanan
+# 11. Home Cleaning Service
 
-Halaman layanan menampilkan seluruh jenis treatment yang tersedia.
+Home Cleaning merupakan layanan utama aplikasi.
 
-Setiap layanan memiliki:
+Customer dapat memilih:
 
-- Nama.
-- Foto.
-- Deskripsi.
-- Harga.
-- Durasi.
-- Kategori.
-- Rating.
-- Variasi layanan.
-- Informasi home service.
-
-Harga menggunakan sistem **fixed price**.
+- Pesan Sekarang.
+- Jadwalkan.
 
 ---
 
-# 12. Variasi Layanan
+# 12. Jenis Cleaning
 
-Layanan dapat memiliki beberapa variasi.
+Admin dapat membuat jenis layanan cleaning.
 
 Contoh:
 
-## Hair Treatment
+- General Cleaning.
+- Deep Cleaning.
+- Kitchen Cleaning.
+- Bathroom Cleaning.
+- Apartment Cleaning.
+- Office Cleaning.
 
-Short Hair  
+Jenis layanan dapat dikembangkan tanpa perubahan source code melalui Admin Web.
+
+---
+
+# 13. Skill Employee
+
+Walaupun seluruh employee merupakan cleaning worker, skill dapat dibedakan berdasarkan kompetensi.
+
+Contoh:
+
+- General Cleaning.
+- Deep Cleaning.
+- Kitchen Cleaning.
+- Bathroom Cleaning.
+- Office Cleaning.
+
+Employee hanya menerima order yang sesuai skill.
+
+---
+
+# 14. Cleaning Property Information
+
+Saat melakukan booking, customer wajib mengisi informasi properti.
+
+Minimal:
+
+- Jenis properti.
+- Luas bangunan.
+- Jumlah lantai.
+- Jumlah kamar.
+- Jumlah kamar mandi.
+
+Contoh jenis properti:
+
+- Rumah.
+- Apartemen.
+- Kos.
+- Kantor.
+
+Parameter harga utama menggunakan:
+
+**Luas bangunan**
+
+Informasi lainnya digunakan sebagai informasi workload dan dapat digunakan untuk future pricing rules.
+
+---
+
+# 15. Cleaning Pricing Engine
+
+Harga cleaning dihitung otomatis oleh sistem.
+
+Formula utama:
+
+**Total Cleaning Price = Base Price + Distance Fee + Add-ons + Service Fee - Discount**
+
+Semua komponen bersifat configurable oleh admin.
+
+---
+
+# 16. Base Price Berdasarkan Ukuran Rumah
+
+Admin menentukan range ukuran rumah dan harga dasar.
+
+Contoh konfigurasi:
+
+### 0–50 m²
+
 Rp100.000
 
-Medium Hair  
-Rp125.000
+### 51–100 m²
 
-Long Hair  
-Rp150.000
+Rp175.000
 
----
-
-# 13. Bundle
-
-Bundle dapat terdiri dari:
-
-**Layanan + Produk**
-
-Contoh:
-
-### Hair Recovery Package
-
-Hair Spa  
-+  
-Hair Serum Premium
-
-Harga normal:
+### 101–150 m²
 
 Rp250.000
 
-Harga bundle:
+### 151–200 m²
 
-Rp210.000
+Rp325.000
 
----
+### >200 m²
 
-# 14. Pemesanan Home Service
+Harga dihitung menggunakan rule lanjutan atau custom rate.
 
-Customer memiliki dua metode pemesanan.
+Nilai tersebut hanya contoh.
 
-## 14.1 Pesan Sekarang
-
-Customer meminta layanan dilakukan sesegera mungkin.
-
-Flow:
-
-Pilih layanan  
-→ Pilih variasi  
-→ Pesan sekarang  
-→ Pilih alamat  
-→ Checkout  
-→ Pembayaran  
-→ Mencari karyawan
+Admin dapat mengubah seluruh nilai melalui Pricing Rules.
 
 ---
 
-## 14.2 Jadwalkan
+# 17. Distance Fee
 
-Customer dapat memilih tanggal dan slot waktu.
+Sistem menghitung jarak antara lokasi employee / lokasi operasional dengan alamat customer sesuai business configuration.
 
-Contoh slot:
+Biaya perjalanan menggunakan aturan jarak.
+
+Contoh:
+
+### 0–3 KM
+
+Gratis.
+
+### >3 KM
+
+Tambahan biaya per kilometer.
+
+Contoh:
+
+Rp5.000 / KM.
+
+Admin dapat mengatur:
+
+- Free radius.
+- Rate per kilometer.
+- Maximum radius.
+- Tiered pricing.
+
+---
+
+# 18. Distance Pricing Example
+
+Customer berjarak:
+
+7 KM.
+
+Free distance:
+
+3 KM.
+
+Jarak berbayar:
+
+4 KM.
+
+Rate:
+
+Rp5.000/KM.
+
+Distance Fee:
+
+**Rp20.000**
+
+---
+
+# 19. Add-On Cleaning
+
+Admin dapat membuat layanan tambahan.
+
+Contoh:
+
+- Tambahan kamar mandi.
+- Bersihkan kulkas.
+- Bersihkan jendela.
+- Kitchen deep cleaning.
+- Sofa cleaning.
+- Balcony cleaning.
+
+Setiap add-on memiliki harga.
+
+---
+
+# 20. Pricing Breakdown
+
+Customer harus dapat melihat breakdown harga sebelum checkout.
+
+Contoh:
+
+Cleaning 80 m²  
+Rp175.000
+
+Distance Fee  
+Rp20.000
+
+Bathroom Add-On  
+Rp25.000
+
+Discount  
+-Rp20.000
+
+**Total**
+Rp200.000
+
+Tidak diperbolehkan hanya menampilkan total tanpa breakdown.
+
+---
+
+# 21. Admin Pricing Rules
+
+Admin dapat mengatur:
+
+- Range luas bangunan.
+- Base price.
+- Free distance.
+- Price per kilometer.
+- Maximum service radius.
+- Add-on price.
+- Service fee.
+- Discount formula.
+- Minimum order.
+- Maximum order.
+- Holiday surcharge jika dibutuhkan.
+
+Seluruh perubahan harus tercatat melalui audit log.
+
+---
+
+# 22. Booking Type
+
+Customer dapat memilih:
+
+## Pesan Sekarang
+
+Order langsung masuk ke sistem pencarian employee.
+
+---
+
+## Jadwalkan
+
+Customer memilih:
+
+- Tanggal.
+- Slot waktu.
+
+Contoh:
 
 09:00  
 10:00  
@@ -475,164 +554,1080 @@ Contoh slot:
 15:00  
 16:00
 
-Slot yang tidak tersedia akan ditampilkan dalam kondisi disabled.
+Admin dapat mengatur slot.
 
 ---
 
-# 15. Home Service Order Flow
+# 23. Scheduled Order Logic
 
-Flow utama:
+Scheduled order tidak langsung dikirim ke employee apabila jadwal masih jauh.
 
-Customer memilih layanan  
-→ Customer memilih variasi  
-→ Pilih Pesan Sekarang / Jadwalkan  
-→ Pilih alamat  
-→ Customer melakukan checkout  
-→ Customer memilih pembayaran  
-→ Order dibuat  
-→ Status menjadi **Menunggu Karyawan**  
-→ Sistem mencari karyawan eligible  
-→ Order dikirim ke karyawan  
-→ Karyawan mengambil order  
-→ Customer menerima informasi karyawan  
-→ Karyawan menuju lokasi  
-→ Karyawan tiba  
-→ Layanan dikerjakan  
-→ Layanan selesai  
-→ Customer memberikan rating.
+Order masuk ke:
+
+**Scheduled Queue**
+
+Sistem akan mulai mendistribusikan order mendekati appointment.
+
+Contoh:
+
+60–90 menit sebelum jadwal.
+
+Nilai ini harus configurable.
 
 ---
 
-# 16. Status Order Layanan
+# 24. Order Eligibility
 
-Order memiliki status:
+Employee dapat menerima order apabila:
 
-### Menunggu Karyawan
-
-Belum ada karyawan yang mengambil pekerjaan.
-
-### Diterima Karyawan
-
-Order berhasil diambil oleh seorang karyawan.
-
-### Menuju Lokasi
-
-Karyawan sedang menuju lokasi customer.
-
-### Tiba di Lokasi
-
-Karyawan telah sampai.
-
-### Sedang Dikerjakan
-
-Layanan sedang dilakukan.
-
-### Selesai
-
-Layanan selesai.
-
-### Dibatalkan Customer
-
-Customer membatalkan pesanan.
-
-### Dibatalkan Admin
-
-Administrator membatalkan transaksi.
+1. Akun aktif.
+2. Sedang berada dalam jadwal kerja.
+3. Tidak sedang menangani order lain.
+4. Skill sesuai.
+5. Berada dalam radius eligible.
+6. Tidak sedang cuti.
+7. Tidak diblokir oleh admin.
 
 ---
 
-# 17. Sistem Pembatalan Customer
+# 25. Employee Availability
 
-Customer dapat membatalkan order.
+Employee tidak harus memiliki tombol manual Online / Offline.
 
-## Sebelum order diambil karyawan
+Availability dihitung dari:
 
-Customer dapat langsung membatalkan order.
+- Jadwal kerja.
+- Order aktif.
+- Cuti.
+- Status akun.
+- Status operasional.
 
-Tidak diperlukan persetujuan administrator.
+Status internal:
 
----
+**Available**
 
-## Setelah order diambil
+**Assigned**
 
-Customer masih dapat membatalkan order tetapi wajib memilih alasan.
+**On The Way**
 
-Contoh alasan:
+**Arrived**
 
-- Salah memilih layanan.
-- Salah alamat.
-- Jadwal berubah.
-- Menunggu terlalu lama.
-- Lainnya.
+**In Service**
 
----
-
-# 18. Sistem Realtime Order Karyawan
-
-Sistem order menggunakan konsep **first come, first served**.
-
-Order akan didistribusikan kepada karyawan yang memenuhi persyaratan.
+**Unavailable**
 
 ---
 
-# 19. Kriteria Karyawan Eligible
+# 26. Employee Work Schedule
 
-Karyawan dianggap eligible apabila:
+Admin mengatur jadwal employee.
 
-1. Skill sesuai dengan layanan.
-2. Tidak sedang mengerjakan order lain.
-3. Berada dalam radius pencarian.
-4. Akun aktif.
+Contoh:
+
+Senin  
+09:00–18:00
+
+Selasa  
+09:00–18:00
+
+Employee dapat memiliki:
+
+- Shift.
+- Hari kerja.
+- Hari libur.
+- Cuti.
 
 ---
 
-# 20. Radius Pencarian Karyawan
+# 27. Realtime Order Distribution
 
-Radius awal:
+Ketika customer membuat order:
 
-**5 KM**
+1. Sistem mengambil koordinat customer.
+2. Sistem mencari employee eligible.
+3. Filter berdasarkan skill.
+4. Filter berdasarkan availability.
+5. Filter berdasarkan radius.
+6. Order dikirim realtime.
+7. Employee melihat tombol:
 
-Apabila tidak ada karyawan yang mengambil order dalam waktu tertentu, sistem dapat memperluas radius pencarian.
+**AMBIL ORDER**
+
+---
+
+# 28. Order Claim
+
+Sistem menggunakan mekanisme:
+
+**First Valid Claim Wins**
+
+Contoh:
+
+Employee A dan B menerima order bersamaan.
+
+Employee A menekan pada 10:00:01.200.
+
+Employee B menekan pada 10:00:01.350.
+
+Server berhasil mengubah:
+
+`OPEN → ASSIGNED`
+
+untuk Employee A.
+
+Employee B mendapat:
+
+> Order telah diambil employee lain.
+
+---
+
+# 29. Atomic Claim Requirement
+
+Claim harus dilakukan di backend.
+
+Tidak cukup hanya menghilangkan tombol pada frontend.
+
+Backend harus menggunakan:
+
+- Atomic transaction.
+- Conditional update.
+- Database lock.
+- Transaction isolation.
+
+Satu order hanya boleh memiliki satu employee.
+
+---
+
+# 30. Expanding Search Radius
+
+Apabila tidak ada employee mengambil order dalam waktu tertentu:
+
+Radius pencarian dapat diperluas.
 
 Contoh:
 
 0–2 menit:
 
-Radius 5 KM.
+5 KM.
 
 Setelah 2 menit:
 
-Radius diperluas.
+Radius diperluas sesuai konfigurasi.
+
+Customer menerima:
+
+> Karyawan kami sedang sibuk. Mohon maaf jika waktu tunggu sedikit lebih lama.
 
 Order tetap aktif.
 
 ---
 
-# 21. Alert Customer
+# 31. Cleaning Order Status
 
-Apabila proses pencarian membutuhkan waktu lebih lama:
+Status utama:
 
-> Karyawan kami sedang sibuk. Mohon maaf jika waktu tunggu sedikit lebih lama.
+### Pending Payment
+
+Apabila metode pembayaran membutuhkan pembayaran awal.
+
+### Searching Employee
+
+Sistem mencari employee.
+
+### Employee Assigned
+
+Employee berhasil memperoleh pekerjaan.
+
+### On The Way
+
+Employee menuju lokasi.
+
+### Arrived
+
+Employee tiba.
+
+### In Service
+
+Cleaning sedang dilakukan.
+
+### Completed
+
+Cleaning selesai.
+
+### Cancelled by Customer
+
+Customer membatalkan.
+
+### Cancelled by Admin
+
+Admin membatalkan.
 
 ---
 
-# 22. Sistem Perebutan Order
+# 32. Live Tracking
 
-Semua karyawan eligible akan mendapatkan informasi order.
+Live tracking hanya aktif setelah employee menekan:
+
+**Mulai Perjalanan**
+
+Tracking berhenti setelah:
+
+**Saya Sudah Tiba**
+
+Employee tidak dilacak sepanjang hari.
+
+---
+
+# 33. Live Location Flow
+
+Employee:
+
+Employee Assigned  
+→ Mulai Perjalanan
+
+Status:
+
+`ASSIGNED → ON_THE_WAY`
+
+Employee App mulai mengirim:
+
+- Latitude.
+- Longitude.
+- Timestamp.
+- Accuracy.
+
+Customer menerima data tersebut secara realtime.
+
+---
+
+# 34. Customer Live Tracking Screen
+
+Customer melihat:
+
+- Map.
+- Lokasi customer.
+- Posisi employee.
+- Route.
+- Estimated Time of Arrival.
+- Nama employee.
+- Foto employee.
+- Rating employee.
+- Jumlah pekerjaan selesai.
+- Status perjalanan.
 
 Contoh:
 
-Karyawan A  
-Karyawan B  
-Karyawan C
+> Budi sedang menuju lokasi Anda.
 
-Ketiganya melihat:
+> Estimasi tiba 12 menit.
 
-**ORDER BARU**
+---
 
-Service: Hair Spa  
-Lokasi: 2.4 KM  
-Harga: Rp150.000
+# 35. Tracking Privacy
+
+Location tracking hanya boleh dilakukan ketika:
+
+- Employee memiliki order aktif.
+- Status order On The Way.
+
+Tidak diperbolehkan melakukan tracking employee di luar order.
+
+---
+
+# 36. Arrival
+
+Employee menekan:
+
+**Saya Sudah Tiba**
+
+Status:
+
+`ON_THE_WAY → ARRIVED`
+
+Live tracking dihentikan.
+
+Customer mendapatkan notification.
+
+---
+
+# 37. Before Cleaning Evidence
+
+Sebelum memulai cleaning, employee wajib upload foto kondisi awal.
+
+Minimal:
+
+1 foto.
+
+Admin dapat mengatur jumlah minimum.
+
+Status belum dapat berubah ke In Service jika foto required belum tersedia.
+
+---
+
+# 38. Start Cleaning
+
+Setelah foto before:
+
+Employee menekan:
+
+**Mulai Pekerjaan**
+
+Status:
+
+`ARRIVED → IN_SERVICE`
+
+Timestamp disimpan.
+
+---
+
+# 39. Cleaning Checklist
+
+Employee dapat melihat checklist pekerjaan.
+
+Contoh:
+
+- Menyapu.
+- Mengepel.
+- Membersihkan debu.
+- Membersihkan kamar mandi.
+- Membersihkan area tambahan.
+
+Checklist dapat berbeda berdasarkan layanan.
+
+---
+
+# 40. After Cleaning Evidence
+
+Sebelum order selesai, employee wajib upload:
+
+**Foto After**
+
+Order tidak dapat ditandai Completed apabila foto required belum lengkap.
+
+---
+
+# 41. Complete Cleaning
+
+Employee menekan:
+
+**Selesaikan Pekerjaan**
+
+Status:
+
+`IN_SERVICE → COMPLETED`
+
+Customer menerima notifikasi.
+
+---
+
+# 42. Customer Rating
+
+Setelah selesai, customer dapat memberi:
+
+- Rating 1–5.
+- Review.
+- Feedback.
+
+Rating memengaruhi profil employee.
+
+---
+
+# 43. Cancellation Rules
+
+## Sebelum Employee Assigned
+
+Customer dapat membatalkan order.
+
+---
+
+## Setelah Employee Assigned
+
+Customer tetap dapat cancel.
+
+Customer wajib memilih alasan.
+
+---
+
+## Setelah Employee On The Way
+
+Customer mendapat warning:
+
+> Employee sedang menuju lokasi Anda. Apakah Anda yakin ingin membatalkan pesanan?
+
+Untuk versi awal tidak wajib ada cancellation fee.
+
+Namun event tetap dicatat untuk future rule.
+
+---
+
+# 44. Payment Model
+
+Pembayaran layanan cleaning langsung diberikan kepada employee.
+
+Perusahaan tidak menerima dana transaksi secara langsung.
+
+Metode pembayaran:
+
+- Cash.
+- QRIS.
+- Transfer Bank.
+
+---
+
+# 45. Employee Payment Profile
+
+Setiap employee memiliki data pembayaran.
+
+Data:
+
+- Nama bank.
+- Nomor rekening.
+- Nama pemilik rekening.
+- QRIS.
+- Nama merchant / pemilik QRIS.
+- Status verifikasi.
+
+---
+
+# 46. Payment Data Security
+
+Nomor rekening dan QRIS tidak boleh dapat diubah sembarangan.
+
+Recommended flow:
+
+Employee request perubahan  
+→ Admin review  
+→ Admin approve  
+→ Data aktif.
+
+Semua perubahan dicatat.
+
+---
+
+# 47. Cash Payment Flow
+
+Customer memilih Cash.
+
+Setelah layanan selesai:
+
+Customer membayar employee.
+
+Employee menekan:
+
+**Pembayaran Diterima**
+
+Payment status:
+
+`UNPAID → PAID`
+
+---
+
+# 48. QRIS Payment Flow
+
+Customer memilih QRIS.
+
+Setelah employee terpilih:
+
+Customer melihat QRIS milik employee.
+
+Customer melakukan pembayaran.
+
+Apabila belum menggunakan payment verification otomatis:
+
+Customer dapat upload bukti pembayaran.
+
+Employee kemudian melakukan konfirmasi.
+
+Status:
+
+`WAITING_CONFIRMATION → PAID`
+
+---
+
+# 49. Bank Transfer Flow
+
+Customer melihat:
+
+- Nama bank.
+- Nomor rekening.
+- Nama pemilik.
+
+Customer melakukan transfer.
+
+Customer dapat upload bukti bayar.
+
+Employee mengkonfirmasi pembayaran.
+
+---
+
+# 50. Payment Status
+
+Payment status dipisahkan dari order status.
+
+Contoh:
+
+Order:
+
+`IN_SERVICE`
+
+Payment:
+
+`UNPAID`
+
+atau:
+
+Order:
+
+`COMPLETED`
+
+Payment:
+
+`PAID`
+
+---
+
+# 51. Payment Verification
+
+Untuk fase awal:
+
+QRIS dan transfer dapat menggunakan manual confirmation.
+
+Future integration dapat menggunakan:
+
+- Payment Gateway.
+- Bank API.
+- QRIS API.
+
+Namun requirement saat ini:
+
+Dana tetap masuk langsung ke employee.
+
+---
+
+# 52. Invoice
+
+Setiap transaksi harus menghasilkan invoice.
+
+Invoice diberikan untuk:
+
+- Cleaning.
+- Nail Art Product Order.
+
+---
+
+# 53. Cleaning Invoice
+
+Format nomor:
+
+`INV-CLN-YYYYMMDD-XXXX`
+
+Contoh:
+
+`INV-CLN-20261020-0021`
+
+Invoice memuat:
+
+- Invoice number.
+- Customer.
+- Employee.
+- Tanggal.
+- Layanan.
+- Ukuran rumah.
+- Base price.
+- Distance fee.
+- Add-on.
+- Discount.
+- Total.
+- Metode pembayaran.
+- Payment status.
+- Order status.
+
+---
+
+# 54. Product Invoice
+
+Format:
+
+`INV-PRD-YYYYMMDD-XXXX`
+
+Invoice mencakup:
+
+- Customer.
+- Produk.
+- Variasi.
+- Qty.
+- Harga.
+- Discount.
+- Delivery cost.
+- Total.
+- Payment method.
+- Status.
+
+---
+
+# 55. Employee Revenue
+
+Employee menerima:
+
+**100% nilai layanan sebagai Gross Revenue.**
+
+Tidak terdapat potongan langsung per transaksi oleh perusahaan.
+
+---
+
+# 56. Monthly Settlement
+
+Employee memiliki kewajiban menyetor sebagian pendapatan kepada perusahaan.
+
+Default:
+
+**3% dari total Gross Revenue bulanan**
+
+Nilai 3% dapat diubah oleh administrator.
+
+---
+
+# 57. Settlement Formula
+
+Formula:
+
+**Settlement Due = Monthly Gross Revenue × Settlement Percentage**
+
+Contoh:
+
+Gross Revenue:
+
+Rp10.000.000
+
+Settlement:
+
+3%
+
+Settlement Due:
+
+Rp300.000
+
+Estimated Net:
+
+Rp9.700.000
+
+---
+
+# 58. Employee Income Dashboard
+
+Employee dapat melihat:
+
+### Hari Ini
+
+Rp350.000
+
+### Bulan Ini
+
+Rp10.000.000
+
+### Settlement Rate
+
+3%
+
+### Kewajiban Setoran
+
+Rp300.000
+
+### Estimasi Pendapatan Bersih
+
+Rp9.700.000
+
+---
+
+# 59. Settlement Status
+
+Status:
+
+- Pending.
+- Partially Paid.
+- Paid.
+- Overdue.
+- Waived.
+
+Admin dapat menentukan status.
+
+---
+
+# 60. Settlement Payment
+
+Employee melakukan pembayaran settlement di luar transaksi customer.
+
+Admin kemudian mencatat:
+
+- Tanggal.
+- Nominal.
+- Metode.
+- Bukti.
+- Status.
+
+Future version dapat memiliki settlement payment gateway.
+
+---
+
+# 61. Settlement Adjustment
+
+Admin dapat melakukan adjustment.
+
+Contoh:
+
+- Potongan khusus.
+- Pengurangan fee.
+- Correction.
+- Penyesuaian bulan tertentu.
+
+Setiap perubahan harus memiliki:
+
+- Alasan.
+- Admin ID.
+- Timestamp.
+
+---
+
+# 62. Employee Settlement Report
+
+Admin dapat melihat:
+
+- Gross revenue.
+- Settlement rate.
+- Settlement due.
+- Paid amount.
+- Remaining amount.
+- Status.
+- Due date.
+
+---
+
+# 63. Nail Art Commerce
+
+Nail Art merupakan bagian e-commerce.
+
+Tidak menggunakan employee cleaning.
+
+Flow menyerupai marketplace.
+
+---
+
+# 64. Nail Art Categories
+
+Produk dapat memiliki banyak kategori.
+
+Contoh:
+
+- Press-On Nails.
+- Fake Nails.
+- Nail Sticker.
+- Nail Accessories.
+- Nail Tools.
+- Nail Polish.
+- Gel Nail.
+- Nail Care.
+- Decoration.
+- Starter Kit.
+
+Admin dapat membuat kategori baru.
+
+---
+
+# 65. Nail Art Product
+
+Produk memiliki:
+
+- Nama.
+- Foto.
+- SKU.
+- Kategori.
+- Harga.
+- Promo price.
+- Stock.
+- Variasi.
+- Description.
+- Rating.
+- Reviews.
+- Best Seller status.
+
+---
+
+# 66. Product Variants
+
+Produk dapat memiliki variasi.
+
+Contoh:
+
+### Size
+
+S  
+M  
+L
+
+### Color
+
+Pink  
+White  
+Black
+
+### Design
+
+Minimalist  
+Floral  
+Luxury
+
+Setiap variasi dapat memiliki:
+
+- SKU.
+- Price.
+- Stock.
+
+---
+
+# 67. Wishlist
+
+Customer dapat:
+
+- Add wishlist.
+- Remove wishlist.
+- Move to cart.
+
+---
+
+# 68. Shopping Cart
+
+Keranjang dapat memiliki banyak produk.
+
+Customer dapat:
+
+- Menambah item.
+- Menghapus item.
+- Mengubah quantity.
+- Memilih variant.
+- Menggunakan promo.
+
+---
+
+# 69. Product Checkout
+
+Flow:
+
+Product  
+→ Product Detail  
+→ Select Variant  
+→ Add to Cart  
+→ Cart  
+→ Address  
+→ Shipping  
+→ Promo  
+→ Payment  
+→ Confirmation
+
+---
+
+# 70. Nail Art Order Status
+
+Status:
+
+### Waiting Payment
+
+### Paid
+
+### Processing
+
+### Packed
+
+### Shipped
+
+### Completed
+
+### Cancelled
+
+---
+
+# 71. Product Shipping
+
+Untuk fase awal, shipment tracking tidak harus realtime.
+
+Admin dapat memasukkan:
+
+- Courier name.
+- Tracking number.
+- Shipping status.
+
+Future version dapat integrate logistic provider API.
+
+---
+
+# 72. Product Payment
+
+Pembayaran produk dapat menggunakan:
+
+- Cash jika bisnis mendukung COD.
+- QRIS.
+- Transfer.
+
+Admin dapat menentukan rekening pembayaran produk secara terpisah dari employee cleaning.
+
+Catatan:
+
+Payment data employee hanya digunakan untuk transaksi cleaning.
+
+---
+
+# 73. Product Review
+
+Customer dapat memberikan:
+
+- Rating.
+- Review text.
+- Product photo jika diperlukan.
+
+Review tersedia setelah order Completed.
+
+---
+
+# 74. Best Seller
+
+Produk dapat mendapatkan label:
+
+**Best Seller**
+
+Label dapat:
+
+- Ditentukan otomatis berdasarkan penjualan.
+- Di-override admin.
+
+---
+
+# 75. Cleaning Popularity
+
+Home Cleaning package dapat memiliki label:
+
+- Most Popular.
+- Recommended.
+- Best Value.
+
+Admin dapat mengatur label.
+
+---
+
+# 76. Promotions
+
+Sistem mendukung:
+
+### Percentage Discount
+
+20%.
+
+### Nominal Discount
+
+Rp25.000.
+
+### Voucher Code
+
+CLEAN20.
+
+---
+
+# 77. Promo Scope
+
+Promo dapat berlaku untuk:
+
+- Cleaning.
+- Nail Art Product.
+- Category.
+- Specific Product.
+- Specific Customer.
+- Minimum transaction.
+- Time period.
+
+---
+
+# 78. Customer Order History
+
+Customer melihat:
+
+**Berjalan**
+
+dan
+
+**Sudah Selesai**
+
+Order menggunakan label:
+
+**CLEANING**
+
+atau
+
+**PRODUK**
+
+---
+
+# 79. Customer Order Detail
+
+Cleaning detail menampilkan:
+
+- Employee.
+- Status.
+- Map jika tracking aktif.
+- Pricing.
+- Payment.
+- Before/after photos.
+- Invoice.
+
+Product detail menampilkan:
+
+- Items.
+- Shipping.
+- Payment.
+- Invoice.
+
+---
+
+# 80. Employee Profile
+
+Customer dapat melihat:
+
+- Foto wajah.
+- Nama.
+- Rating.
+- Jumlah pekerjaan selesai.
+- Skill.
+- Review.
+
+Tidak perlu menampilkan:
+
+- Kendaraan.
+- Plat nomor.
+
+---
+
+# 81. Employee Dashboard
+
+Dashboard employee menampilkan:
+
+- Order available.
+- Active job.
+- Completed today.
+- Gross income today.
+- Gross income month.
+- Settlement due.
+- Rating.
+
+---
+
+# 82. Employee Order Card
+
+Card order menampilkan:
+
+- Service.
+- Property size.
+- Customer area.
+- Distance.
+- Estimated earning.
+- Schedule.
+- Add-ons.
 
 Tombol:
 
@@ -640,914 +1635,645 @@ Tombol:
 
 ---
 
-# 23. Atomic Order Claim
+# 83. Admin Dashboard
 
-Hanya satu karyawan dapat memenangkan order.
+Dashboard menampilkan:
 
-Flow:
-
-Order Status:
-
-`OPEN`
-
-Karyawan A menekan Ambil Order.
-
-Server melakukan claim.
-
-Status:
-
-`OPEN → ASSIGNED`
-
-Apabila berhasil:
-
-Karyawan A:
-
-> Order berhasil diambil.
-
-Karyawan lainnya:
-
-> Maaf, order telah diambil karyawan lain.
-
-Tombol **Ambil Order** otomatis hilang.
-
-Backend wajib menggunakan atomic transaction / locking untuk mencegah dua karyawan mendapatkan order yang sama.
+- Cleaning Orders Today.
+- Active Cleaning.
+- Searching Employee.
+- Available Employees.
+- Busy Employees.
+- Product Orders.
+- Revenue Volume.
+- Settlement Due.
+- Settlement Paid.
+- Top Employee.
+- Top Nail Art Product.
+- Most Ordered Cleaning.
 
 ---
 
-# 24. Availability Karyawan
+# 84. Admin Realtime Map
 
-Karyawan tidak memiliki tombol Online / Offline.
+Admin dapat melihat map operasional.
 
-Availability dihitung secara otomatis oleh sistem.
+Status marker:
 
-Status:
+**Available Employee**
 
-### Available
+**On The Way**
 
-Karyawan tidak memiliki order aktif.
+**In Service**
 
-### Busy
+**Active Customer Order**
 
-Karyawan sedang menangani order.
-
-Administrator dapat melihat:
-
-Total Karyawan: 8  
-Available: 5  
-Busy: 3
+Map digunakan untuk monitoring operasional.
 
 ---
 
-# 25. Dashboard Karyawan
+# 85. Employee Management
 
-Dashboard karyawan menampilkan:
+Admin dapat:
 
-- Order tersedia.
-- Order aktif.
-- Pekerjaan hari ini.
-- Order selesai.
-- Rating.
-- Komisi.
-
-Contoh:
-
-Order Tersedia: 4  
-Order Aktif: 1  
-Selesai Hari Ini: 3  
-Rating: 4.8  
-Komisi Hari Ini: Rp180.000
+- Add employee.
+- Edit employee.
+- Deactivate employee.
+- Set skill.
+- Set schedule.
+- Manage payment profile.
+- Manage QRIS.
+- Manage bank account.
+- View rating.
+- View revenue.
+- View settlement.
+- View active order.
 
 ---
 
-# 26. Navigasi Karyawan
+# 86. Customer Management
 
-Bottom Navigation:
-
-**Home | Order Tersedia | Order Saya | Riwayat | Akun**
-
----
-
-# 27. Order Tersedia
-
-Karyawan hanya melihat order yang sesuai dengan skill mereka.
-
-Card order menampilkan:
-
-- Nama layanan.
-- Lokasi.
-- Jarak.
-- Harga.
-- Estimasi durasi.
-- Waktu order.
-- Tombol Ambil Order.
-
----
-
-# 28. Order Aktif Karyawan
-
-Setelah mengambil order, karyawan dapat mengubah status:
-
-Diterima  
-→ Menuju Lokasi  
-→ Tiba  
-→ Sedang Dikerjakan  
-→ Selesai
-
-Setiap perubahan status dikirim secara realtime ke customer.
-
----
-
-# 29. Profil Karyawan
-
-Customer dapat melihat profil karyawan setelah order diterima.
-
-Profil menampilkan:
-
-- Foto.
-- Nama.
-- Role.
-- Skill.
-- Rating.
-- Jumlah pekerjaan.
-- Review customer.
-
-Contoh:
-
-**Sarah Amelia**
-
-Hair Stylist
-
-Skill:
-
-Hair Spa  
-Hair Coloring  
-Hair Treatment
-
-Rating:
-
-⭐ 4.9
-
-137 pekerjaan selesai.
-
----
-
-# 30. Rating Karyawan
-
-Setelah layanan selesai, customer dapat memberikan:
-
-Rating:
-
-1–5 bintang.
-
-Review:
-
-Teks komentar.
-
-Contoh:
-
-> Pelayanannya ramah dan hasil hair treatment sangat bagus.
-
-Rating tersebut menjadi bagian dari profil karyawan.
-
----
-
-# 31. Komisi Karyawan
-
-Karyawan memperoleh komisi dari setiap layanan.
-
-Untuk demo:
-
-Komisi default dapat menggunakan simulasi **20% dari nilai layanan**.
-
-Contoh:
-
-Nilai layanan:
-
-Rp200.000
-
-Komisi:
-
-Rp40.000
-
-Karyawan dapat melihat:
-
-- Komisi hari ini.
-- Komisi minggu ini.
-- Riwayat komisi.
-
----
-
-# 32. Produk
-
-Halaman produk merupakan mini e-commerce.
-
-Customer dapat:
-
-- Melihat produk.
-- Mencari produk.
-- Melihat detail.
-- Memilih jumlah.
-- Wishlist.
-- Keranjang.
-- Checkout.
-- Menggunakan promo.
-- Review.
-
----
-
-# 33. Informasi Produk
-
-Setiap produk memiliki:
-
-- Nama.
-- Foto.
-- Harga.
-- Harga promo.
-- Stok.
-- Kategori.
-- Deskripsi.
-- Rating.
-- Review.
-- Status Best Seller.
-
----
-
-# 34. Kategori Produk
-
-Contoh:
-
-- Hair Care.
-- Skin Care.
-- Nail Care.
-- Makeup.
-- Beauty Tools.
-
----
-
-# 35. Wishlist
-
-Customer dapat menyimpan produk ke wishlist.
-
-Customer dapat:
-
-- Menambahkan wishlist.
-- Menghapus wishlist.
-- Memindahkan produk ke keranjang.
-
----
-
-# 36. Keranjang
-
-Keranjang wajib tersedia sebelum proses checkout.
-
-Customer dapat:
-
-- Menambahkan produk.
-- Mengurangi produk.
-- Menambah kuantitas.
-- Mengurangi kuantitas.
-- Menghapus item.
-- Menggunakan promo.
-- Melihat subtotal.
-
----
-
-# 37. Stok Produk
-
-Setiap produk memiliki stok.
-
-Apabila stok:
-
-`0`
-
-maka produk memiliki status:
-
-**Habis**
-
-Tombol tambah ke keranjang menjadi disabled.
-
----
-
-# 38. Checkout Produk
-
-Flow:
-
-Produk  
-→ Detail Produk  
-→ Tambah Keranjang  
-→ Keranjang  
-→ Checkout  
-→ Pilih alamat  
-→ Pilih promo  
-→ Pilih pembayaran  
-→ Konfirmasi  
-→ Order berhasil
-
----
-
-# 39. Delivery Produk
-
-Untuk demo, proses pengiriman hanya menggunakan status sederhana.
-
-Tidak terdapat integrasi dengan kurir pihak ketiga.
-
-Status dapat berupa:
-
-Diproses  
-→ Dalam Pengiriman  
-→ Selesai
-
----
-
-# 40. Combined Order
-
-Customer dapat melakukan checkout gabungan:
-
-**Layanan + Produk**
-
-Contoh:
-
-Hair Spa  
-+  
-Hair Serum.
-
-Customer melihat satu transaksi.
-
-Namun sistem menyimpan dua fulfillment:
-
-### Layanan
-
-Status:
-
-Sedang Dikerjakan.
-
-### Produk
-
-Status:
-
-Dalam Pengiriman.
-
----
-
-# 41. Promo
-
-Sistem mendukung tiga jenis promo.
-
-## Percentage Discount
-
-Contoh:
-
-20% OFF.
-
----
-
-## Nominal Discount
-
-Contoh:
-
-Potongan Rp25.000.
-
----
-
-## Voucher Code
-
-Contoh:
-
-`BEAUTY20`
-
----
-
-# 42. Promo Rules
-
-Promo dapat memiliki:
-
-- Nama.
-- Kode.
-- Jenis.
-- Nominal.
-- Minimal transaksi.
-- Masa berlaku.
-- Produk tertentu.
-- Layanan tertentu.
-- Bundle tertentu.
-
----
-
-# 43. Pembayaran
-
-Pembayaran pada versi demo bersifat simulasi.
-
-Metode:
-
-- Cash.
-- Transfer / Virtual Account.
-- QRIS.
-
-Tidak terdapat transaksi uang nyata.
-
----
-
-# 44. Payment Simulation
-
-Contoh:
-
-Customer memilih QRIS.
-
-Aplikasi menampilkan QR dummy.
-
-Customer menekan:
-
-**Simulasikan Pembayaran Berhasil**
-
-Status:
-
-Payment Success.
-
----
-
-# 45. History Customer
-
-Halaman Pesanan memiliki dua tab utama.
-
-## Berjalan
-
-Menampilkan transaksi aktif.
-
----
-
-## Sudah Selesai
-
-Menampilkan transaksi yang telah selesai.
-
----
-
-Setiap card memiliki label:
-
-**LAYANAN**
-
-**PRODUK**
-
-**BUNDLE**
-
----
-
-# 46. Chat Customer dan Karyawan
-
-Chat ditampilkan sebagai bagian dari konsep produk.
-
-Namun untuk versi demo fitur chat tidak diaktifkan secara penuh.
-
-Ketika customer membuka fitur:
-
-> Fitur chat belum tersedia pada versi demo.
-
-Hal ini bertujuan menunjukkan bahwa chat merupakan bagian dari product roadmap.
-
----
-
-# 47. Dashboard Administrator
-
-Administrator memiliki dashboard desktop.
-
-Dashboard menampilkan KPI:
-
-- Total Customer.
-- Total Karyawan.
-- Karyawan Available.
-- Karyawan Busy.
-- Order Hari Ini.
-- Order Berlangsung.
-- Penjualan Produk.
-- Pendapatan Hari Ini.
-
----
-
-# 48. Customer Management
-
-Administrator dapat melihat:
+Admin dapat melihat:
 
 - Nama.
 - Nomor HP.
 - Email.
-- Tanggal registrasi.
+- Registration date.
+- Order count.
+- Order history.
 
-Administrator hanya membutuhkan informasi umum customer.
-
----
-
-# 49. Employee Management
-
-Administrator dapat:
-
-- Membuat akun karyawan.
-- Mengedit akun.
-- Menonaktifkan akun.
-- Mengatur role.
-- Mengatur skill.
-- Melihat rating.
-- Melihat jumlah pekerjaan.
-- Melihat komisi.
+Admin tidak perlu mengakses informasi sensitif yang tidak diperlukan.
 
 ---
 
-# 50. Service Management
+# 87. Inventory
 
-Administrator dapat:
+Admin mengelola stok Nail Art.
 
-- Membuat layanan.
-- Mengedit layanan.
-- Menghapus layanan.
-- Mengatur harga.
-- Mengatur kategori.
-- Mengatur variasi.
-- Mengatur durasi.
-- Mengatur status layanan.
+Features:
 
----
-
-# 51. Bundle Management
-
-Administrator dapat:
-
-- Membuat bundle.
-- Memilih layanan.
-- Memilih produk.
-- Mengatur harga.
-- Mengatur promo.
+- Current stock.
+- Stock in.
+- Stock out.
+- Minimum stock.
+- Low stock warning.
 
 ---
 
-# 52. Product Management
+# 88. Reports
 
-Administrator dapat:
+Admin dapat melihat:
 
-- Menambahkan produk.
-- Mengubah produk.
-- Menghapus produk.
-- Mengatur kategori.
-- Mengatur harga.
-- Mengatur stok.
-- Mengatur promo.
-- Menentukan Best Seller.
+## Cleaning
 
----
+- Total order.
+- Completed order.
+- Cancelled order.
+- Gross transaction value.
+- Popular service.
+- Average order.
+- Average distance.
+- Employee performance.
 
-# 53. Order Management
+## Employee
 
-Administrator dapat melihat seluruh order.
+- Gross revenue.
+- Settlement due.
+- Settlement paid.
+- Rating.
+- Jobs completed.
 
-Filter berdasarkan:
+## Nail Art
 
-- Status.
-- Customer.
-- Karyawan.
-- Tanggal.
-- Layanan.
-- Produk.
-
-Administrator juga dapat:
-
-- Membatalkan order.
-- Melihat detail.
-- Melakukan intervensi apabila order terlalu lama menunggu.
+- Product sales.
+- Best seller.
+- Stock movement.
+- Revenue.
+- Category performance.
 
 ---
 
-# 54. Promo Management
+# 89. Notifications
 
-Administrator dapat:
+Customer:
 
-- Membuat promo.
-- Mengubah promo.
-- Menonaktifkan promo.
-- Mengatur periode promo.
+- Order dibuat.
+- Employee ditemukan.
+- Employee berangkat.
+- Employee hampir tiba.
+- Employee tiba.
+- Cleaning dimulai.
+- Cleaning selesai.
+- Payment confirmation.
+- Product processing.
+- Product shipped.
+- Promo.
 
----
+Employee:
 
-# 55. Laporan
+- New order.
+- Order won.
+- Order lost.
+- Upcoming scheduled order.
+- Payment confirmed.
+- Settlement reminder.
 
-Untuk versi demo, laporan dibuat sederhana.
+Admin:
 
-Contoh:
-
-- Order harian.
-- Penjualan produk.
-- Pendapatan.
-- Layanan populer.
-- Produk best seller.
-- Karyawan dengan rating tertinggi.
-
----
-
-# 56. Notification
-
-Customer dapat menerima notifikasi:
-
-- Order berhasil dibuat.
-- Karyawan ditemukan.
-- Karyawan menuju lokasi.
-- Karyawan tiba.
-- Layanan selesai.
-- Produk dikirim.
-- Promo baru.
-
-Karyawan dapat menerima:
-
-- Order baru.
-- Order berhasil diambil.
-- Order diambil karyawan lain.
+- Order tidak mendapatkan employee.
+- Settlement overdue.
+- Low stock.
+- Failed payment.
+- Critical operational issue.
 
 ---
 
-# 57. Realtime Requirement
+# 90. Chat
 
-Beberapa bagian sistem harus menggunakan komunikasi realtime.
+Customer dan Employee dapat memiliki chat setelah order berhasil diambil.
 
-Terutama:
+Chat hanya tersedia untuk cleaning.
 
-- Order baru.
-- Claim order.
-- Status order.
-- Perubahan ketersediaan karyawan.
-- Notification.
+Recommended lifecycle:
 
-Teknologi yang dapat digunakan:
+`ASSIGNED → COMPLETED + 24 hours`
 
-- WebSocket.
-- Supabase Realtime.
-- Firebase.
-- Socket.io.
-
-Pemilihan teknologi final disesuaikan dengan backend yang digunakan.
+Admin dapat mengatur retention.
 
 ---
 
-# 58. Performance Requirement
+# 91. Call Feature
 
-Karena terdapat sistem perebutan order, response claim harus dibuat secepat mungkin.
+Customer dapat menghubungi employee.
 
-Target demo:
+Untuk privacy, future version disarankan menggunakan:
 
-- Response UI cepat.
-- Event realtime diterima tanpa refresh.
-- Tombol order hilang segera setelah order diambil.
-- Backend mencegah duplicate claim.
+- Number masking.
+- In-app voice.
+
+Tahap awal dapat menggunakan nomor employee jika business menyetujui.
 
 ---
 
-# 59. Security Requirement
+# 92. Realtime Requirements
 
-Sistem wajib memiliki:
+Realtime digunakan untuk:
 
-- Authentication.
+- Order broadcast.
+- Order claim.
+- Status cleaning.
+- Employee location.
+- Customer tracking.
+- Employee availability.
+- Notifications.
+
+---
+
+# 93. Location Update
+
+Saat On The Way, Employee App mengirim lokasi berkala.
+
+Interval harus mempertimbangkan:
+
+- Battery.
+- Accuracy.
+- Data usage.
+
+Recommended dynamic interval:
+
+5–15 detik ketika bergerak.
+
+Lebih jarang ketika stationary.
+
+---
+
+# 94. Offline Handling
+
+Jika koneksi Employee App terputus:
+
+- Lokasi terakhir tetap ditampilkan.
+- Customer diberi status location delayed.
+- App mencoba reconnect.
+- Status order tidak boleh berubah sembarangan.
+
+---
+
+# 95. Non-Functional Requirements
+
+## Performance
+
+- Fast app launch.
+- Realtime notification rendah latency.
+- Order claim cepat.
+- Smooth map tracking.
+
+## Scalability
+
+Arsitektur harus dapat berkembang ke:
+
+- Banyak employee.
+- Banyak area.
+- Multi-branch.
+
+## Availability
+
+Critical service seperti:
+
+- Booking.
+- Claim.
+- Payment.
+- Tracking.
+
+harus memiliki error handling.
+
+---
+
+# 96. Security Requirements
+
+Wajib menggunakan:
+
 - Role-based access control.
-- Session management.
+- Token authentication.
+- Encrypted communication HTTPS.
+- Secure password hashing.
+- OTP expiration.
+- Rate limiting.
 - Server-side validation.
-- Protection terhadap unauthorized access.
-
-Customer tidak boleh mengakses endpoint administrator.
-
-Karyawan tidak boleh mengakses data karyawan lain tanpa authorization.
+- Secure file upload.
+- Authorization per resource.
 
 ---
 
-# 60. Demo Limitations
+# 97. Payment Data Security
 
-Versi demo tidak wajib memiliki:
+Informasi rekening:
 
-- Payment gateway asli.
-- OTP SMS production.
-- Tracking GPS realtime penuh.
-- Integrasi kurir.
-- Chat realtime aktif.
-- Push notification production.
-- Sistem settlement keuangan.
-- Refund otomatis.
-
-Fitur tersebut dapat ditampilkan dalam UI sebagai gambaran konsep.
+- Tidak boleh tampil ke employee lain.
+- Tidak boleh tampil sebelum order assigned.
+- Perubahan wajib diaudit.
 
 ---
 
-# 61. MVP Demo Scope
+# 98. Location Security
 
-Demo minimal harus mampu menunjukkan satu alur utama secara penuh.
+Location employee hanya dapat diakses oleh:
 
-## Customer
-
-Login  
-→ Dashboard  
-→ Pilih Layanan  
-→ Pilih Variasi  
-→ Pesan Sekarang / Jadwalkan  
-→ Pilih Alamat  
-→ Checkout  
-→ Simulasi Pembayaran  
-→ Mencari Karyawan
+- Customer pemilik active order.
+- Admin berwenang.
+- Employee sendiri.
 
 ---
 
-## Karyawan
+# 99. Audit Log
 
-Login  
-→ Melihat Order  
-→ Ambil Order  
-→ Mengubah Status
-
----
-
-## Customer
-
-Status berubah realtime  
-→ Melihat Profil Karyawan  
-→ Order Selesai  
-→ Memberikan Rating.
-
----
-
-## Administrator
-
-Login  
-→ Dashboard  
-→ Melihat customer  
-→ Melihat karyawan  
-→ Melihat order.
-
----
-
-# 62. Seed Data Demo
-
-Untuk membuat aplikasi terasa hidup, demo menggunakan data dummy.
-
-## Karyawan
-
-8 karyawan.
+Admin actions penting harus disimpan.
 
 Contoh:
 
-- 3 Hair Stylist.
-- 2 Nail Artist.
-- 1 Makeup Artist.
-- 2 Beautician.
+- Pricing changes.
+- Settlement adjustment.
+- Employee bank changes.
+- QRIS changes.
+- Order cancellation.
+- Manual payment confirmation.
 
 ---
 
-## Layanan
+# 100. Recommended Technical Stack
 
-12 layanan.
+## Customer App
 
-Contoh:
+Flutter.
 
-- Hair Spa.
-- Hair Cut.
-- Hair Coloring.
-- Hair Treatment.
-- Facial.
-- Manicure.
-- Pedicure.
-- Nail Art.
-- Makeup.
-- Eyelash Treatment.
-- Creambath.
-- Scalp Treatment.
+## Employee App
+
+Flutter.
+
+Kedua aplikasi dapat menggunakan shared package / shared codebase component.
 
 ---
 
-## Produk
-
-20 produk kecantikan.
-
----
-
-## Promo
-
-6 promo aktif.
-
----
-
-## Bundle
-
-Minimal 4 bundle.
-
----
-
-## Customer
-
-Minimal 10 akun dummy.
-
----
-
-# 63. Acceptance Criteria
-
-Demo dianggap berhasil apabila:
-
-1. Customer dapat login.
-2. Customer dapat melihat layanan.
-3. Customer dapat melihat produk.
-4. Customer dapat menggunakan keranjang.
-5. Customer dapat menyimpan alamat.
-6. Customer dapat membuat booking.
-7. Karyawan dapat melihat order.
-8. Karyawan dapat mengambil order.
-9. Hanya satu karyawan dapat mengambil satu order.
-10. Status order berubah secara realtime.
-11. Customer dapat melihat karyawan.
-12. Customer dapat membatalkan order.
-13. Customer dapat memberikan rating.
-14. Administrator dapat melihat seluruh order.
-15. Administrator dapat mengelola layanan.
-16. Administrator dapat mengelola produk.
-17. Administrator dapat mengelola karyawan.
-18. Tampilan customer responsif di smartphone.
-19. Aplikasi dapat diakses melalui URL deployment.
-20. Demo mampu menunjukkan satu complete customer journey.
-
----
-
-# 64. Recommended Technical Architecture
-
-Untuk versi demo:
-
-### Frontend
+## Admin Web
 
 Next.js / React.
 
-### Styling
+---
 
-Tailwind CSS.
+## Backend
 
-### Hosting
+Pilihan:
 
-Vercel.
+- Node.js / NestJS.
+- Supabase.
+- PostgreSQL.
 
-### Database
-
-PostgreSQL / Supabase.
-
-### Authentication
-
-Supabase Auth / Firebase Auth.
-
-### Realtime
-
-Supabase Realtime / WebSocket.
-
-### Map
-
-Google Maps / Mapbox.
-
-### Storage
-
-Supabase Storage / Cloudinary.
+Untuk sistem production dengan business rules kompleks, disarankan backend API terstruktur.
 
 ---
 
-# 65. Future Development
+## Database
 
-Apabila produk dilanjutkan ke production, pengembangan selanjutnya dapat mencakup:
+PostgreSQL.
 
-- Native mobile application.
-- Android APK.
-- iOS application.
-- Push notification.
-- Real OTP.
+---
+
+## Realtime
+
+- WebSocket.
+- Supabase Realtime.
+- Socket.io.
+
+---
+
+## Maps
+
+- Google Maps Platform.
+- Mapbox.
+
+---
+
+## Notification
+
+Firebase Cloud Messaging.
+
+---
+
+## Storage
+
+Untuk foto before/after:
+
+- Cloud storage.
+- Signed URLs.
+- Secure object access.
+
+---
+
+# 101. Core Database Entities
+
+Entitas utama:
+
+### User
+
+### Customer
+
+### Employee
+
+### EmployeeSkill
+
+### EmployeeSchedule
+
+### EmployeePaymentAccount
+
+### CustomerAddress
+
+### CleaningService
+
+### PricingRule
+
+### CleaningAddon
+
+### CleaningOrder
+
+### CleaningOrderStatusHistory
+
+### EmployeeLocation
+
+### Payment
+
+### Invoice
+
+### EmployeeRevenue
+
+### EmployeeSettlement
+
+### Product
+
+### ProductCategory
+
+### ProductVariant
+
+### Inventory
+
+### Cart
+
+### ProductOrder
+
+### ProductOrderItem
+
+### Promotion
+
+### Review
+
+### Notification
+
+---
+
+# 102. Critical Business Rules
+
+1. Satu cleaning order hanya dapat dimiliki satu employee.
+2. Employee hanya boleh memiliki satu active cleaning job pada satu waktu kecuali admin mengubah rule.
+3. Live tracking hanya berjalan pada status On The Way.
+4. Customer hanya dapat melihat lokasi employee untuk order miliknya.
+5. Employee wajib upload before/after sesuai rule.
+6. Harga cleaning dihitung oleh server.
+7. Client tidak boleh menentukan harga sendiri.
+8. Settlement menggunakan gross revenue.
+9. Settlement percentage dapat diubah admin.
+10. Historical settlement tidak boleh berubah otomatis ketika percentage baru diterapkan.
+11. Setiap order memiliki invoice unik.
+12. Payment status terpisah dari order status.
+13. QRIS/rekening cleaning mengikuti employee assigned.
+14. Produk Nail Art tidak memiliki hubungan dengan employee cleaning.
+15. Stock tidak boleh menjadi negatif.
+
+---
+
+# 103. Settlement Versioning
+
+Perubahan settlement rate hanya berlaku sesuai effective date.
+
+Contoh:
+
+September:
+
+3%.
+
+Mulai November:
+
+4%.
+
+Transaksi September tetap menggunakan 3%.
+
+Ini penting untuk menjaga laporan historis.
+
+---
+
+# 104. Pricing Versioning
+
+Harga juga harus memiliki versioning.
+
+Jika admin mengubah harga pada tanggal 20:
+
+Order tanggal 19 tidak boleh berubah.
+
+Harga disimpan sebagai snapshot ketika checkout.
+
+---
+
+# 105. Invoice Immutability
+
+Invoice yang sudah diterbitkan tidak boleh diedit langsung.
+
+Apabila ada correction:
+
+Gunakan adjustment / revised invoice mechanism.
+
+---
+
+# 106. MVP Production Scope
+
+## Customer App
+
+Wajib:
+
+- Authentication.
+- Profile.
+- Address.
+- Cleaning booking.
+- Dynamic pricing.
+- Schedule.
+- Payment.
+- Live tracking.
+- Employee profile.
+- Order history.
+- Invoice.
+- Rating.
+- Nail Art catalog.
+- Cart.
+- Checkout.
+- Product order.
+
+---
+
+## Employee App
+
+Wajib:
+
+- Authentication.
+- Order realtime.
+- Claim.
+- Active job.
+- Navigation.
+- Live tracking.
+- Before/after.
+- Status update.
+- Payment account.
+- Revenue.
+- Settlement.
+- Rating.
+
+---
+
+## Admin Web
+
+Wajib:
+
+- Dashboard.
+- Employee management.
+- Customer management.
+- Order management.
+- Pricing rule.
+- Settlement management.
+- Product management.
+- Inventory.
+- Payments.
+- Invoice.
+- Reports.
+
+---
+
+# 107. Phase 2 / Future Scope
+
+Dapat dikembangkan setelah production stabil:
+
+- Multi-branch.
+- Multi-city.
+- Automatic routing.
+- AI cleaning estimation.
 - Payment gateway.
-- Live GPS tracking.
-- Chat realtime.
-- Automatic employee matching.
-- Delivery integration.
-- Advanced analytics.
-- Loyalty points.
+- Auto QRIS verification.
+- Bank API.
+- Logistic API.
 - Membership.
-- Referral program.
-- Subscription.
-- Multi-branch management.
+- Loyalty.
+- Subscription cleaning.
+- Referral.
+- Corporate cleaning.
+- Dynamic surge pricing.
+- Advanced employee scheduling.
+- Automated settlement.
+- Customer support ticket.
+- Fraud detection.
 
 ---
 
-# 66. Product Success Indicator
+# 108. Acceptance Criteria
 
-Untuk versi demo, keberhasilan produk tidak diukur berdasarkan jumlah transaksi nyata.
+Sistem dianggap siap production apabila minimal:
 
-Keberhasilan diukur berdasarkan kemampuan aplikasi untuk:
-
-- Menjelaskan konsep bisnis.
-- Mendemonstrasikan customer journey.
-- Menampilkan interaksi realtime.
-- Memberikan pengalaman seperti aplikasi mobile.
-- Menunjukkan kesiapan sistem untuk dikembangkan lebih lanjut.
+1. Customer dapat melakukan booking cleaning.
+2. Harga dihitung otomatis berdasarkan luas dan jarak.
+3. Customer dapat melihat breakdown harga.
+4. Order dikirim realtime kepada employee eligible.
+5. Hanya satu employee dapat claim.
+6. Employee dapat memulai perjalanan.
+7. Customer dapat live tracking.
+8. Tracking berhenti ketika employee tiba.
+9. Employee dapat upload before.
+10. Employee dapat memulai pekerjaan.
+11. Employee dapat upload after.
+12. Employee dapat menyelesaikan order.
+13. Customer dapat membayar Cash/QRIS/Transfer.
+14. QRIS dan rekening mengikuti employee assigned.
+15. Invoice dihasilkan.
+16. Pendapatan employee tercatat.
+17. Settlement bulanan terhitung.
+18. Admin dapat mengubah settlement rate.
+19. Admin dapat mengubah pricing rules.
+20. Historical order tidak berubah ketika pricing berubah.
+21. Customer dapat membeli Nail Art.
+22. Stock Nail Art terkontrol.
+23. Customer dapat melihat status product order.
+24. Admin dapat melihat laporan operasional.
+25. Role access berjalan dengan benar.
+26. Sistem mencegah duplicate claim.
+27. Sistem mencegah negative inventory.
+28. Semua transaksi penting tercatat melalui audit log.
 
 ---
 
-# 67. Kesimpulan
+# 109. Product Summary
 
-Aplikasi ini dirancang sebagai platform salon dan beauty commerce berbasis home service dengan tiga role utama yaitu Customer, Karyawan, dan Administrator.
+Produk terdiri dari tiga platform utama:
 
-Customer dapat melakukan pemesanan layanan serta pembelian produk.
+### Customer App
 
-Karyawan dapat menerima pekerjaan menggunakan sistem realtime dan first-come-first-served.
+Berfungsi sebagai aplikasi pemesanan home cleaning sekaligus marketplace produk Nail Art.
 
-Administrator dapat melakukan monitoring seluruh aktivitas dan mengelola data operasional.
+### Employee App
 
-Versi demo akan dibuat dalam bentuk **mobile-first web application** dan dapat di-deploy melalui Vercel sehingga dapat langsung diakses menggunakan smartphone tanpa instalasi.
+Berfungsi sebagai aplikasi operasional cleaning worker untuk menerima pekerjaan, melakukan live tracking, mengelola pekerjaan, pembayaran, pendapatan, serta settlement.
 
-Pendekatan ini dipilih agar proses validasi produk lebih cepat, mudah didemonstrasikan, serta tetap dapat dikembangkan menjadi PWA maupun aplikasi Android di tahap berikutnya.
+### Admin Web
+
+Berfungsi sebagai pusat kontrol bisnis untuk mengatur harga, employee, customer, settlement, order, produk, pembayaran, serta laporan.
+
+Model bisnis cleaning menggunakan sistem pembayaran langsung dari customer kepada employee.
+
+Employee memperoleh **100% gross revenue** dari transaksi dan memiliki kewajiban settlement bulanan kepada perusahaan sebesar **3% secara default**, yang dapat dikonfigurasi oleh administrator.
+
+Harga cleaning dihitung menggunakan formula berdasarkan **ukuran rumah, jarak customer, add-on, service fee, dan promo**.
+
+Produk Nail Art diperlakukan sebagai e-commerce multi-kategori yang sepenuhnya terpisah dari operasional employee cleaning.
+
+PRD V2 ini menjadi dasar utama untuk pengembangan Customer App, Employee App, Admin Web, database architecture, API specification, UI/UX design, dan quality assurance.

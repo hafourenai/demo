@@ -1,165 +1,197 @@
 'use client';
 
 import { useState } from 'react';
-import { MapPin, Clock, DollarSign, Zap } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { MapPin, Zap, Check, AlertCircle } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { EmployeeLayout } from '@/components/layouts/EmployeeLayout';
-import { Card, Button, EmptyState } from '@/components/common';
 import { formatCurrency } from '@/lib/utils';
 
 export default function AvailableOrdersPage() {
+  const router = useRouter();
   const {
     currentUser,
-    orders,
-    services,
+    cleaningOrders,
     employees,
-    claimOrder,
+    claimCleaningOrder,
   } = useAppStore();
 
-  const [claiming, setClaming] = useState<string | null>(null);
-  const [claimedOrders, setClaimedOrders] = useState<string[]>([]);
+  const [claimingId, setClaimingId] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const employee = employees.find((e) => e.id === currentUser?.id);
+  const employee = employees.find((e) => e.id === currentUser?.id) || employees[0];
 
-  // Get available orders that match employee skills
-  const availableOrders = orders
-    .filter((o) => o.status === 'waiting_employee')
-    .filter((o) => {
-      const orderService = services.find((s) =>
-        o.items.some((item) => item.itemId === s.id && item.type === 'service')
-      );
-      return orderService && employee?.skills.includes(orderService.name);
-    })
-    .filter((o) => !claimedOrders.includes(o.id));
+  // Eligible orders: status searching_employee & matching skill
+  const availableOrders = cleaningOrders.filter((o) => {
+    if (o.status !== 'searching_employee') return false;
+    if (!employee?.skills || employee.skills.length === 0) return true;
+    return employee.skills.includes(o.serviceName) || employee.skills.includes('General Cleaning');
+  });
 
-  const handleClaimOrder = (orderId: string) => {
-    setClaming(orderId);
+  const handleClaim = (orderId: string) => {
+    setClaimingId(orderId);
+    setAlertMessage(null);
 
-    // Simulate network delay
+    // Simulate atomic concurrency claim
     setTimeout(() => {
-      const success = claimOrder(orderId, currentUser?.id || '');
+      const res = claimCleaningOrder(orderId, employee.id);
+      setClaimingId(null);
 
-      if (success) {
-        setClaimedOrders([...claimedOrders, orderId]);
-        alert('Order berhasil diambil!');
+      if (res.success) {
+        setAlertMessage({ type: 'success', text: res.message });
+        setTimeout(() => {
+          router.push('/employee/active');
+        }, 800);
       } else {
-        alert('Maaf, order telah diambil karyawan lain');
+        setAlertMessage({ type: 'error', text: res.message });
       }
-
-      setClaming(null);
-    }, 800);
+    }, 600);
   };
 
   return (
     <EmployeeLayout currentPage="available">
-      <div className="px-4 py-4 space-y-4">
-        <h1 className="text-2xl font-serif font-bold text-text-primary">Order Tersedia</h1>
+      <div className="customer-page space-y-4">
+        <div>
+          <h1 className="text-xl font-serif font-bold text-text-primary">
+            Order Cleaning Tersedia
+          </h1>
+          <p className="text-xs text-text-secondary mt-0.5">
+            Sistem distribusi realtime: First Valid Claim Wins (Siapa cepat dia dapat).
+          </p>
+        </div>
 
+        {alertMessage && (
+          <div
+            className={`p-3.5 rounded-2xl text-xs font-semibold flex items-center gap-2 ${
+              alertMessage.type === 'success'
+                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                : 'bg-rose-50 text-rose-800 border border-rose-200'
+            }`}
+          >
+            {alertMessage.type === 'success' ? <Check size={16} /> : <AlertCircle size={16} />}
+            <span>{alertMessage.text}</span>
+          </div>
+        )}
+
+        {/* Counter Header */}
+        <div className="bg-primary/5 border border-primary/20 rounded-2xl p-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Zap size={18} className="text-primary flex-shrink-0" />
+            <p className="text-xs text-text-primary font-semibold">
+              <strong className="text-primary">{availableOrders.length}</strong> order baru menunggu respon
+            </p>
+          </div>
+          <span className="text-[10px] text-text-muted">Auto-refresh aktif</span>
+        </div>
+
+        {/* Available Order Cards (PRD Section 82) */}
         {availableOrders.length === 0 ? (
-          <EmptyState
-            icon={<Zap size={48} />}
-            title="Tidak ada order tersedia"
-            description="Refresh halaman untuk melihat update terbaru"
-          />
+          <div className="bg-white rounded-2xl border border-border p-8 text-center space-y-2">
+            <div className="w-12 h-12 rounded-full bg-canvas-alt text-text-muted flex items-center justify-center mx-auto">
+              <Zap size={22} />
+            </div>
+            <h3 className="font-bold text-xs text-text-primary">Belum Ada Order Baru</h3>
+            <p className="text-[11px] text-text-secondary max-w-xs mx-auto">
+              Saat customer memesan pembersihan rumah di area Anda, order akan langsung muncul di sini.
+            </p>
+          </div>
         ) : (
           <div className="space-y-3">
-            <div className="bg-primary/5 border border-primary/20 rounded-md p-3 flex gap-2 items-start">
-              <Zap size={18} className="text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-text-secondary">
-                <strong className="text-text-primary">{availableOrders.length}</strong> order menunggu. Klik "Ambil Order" untuk mendapatkan pekerjaan.
-              </p>
-            </div>
-
             {availableOrders.map((order) => {
-              const orderService = services.find((s) =>
-                order.items.some((item) => item.itemId === s.id && item.type === 'service')
-              );
-              const isProcessing = claiming === order.id;
+              const isClaiming = claimingId === order.id;
 
               return (
-                <Card
+                <div
                   key={order.id}
-                  className="border-l-4 border-primary hover:shadow-md transition-shadow duration-base"
+                  className="bg-white rounded-2xl border-2 border-border p-4 shadow-sm hover:border-primary transition-all space-y-3"
                 >
-                  <div className="space-y-3">
-                    {/* Header */}
+                  {/* Top Line */}
+                  <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-serif font-semibold text-text-primary text-lg">{orderService?.name}</h3>
-                      <p className="text-xs text-text-secondary mt-1">{orderService?.description}</p>
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="font-mono text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-700 font-semibold">
+                          {order.invoiceNumber}
+                        </span>
+                        <span className="text-[10px] bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full font-bold uppercase">
+                          {order.bookingType === 'now' ? 'Pesan Sekarang' : 'Terjadwal'}
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-sm text-text-primary">
+                        {order.serviceName}
+                      </h3>
                     </div>
 
-                    {/* Details Grid */}
-                    <div className="grid grid-cols-2 gap-3">
-                      {/* Location */}
-                      <div className="flex gap-2">
-                        <MapPin size={16} className="text-primary flex-shrink-0 mt-1" />
-                        <div>
-                          <p className="text-xs text-text-muted">Lokasi</p>
-                          <p className="font-semibold text-text-primary text-sm">
-                            {order.address.detail.split(',')[0]}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Duration */}
-                      <div className="flex gap-2">
-                        <Clock size={16} className="text-accent flex-shrink-0 mt-1" />
-                        <div>
-                          <p className="text-xs text-text-muted">Durasi</p>
-                          <p className="font-semibold text-text-primary text-sm">
-                            {orderService?.duration} menit
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Price */}
-                      <div className="flex gap-2">
-                        <DollarSign size={16} className="text-success flex-shrink-0 mt-1" />
-                        <div>
-                          <p className="text-xs text-text-muted">Harga</p>
-                          <p className="font-bold text-primary text-sm">
-                            {formatCurrency(order.totalPrice)}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Commission */}
-                      <div className="flex gap-2">
-                        <Zap size={16} className="text-warning flex-shrink-0 mt-1" />
-                        <div>
-                          <p className="text-xs text-text-muted">Komisi (20%)</p>
-                          <p className="font-bold text-warning text-sm">
-                            {formatCurrency(order.totalPrice * 0.2)}
-                          </p>
-                        </div>
-                      </div>
+                    <div className="text-right">
+                      <span className="text-[10px] text-text-muted block">Gross Earning (100%)</span>
+                      <span className="text-sm font-bold text-emerald-600">
+                        {formatCurrency(order.priceBreakdown.total)}
+                      </span>
                     </div>
-
-                    {/* Customer Info */}
-                    <div className="bg-canvas-alt rounded-md p-2">
-                      <p className="text-xs text-text-muted">Penerima</p>
-                      <p className="font-semibold text-text-primary text-sm">
-                        {order.address.recipientName}
-                      </p>
-                      <p className="text-xs text-text-secondary mt-1">{order.address.phone}</p>
-                    </div>
-
-                    {/* Claim Button */}
-                    <Button
-                      onClick={() => handleClaimOrder(order.id)}
-                      disabled={isProcessing}
-                      className="w-full"
-                    >
-                      {isProcessing ? 'Memproses...' : 'Ambil Order'}
-                    </Button>
                   </div>
-                </Card>
+
+                  {/* Property Details Grid */}
+                  <div className="grid grid-cols-2 gap-2 bg-canvas p-2.5 rounded-xl border border-border text-xs">
+                    <div>
+                      <span className="text-[10px] text-text-muted block">Ukuran Bangunan:</span>
+                      <strong className="text-text-primary">
+                        {order.propertyDetails.buildingSize} m² ({order.propertyDetails.propertyType})
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span className="text-[10px] text-text-muted block">Kamar &amp; Mandi:</span>
+                      <strong className="text-text-primary">
+                        {order.propertyDetails.bedrooms} Kamar • {order.propertyDetails.bathrooms} Mandi
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span className="text-[10px] text-text-muted block">Jarak Lokasi:</span>
+                      <strong className="text-primary">{order.distanceKm} KM</strong>
+                    </div>
+
+                    <div>
+                      <span className="text-[10px] text-text-muted block">Metode Bayar:</span>
+                      <strong className="text-text-primary uppercase">{order.paymentMethod}</strong>
+                    </div>
+                  </div>
+
+                  {/* Addons if any */}
+                  {order.addons.length > 0 && (
+                    <div className="text-[11px] text-text-secondary bg-amber-50 p-2 rounded-lg border border-amber-200">
+                      <strong>Layanan Tambahan:</strong>{' '}
+                      {order.addons.map((a) => `${a.name} (x${a.quantity})`).join(', ')}
+                    </div>
+                  )}
+
+                  {/* Customer Address Preview */}
+                  <div className="flex items-start gap-2 text-xs text-text-secondary">
+                    <MapPin size={15} className="text-primary flex-shrink-0 mt-0.5" />
+                    <p className="line-clamp-2">
+                      <strong>{order.address.label.toUpperCase()}:</strong> {order.address.detail}
+                    </p>
+                  </div>
+
+                  {/* Claim Button (PRD Section 28: First Valid Claim Wins) */}
+                  <button
+                    type="button"
+                    onClick={() => handleClaim(order.id)}
+                    disabled={isClaiming}
+                    className="w-full py-3 px-4 bg-primary text-white rounded-xl font-bold text-xs hover:bg-primary-dark transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
+                  >
+                    {isClaiming ? (
+                      'Mengunci Order...'
+                    ) : (
+                      <>
+                        <Zap size={15} /> AMBIL ORDER SEKARANG
+                      </>
+                    )}
+                  </button>
+                </div>
               );
             })}
           </div>
         )}
-
-        <div className="h-8" />
       </div>
     </EmployeeLayout>
   );

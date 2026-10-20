@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Home, CheckCircle, History, User, LogOut, Menu, X } from 'lucide-react';
+import { Home, BellRing, Briefcase, Wallet, User, LogOut, Menu, X } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { MobileFrame, BottomNav } from '@/components/common';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ interface EmployeeLayoutProps {
 
 export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, currentPage }) => {
   const router = useRouter();
-  const { currentUser, logout } = useAppStore();
+  const { currentUser, logout, cleaningOrders } = useAppStore();
   const [showMenu, setShowMenu] = useState(false);
 
   const handleLogout = () => {
@@ -22,12 +22,47 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
     router.push('/');
   };
 
+  const availableCount = cleaningOrders.filter((o) => o.status === 'searching_employee').length;
+  const activeCount = cleaningOrders.filter(
+    (o) =>
+      o.employeeId === currentUser?.id &&
+      ['assigned', 'on_the_way', 'arrived', 'in_service'].includes(o.status)
+  ).length;
+
   const navItems = [
-    { icon: <Home size={24} />, label: 'Home', href: '/employee', page: 'home' as const },
-    { icon: <CheckCircle size={24} />, label: 'Available', href: '/employee/available', page: 'available' as const },
-    { icon: <CheckCircle size={24} />, label: 'Active', href: '/employee/active', page: 'active' as const },
-    { icon: <History size={24} />, label: 'History', href: '/employee/history', page: 'history' as const },
-    { icon: <User size={24} />, label: 'Account', href: '/employee/account', page: 'account' as const },
+    { icon: <Home size={22} />, label: 'Home', href: '/employee', page: 'home' as const },
+    {
+      icon: (
+        <div className="relative">
+          <BellRing size={22} />
+          {availableCount > 0 && (
+            <span className="absolute -top-1 -right-2 bg-danger text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              {availableCount}
+            </span>
+          )}
+        </div>
+      ),
+      label: 'Order',
+      href: '/employee/available',
+      page: 'available' as const,
+    },
+    {
+      icon: (
+        <div className="relative">
+          <Briefcase size={22} />
+          {activeCount > 0 && (
+            <span className="absolute -top-1 -right-2 bg-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              {activeCount}
+            </span>
+          )}
+        </div>
+      ),
+      label: 'Pekerjaan',
+      href: '/employee/active',
+      page: 'active' as const,
+    },
+    { icon: <Wallet size={22} />, label: 'Pendapatan', href: '/employee/history', page: 'history' as const },
+    { icon: <User size={22} />, label: 'Akun', href: '/employee/account', page: 'account' as const },
   ];
 
   return (
@@ -36,8 +71,12 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
         {/* Header */}
         <header className="sticky top-0 z-40 bg-card border-b border-border px-4 py-3 flex items-center justify-between shadow-sm">
           <div className="flex-1">
-            <h1 className="text-lg font-semibold text-text-primary font-serif">Salon & Beauty</h1>
-            <p className="text-xs text-text-muted">Employee • {currentUser?.name}</p>
+            <h1 className="text-base font-bold text-text-primary flex items-center gap-1.5 font-sans">
+              Clean&amp;Nail <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-semibold">Employee</span>
+            </h1>
+            <p className="text-xs text-text-secondary truncate">
+              {currentUser?.name || 'Cleaning Partner'} • Home Cleaning
+            </p>
           </div>
           <button
             onClick={() => setShowMenu(!showMenu)}
@@ -45,7 +84,7 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
             aria-label="Toggle menu"
             style={{ minHeight: '44px', minWidth: '44px' }}
           >
-            {showMenu ? <X size={24} /> : <Menu size={24} />}
+            {showMenu ? <X size={22} /> : <Menu size={22} />}
           </button>
         </header>
 
@@ -54,23 +93,23 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
           <div className="bg-card border-b border-border p-4 space-y-2">
             <Link
               href="/employee/account"
-              className="block px-4 py-2 text-text-primary hover:bg-canvas-alt rounded-md transition-colors duration-base"
+              className="block px-4 py-2 text-text-primary hover:bg-canvas-alt rounded-md text-sm transition-colors duration-base"
             >
-              Profile
+              Profil &amp; Rekening Pembayaran
             </Link>
             <button
               onClick={handleLogout}
-              className="w-full text-left px-4 py-2 text-danger hover:bg-danger/10 rounded-md transition-colors duration-base flex items-center gap-2"
+              className="w-full text-left px-4 py-2 text-danger hover:bg-danger/10 rounded-md transition-colors duration-base flex items-center gap-2 text-sm"
             >
-              <LogOut size={18} /> Logout
+              <LogOut size={16} /> Logout
             </button>
           </div>
         )}
 
         {/* Main Content */}
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pb-16">{children}</main>
 
-        {/* Bottom Navigation */}
+        {/* Bottom Navigation (PRD Section 6: Home | Order | Pekerjaan | Pendapatan | Akun) */}
         <BottomNav
           items={navItems.map((item) => ({
             ...item,

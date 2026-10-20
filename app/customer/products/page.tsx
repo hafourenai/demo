@@ -1,29 +1,28 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Star, Heart } from 'lucide-react';
+import { Star, Heart, Search, ShoppingBag, Sparkles } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { CustomerLayout } from '@/components/layouts/CustomerLayout';
-import { Card } from '@/components/common';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function ProductsPage() {
-  const { products, wishlist, addToWishlist, removeFromWishlist } = useAppStore();
+  const { nailArtProducts, wishlist, addToWishlist, removeFromWishlist, cart } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const categories = Array.from(new Set(products.map((p) => p.category)));
+  const categories = Array.from(new Set(nailArtProducts.map((p) => p.category)));
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
+    return nailArtProducts.filter((product) => {
       const matchesSearch =
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = !selectedCategory || product.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, nailArtProducts]);
 
   const toggleWishlist = (productId: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -35,117 +34,159 @@ export default function ProductsPage() {
     }
   };
 
+  const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
     <CustomerLayout currentPage="products">
-      <div className="pb-8">
-        {/* Search Header */}
-        <div className="relative isolate overflow-hidden bg-primary-dark text-white px-5 py-8 sm:py-12 shadow-md">
-          <img
-            src="/images/products/prod1.jpg"
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-[center_55%] opacity-50"
-          />
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-r from-primary-dark/60 via-primary-dark/20 to-transparent" />
-          <h2 className="relative z-10 text-white text-2xl font-serif font-bold mb-4">Produk Kecantikan</h2>
-          <div className="relative z-10">
+      <div className="customer-page space-y-4">
+        {/* Header & Cart Shortcut */}
+        <div className="bg-gradient-to-r from-accent to-amber-700 text-white rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] font-semibold tracking-wider uppercase text-white/80 flex items-center gap-1.5">
+              <Sparkles size={14} /> Nail Art Official Store
+            </span>
+            <Link
+              href="/customer/checkout"
+              className="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1.5 font-semibold transition-colors"
+            >
+              <ShoppingBag size={14} />
+              Keranjang ({totalCartCount})
+            </Link>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-serif font-bold">Katalog Produk Nail Art</h1>
+          <p className="text-xs text-white/85 mt-1">
+            Koleksi press-on nails handmade, uv gel polish, sticker 3D, dan starter kit lengkap.
+          </p>
+
+          <div className="mt-4 relative">
             <input
               type="text"
-              placeholder="Cari produk..."
-              aria-label="Cari produk"
+              placeholder="Cari press-on nails, gel polish, stiker..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-4 pr-4 py-3 rounded-md bg-card text-text-primary placeholder-text-muted border border-white focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-base"
+              className="w-full bg-white text-text-primary px-3.5 py-2.5 rounded-xl text-xs placeholder:text-text-muted focus:outline-none shadow-sm"
             />
+            <Search size={16} className="absolute right-3.5 top-2.5 text-text-muted" />
           </div>
         </div>
 
-        <div className="px-4 py-4 space-y-4">
-          {/* Categories */}
-          <div className="flex gap-2 overflow-x-auto pb-2">
+        {/* Category Pills */}
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <button
+            onClick={() => setSelectedCategory(null)}
+            className={`px-3 py-1.5 rounded-xl whitespace-nowrap text-xs font-semibold transition-all ${
+              selectedCategory === null
+                ? 'bg-accent text-white shadow-sm'
+                : 'bg-white text-text-secondary border border-border hover:bg-canvas-alt'
+            }`}
+          >
+            Semua ({nailArtProducts.length})
+          </button>
+          {categories.map((cat) => (
             <button
-              onClick={() => setSelectedCategory(null)}
-              className={`px-4 py-2 rounded-full whitespace-nowrap font-semibold text-sm transition-colors duration-base ${
-                selectedCategory === null
-                  ? 'bg-primary text-white'
-                  : 'bg-canvas-alt text-text-primary hover:bg-border-primary'
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-1.5 rounded-xl whitespace-nowrap text-xs font-semibold transition-all ${
+                selectedCategory === cat
+                  ? 'bg-accent text-white shadow-sm'
+                  : 'bg-white text-text-secondary border border-border hover:bg-canvas-alt'
               }`}
-              style={{ minHeight: '44px' }}
             >
-              Semua
+              {cat}
             </button>
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-full whitespace-nowrap font-semibold text-sm transition-colors duration-base ${
-                  selectedCategory === cat
-                    ? 'bg-primary text-white'
-                    : 'bg-canvas-alt text-text-primary hover:bg-border-primary'
-                }`}
-                style={{ minHeight: '44px' }}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          ))}
+        </div>
 
-          {/* Products Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filteredProducts.map((product) => (
-              <Link key={product.id} href={`/customer/products/${product.id}`}>
-                <Card className="cursor-pointer hover:shadow-md transition-shadow duration-base h-full flex flex-col">
-                  <div className="relative mb-2 flex-shrink-0">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-32 object-cover rounded-md"
+        {/* Product Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          {filteredProducts.map((product) => {
+            const isWish = wishlist.includes(product.id);
+            return (
+              <Link
+                key={product.id}
+                href={`/customer/products/${product.id}`}
+                className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group"
+              >
+                <div className="relative aspect-square w-full bg-canvas-alt overflow-hidden">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <button
+                    onClick={(e) => toggleWishlist(product.id, e)}
+                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm text-text-muted hover:text-danger transition-colors"
+                    aria-label="Wishlist"
+                  >
+                    <Heart
+                      size={16}
+                      className={isWish ? 'fill-danger text-danger' : 'text-text-muted'}
                     />
-                    <button
-                      onClick={(e) => toggleWishlist(product.id, e)}
-                      className="absolute top-2 right-2 bg-card rounded-full p-1.5 shadow-md hover:shadow-lg transition-shadow duration-base"
-                      aria-label="Toggle wishlist"
-                      style={{ minHeight: '44px', minWidth: '44px' }}
-                    >
-                      <Heart
-                        size={18}
-                        className={wishlist.includes(product.id) ? 'fill-primary text-primary' : 'text-text-muted'}
-                      />
-                    </button>
-                    {product.isBestSeller && (
-                      <div className="absolute bottom-2 left-2 badge badge-success text-xs">Best Seller</div>
-                    )}
-                  </div>
-                  <div className="flex-1 flex flex-col">
-                    <h4 className="font-serif font-semibold text-text-primary text-sm line-clamp-2">{product.name}</h4>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Star size={12} className="text-warning fill-warning" />
-                      <span className="text-xs font-semibold text-text-primary">{product.rating}</span>
+                  </button>
+
+                  {product.isBestSeller && (
+                    <span className="absolute top-2 left-2 bg-accent text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                      Best Seller
+                    </span>
+                  )}
+                  {product.promoPrice && (
+                    <span className="absolute bottom-2 left-2 bg-danger text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">
+                      Hemat {formatCurrency(product.price - product.promoPrice)}
+                    </span>
+                  )}
+                </div>
+
+                <div className="p-3 flex flex-col flex-1 justify-between">
+                  <div>
+                    <span className="text-[10px] text-text-muted uppercase font-semibold">
+                      {product.category}
+                    </span>
+                    <h3 className="font-semibold text-xs leading-snug text-text-primary line-clamp-2 mt-0.5">
+                      {product.name}
+                    </h3>
+
+                    <div className="flex items-center gap-1 text-[11px] text-text-secondary mt-1">
+                      <Star size={11} className="text-warning fill-warning" />
+                      <span className="font-medium">{product.rating}</span>
+                      <span className="text-text-muted">• Stok {product.stock}</span>
                     </div>
-                    <div className="mt-auto pt-2">
+                  </div>
+
+                  <div className="mt-2.5 pt-2 border-t border-border flex items-center justify-between">
+                    <div>
                       {product.promoPrice ? (
-                        <div>
-                          <p className="text-primary font-bold text-sm">{formatCurrency(product.promoPrice)}</p>
-                          <p className="text-text-muted line-through text-xs">{formatCurrency(product.price)}</p>
-                        </div>
+                        <>
+                          <span className="text-[10px] text-text-muted line-through block">
+                            {formatCurrency(product.price)}
+                          </span>
+                          <span className="font-bold text-xs text-danger">
+                            {formatCurrency(product.promoPrice)}
+                          </span>
+                        </>
                       ) : (
-                        <p className="text-primary font-bold text-sm">{formatCurrency(product.price)}</p>
+                        <span className="font-bold text-xs text-text-primary">
+                          {formatCurrency(product.price)}
+                        </span>
                       )}
                     </div>
+                    <span className="text-[10px] font-semibold text-accent hover:underline">
+                      Pilih &gt;
+                    </span>
                   </div>
-                </Card>
+                </div>
               </Link>
-            ))}
-          </div>
-
-          {filteredProducts.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-text-secondary">Tidak ada produk ditemukan</p>
-            </div>
-          )}
-
-          <div className="h-8" />
+            );
+          })}
         </div>
+
+        {filteredProducts.length === 0 && (
+          <div className="text-center py-12 bg-white rounded-2xl border border-border p-6">
+            <p className="text-sm font-semibold text-text-primary">Tidak ada produk ditemukan</p>
+            <p className="text-xs text-text-secondary mt-1">
+              Coba ganti kata kunci pencarian atau pilih kategori lain.
+            </p>
+          </div>
+        )}
       </div>
     </CustomerLayout>
   );

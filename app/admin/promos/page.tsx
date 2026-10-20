@@ -3,86 +3,113 @@
 import { useState } from 'react';
 import useAppStore from '@/lib/store';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
-import { Card, Button, Badge } from '@/components/common';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { Search } from 'lucide-react';
 
 export default function PromosPage() {
   const { promos } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredPromos = promos.filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredPromos = promos.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <AdminLayout>
-      <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-serif font-semibold text-text-primary">Manajemen Promo</h1>
-            <p className="text-text-secondary mt-1">Total: {promos.length} promo</p>
+            <h1 className="text-2xl font-serif font-bold text-slate-900">
+              Manajemen Voucher &amp; Promo
+            </h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Kelola voucher diskon khusus Home Cleaning dan belanja Nail Art.
+            </p>
           </div>
-          <Button>+ Tambah Promo</Button>
         </div>
 
         {/* Search */}
-        <div>
+        <div className="relative">
           <input
             type="text"
-            placeholder="Cari promo..."
+            placeholder="Cari voucher berdasarkan nama atau kode promo..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-3 border border-border rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full bg-white px-4 py-2.5 pl-10 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
           />
+          <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
         </div>
 
-        {/* Table */}
-        <Card className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-canvas-alt border-b border-border">
-              <tr>
-                <th className="px-4 py-3 text-left font-semibold text-text-primary">Nama</th>
-                <th className="px-4 py-3 text-left font-semibold text-text-primary">Kode</th>
-                <th className="px-4 py-3 text-left font-semibold text-text-primary">Jenis</th>
-                <th className="px-4 py-3 text-left font-semibold text-text-primary">Nilai</th>
-                <th className="px-4 py-3 text-left font-semibold text-text-primary">Berlaku Hingga</th>
-                <th className="px-4 py-3 text-left font-semibold text-text-primary">Status</th>
-                <th className="px-4 py-3 text-left font-semibold text-text-primary">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filteredPromos.map((promo) => (
-                <tr key={promo.id} className="hover:bg-canvas-alt transition-colors duration-base">
-                  <td className="px-4 py-3 font-semibold text-text-primary">{promo.name}</td>
-                  <td className="px-4 py-3 font-mono text-primary font-bold">{promo.code}</td>
-                  <td className="px-4 py-3 text-text-secondary capitalize">
-                    {promo.type === 'percentage'
-                      ? 'Persentase'
-                      : promo.type === 'nominal'
-                      ? 'Nominal'
-                      : 'Voucher'}
-                  </td>
-                  <td className="px-4 py-3 font-bold text-text-primary">
-                    {promo.type === 'percentage' ? `${promo.value}%` : formatCurrency(promo.value)}
-                  </td>
-                  <td className="px-4 py-3 text-text-secondary">{formatDate(promo.endDate)}</td>
-                  <td className="px-4 py-3">
-                    <Badge variant={promo.isActive ? 'success' : 'warning'}>
-                      {promo.isActive ? 'Aktif' : 'Nonaktif'}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button className="text-primary hover:text-primary-dark transition-colors duration-base font-semibold text-sm">Edit</button>
-                  </td>
+        {/* Promos Table */}
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs text-left">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 uppercase font-bold text-[10px] tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">Nama Promo</th>
+                  <th className="px-4 py-3">Kode Kupon</th>
+                  <th className="px-4 py-3">Berlaku Untuk</th>
+                  <th className="px-4 py-3">Tipe &amp; Nilai</th>
+                  <th className="px-4 py-3">Min. Transaksi</th>
+                  <th className="px-4 py-3">Masa Berlaku</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card>
-
-        {filteredPromos.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-text-secondary">Tidak ada promo ditemukan</p>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredPromos.map((promo) => (
+                  <tr key={promo.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-4 py-3 font-semibold text-slate-900">{promo.name}</td>
+                    <td className="px-4 py-3">
+                      <span className="font-mono bg-pink-50 text-pink-700 px-2 py-0.5 rounded font-bold">
+                        {promo.code}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        {promo.applicableTo.map((app) => (
+                          <span
+                            key={app}
+                            className={`text-[9px] font-bold px-1.5 py-0.2 rounded uppercase ${
+                              app === 'cleaning'
+                                ? 'bg-pink-100 text-pink-700'
+                                : 'bg-amber-100 text-amber-800'
+                            }`}
+                          >
+                            {app === 'cleaning' ? '🧹 Cleaning' : '💅 Nail Art'}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 font-bold text-slate-900 font-sans">
+                      {promo.type === 'percentage'
+                        ? `${promo.value}% Diskon`
+                        : `Potongan ${formatCurrency(promo.value)}`}
+                    </td>
+                    <td className="px-4 py-3 font-sans text-slate-600">
+                      {promo.minTransaction ? formatCurrency(promo.minTransaction) : 'Tanpa Min.'}
+                    </td>
+                    <td className="px-4 py-3 text-slate-500">
+                      s/d {formatDate(promo.endDate)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          promo.isActive
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : 'bg-slate-100 text-slate-500'
+                        }`}
+                      >
+                        {promo.isActive ? 'Aktif' : 'Nonaktif'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
+        </div>
       </div>
     </AdminLayout>
   );
