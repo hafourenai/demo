@@ -1,0 +1,56 @@
+{
+  "name": "Clean & Nail Platform",
+  "short_name": "Clean&Nail",
+  "description": "Layanan Home Cleaning Profesional On-Demand & Toko Nail Art Terlengkap",
+  "start_url": "/customer",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFF9FA",
+  "theme_color": "#B4576B",
+  "orientation": "portrait-primary",
+  "lang": "id-ID",
+  "categories": ["lifestyle", "shopping", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Pesan Cleaning",
+      "short_name": "Cleaning",
+      "description": "Pesan layanan pembersihan rumah profesional",
+      "url": "/customer/services",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Belanja Nail Art",
+      "short_name": "Nail Art",
+      "description": "Katalog aksesoris kuku & kutek",
+      "url": "/customer/products",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Aplikasi Mitra Cleaning",
+      "short_name": "Mitra",
+      "description": "Masuk ke portal partner pembersihan",
+      "url": "/employee",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    }
+  ]
+}
