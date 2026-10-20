@@ -9,6 +9,7 @@ import { CustomerLayout } from '@/components/layouts/CustomerLayout';
 import { Button } from '@/components/common';
 import { generateId } from '@/lib/utils';
 import { Address } from '@/lib/types';
+import { seedCustomers } from '@/lib/seed';
 
 const labelText = (label: string) =>
   label === 'home' ? 'Rumah' : label === 'office' ? 'Kantor' : 'Lainnya';
@@ -38,8 +39,8 @@ export default function AccountPage() {
   } = useAppStore();
 
   const router = useRouter();
-  const customer = customers.find((c) => c.id === currentUser?.id);
-  const profile = customer || currentUser;
+  const customer = customers.find((c) => c.id === currentUser?.id) || customers[0] || seedCustomers[0];
+  const profile = customer || currentUser || seedCustomers[0];
 
   const [editingProfile, setEditingProfile] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
@@ -47,10 +48,11 @@ export default function AccountPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 
-  const myCleanings = cleaningOrders.filter((o) => o.customerId === currentUser?.id).length;
-  const myProducts = productOrders.filter((o) => o.customerId === currentUser?.id).length;
+  const activeUserId = profile?.id || 'cust1';
+  const myCleanings = cleaningOrders.filter((o) => o.customerId === activeUserId).length;
+  const myProducts = productOrders.filter((o) => o.customerId === activeUserId).length;
   const totalOrders = myCleanings + myProducts;
-  const addresses = customer?.addresses || [];
+  const addresses = (customer?.addresses && customer.addresses.length > 0) ? customer.addresses : seedCustomers[0].addresses;
   const initials =
     profile?.name
       .split(' ')

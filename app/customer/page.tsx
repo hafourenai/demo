@@ -17,6 +17,7 @@ import { ServiceImage } from '@/components/ServiceImage';
 import { PromoCarousel } from '@/components/PromoCarousel';
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import { seedCustomers } from '@/lib/seed';
 
 export default function CustomerDashboard() {
   const {
@@ -29,8 +30,8 @@ export default function CustomerDashboard() {
   } = useAppStore();
 
   const [addressId, setAddressId] = useState('');
-  const customer = customers.find((c) => c.id === currentUser?.id);
-  const addresses = customer?.addresses || [];
+  const customer = customers.find((c) => c.id === currentUser?.id) || customers[0] || seedCustomers[0];
+  const addresses = (customer?.addresses && customer.addresses.length > 0) ? customer.addresses : seedCustomers[0].addresses;
   const selectedAddress =
     addresses.find((a) => a.id === addressId) ||
     addresses.find((a) => a.isDefault) ||

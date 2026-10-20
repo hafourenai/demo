@@ -17,6 +17,7 @@ import { formatCurrency, calculateCleaningPrice, generateId, generateInvoiceNumb
 import { CleaningPropertyDetails, PaymentMethod, CleaningOrder } from '@/lib/types';
 import Link from 'next/link';
 import { PaymentGatewayModal } from '@/components/payment/PaymentGatewayModal';
+import { seedCustomers } from '@/lib/seed';
 
 function CleaningBookingContent() {
   const router = useRouter();
@@ -30,10 +31,18 @@ function CleaningBookingContent() {
     pricingRule,
     promos,
     createCleaningOrder,
+    login,
   } = useAppStore();
 
-  const customer = customers.find((c) => c.id === currentUser?.id);
-  const addresses = customer?.addresses || [];
+  const customer = customers.find((c) => c.id === currentUser?.id) || customers[0] || seedCustomers[0];
+  const addresses = (customer?.addresses && customer.addresses.length > 0) ? customer.addresses : seedCustomers[0].addresses;
+
+  // Auto-login fallback for demo testing if currentUser is null
+  useEffect(() => {
+    if (!currentUser && customer) {
+      login(customer);
+    }
+  }, [currentUser, customer, login]);
 
   // 1. Service Selection
   const initialServiceId = searchParams.get('serviceId') || cleaningServices[0]?.id || 'cln-gen';
@@ -58,6 +67,13 @@ function CleaningBookingContent() {
   const [selectedAddressId, setSelectedAddressId] = useState<string>(
     addresses.find((a) => a.isDefault)?.id || addresses[0]?.id || ''
   );
+
+  useEffect(() => {
+    if (!selectedAddressId && addresses.length > 0) {
+      setSelectedAddressId(addresses.find((a) => a.isDefault)?.id || addresses[0].id);
+    }
+  }, [addresses, selectedAddressId]);
+
   const activeAddress =
     addresses.find((a) => a.id === selectedAddressId) || addresses[0];
 
@@ -155,12 +171,14 @@ function CleaningBookingContent() {
   const [pendingOrder, setPendingOrder] = useState<CleaningOrder | null>(null);
 
   const handleSubmitOrder = () => {
-    if (!currentUser) {
+    const activeUser = currentUser || customer;
+    if (!activeUser) {
       router.push('/login');
       return;
     }
 
-    if (!activeAddress) {
+    const targetAddress = activeAddress || addresses[0];
+    if (!targetAddress) {
       alert('Silakan tambahkan alamat terlebih dahulu.');
       router.push('/customer/account');
       return;
@@ -178,13 +196,13 @@ function CleaningBookingContent() {
       orderType: 'cleaning' as const,
       id: generateId(),
       invoiceNumber: generateInvoiceNumber('CLN'),
-      customerId: currentUser.id,
-      customerName: currentUser.name,
-      customerPhone: currentUser.phone,
+      customerId: activeUser.id,
+      customerName: activeUser.name,
+      customerPhone: activeUser.phone,
       serviceId: selectedService.id,
       serviceName: selectedService.name,
       propertyDetails,
-      address: activeAddress,
+      address: targetAddress,
       distanceKm: simulatedDistanceKm,
       addons: formattedAddons,
       priceBreakdown: {
@@ -819,7 +837,7 @@ function CleaningBookingContent() {
           <button
             type="button"
             onClick={handleSubmitOrder}
-            disabled={submitting || addresses.length === 0}
+            disabled={submitting}
             className="w-full py-4 px-6 bg-primary text-white rounded-2xl font-bold text-sm hover:bg-primary-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md"
           >
             {submitting ? (

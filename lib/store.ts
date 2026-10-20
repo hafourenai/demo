@@ -168,8 +168,8 @@ interface AppState {
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
-      currentUser: null,
-      isAuthenticated: false,
+      currentUser: seedCustomers[0], // Auto-select Clarissa Amanda for instant demo testing
+      isAuthenticated: true,
 
       login: (user: User) => {
         const state = get();
@@ -1098,6 +1098,12 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'home-cleaning-nail-commerce-v2',
+      onRehydrateStorage: () => (state) => {
+        if (state && !state.currentUser) {
+          state.currentUser = seedCustomers[0];
+          state.isAuthenticated = true;
+        }
+      },
       partialize: (state) => ({
         currentUser: state.currentUser,
         isAuthenticated: state.isAuthenticated,

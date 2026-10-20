@@ -75,17 +75,25 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
               Clean&amp;Nail <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-semibold">Employee</span>
             </h1>
             <p className="text-xs text-text-secondary truncate">
-              {currentUser?.name || 'Cleaning Partner'} • Home Cleaning
+              {currentUser?.name || 'Budi Santoso'} • Home Cleaning
             </p>
           </div>
-          <button
-            onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-canvas-alt rounded-md transition-colors duration-base"
-            aria-label="Toggle menu"
-            style={{ minHeight: '44px', minWidth: '44px' }}
-          >
-            {showMenu ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          <div className="flex items-center gap-1.5">
+            <Link
+              href="/demo"
+              className="text-[11px] font-semibold text-primary bg-primary/10 hover:bg-primary/20 px-2.5 py-1 rounded-full transition-colors"
+            >
+              Role ⇄
+            </Link>
+            <button
+              onClick={() => setShowMenu(!showMenu)}
+              className="p-2 hover:bg-canvas-alt rounded-md transition-colors duration-base"
+              aria-label="Toggle menu"
+              style={{ minHeight: '44px', minWidth: '44px' }}
+            >
+              {showMenu ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </header>
 
         {/* Mobile Menu */}

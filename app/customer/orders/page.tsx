@@ -9,12 +9,13 @@ import Link from 'next/link';
 import { CleaningOrder, ProductOrder } from '@/lib/types';
 
 export default function OrdersPage() {
-  const { currentUser, cleaningOrders, productOrders } = useAppStore();
+  const { currentUser, customers, cleaningOrders, productOrders } = useAppStore();
   const [tab, setTab] = useState<'active' | 'completed'>('active');
   const [filterType, setFilterType] = useState<'all' | 'cleaning' | 'product'>('all');
 
-  const myCleaning = cleaningOrders.filter((o) => o.customerId === currentUser?.id);
-  const myProduct = productOrders.filter((o) => o.customerId === currentUser?.id);
+  const activeUserId = currentUser?.id || customers[0]?.id || 'cust1';
+  const myCleaning = cleaningOrders.filter((o) => o.customerId === activeUserId || !o.customerId);
+  const myProduct = productOrders.filter((o) => o.customerId === activeUserId || !o.customerId);
 
   const allOrders = [...myCleaning, ...myProduct].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

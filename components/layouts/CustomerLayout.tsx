@@ -27,7 +27,14 @@ export const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children, curren
             Clean<span className="text-accent">&amp;</span>Nail
             <span className="text-xs font-sans font-normal px-1.5 py-0.5 rounded bg-primary/10 text-primary">V2</span>
           </Link>
-          <span className="text-xs text-text-secondary font-medium">Home Cleaning &amp; Nail Art</span>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/demo"
+              className="text-[11px] font-semibold text-primary bg-primary/10 hover:bg-primary/20 px-2.5 py-1 rounded-full transition-colors flex items-center gap-1"
+            >
+              Demo Switcher ⇄
+            </Link>
+          </div>
         </header>
 
         {/* Main Content */}
