@@ -289,13 +289,13 @@ export default function AdminServicesPage() {
           </div>
 
           {/* Search Bar */}
-          <div>
+          <div className="w-full">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={selectedTab === 'services' ? 'Cari layanan cleaning...' : 'Cari add-on...'}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/20 bg-white"
+              className="w-full px-4 py-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 bg-white placeholder:text-slate-400 font-medium"
             />
           </div>
 
