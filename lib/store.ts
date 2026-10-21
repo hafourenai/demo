@@ -155,6 +155,14 @@ interface AppState {
   markNotificationRead: (id: string) => void;
   addNotification: (notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => void;
 
+  // Cleaning Services & Add-ons Management (Admin)
+  addCleaningService: (service: CleaningService) => void;
+  updateCleaningService: (id: string, updates: Partial<CleaningService>) => void;
+  deleteCleaningService: (id: string) => void;
+  addCleaningAddon: (addon: CleaningAddon) => void;
+  updateCleaningAddon: (id: string, updates: Partial<CleaningAddon>) => void;
+  deleteCleaningAddon: (id: string) => void;
+
   // Backward compatibility helpers
   orders: any[]; // virtual array computed or returned
   createOrder: (order: any) => void;
@@ -1037,6 +1045,50 @@ export const useAppStore = create<AppState>()(
         };
         set((state) => ({
           notifications: [item, ...state.notifications],
+        }));
+      },
+
+      // Cleaning Services & Add-ons Management (Admin)
+      addCleaningService: (service: CleaningService) => {
+        set((state) => ({
+          cleaningServices: [...state.cleaningServices, service],
+          services: [...state.cleaningServices, service],
+        }));
+      },
+
+      updateCleaningService: (id: string, updates: Partial<CleaningService>) => {
+        set((state) => {
+          const updated = state.cleaningServices.map((s) =>
+            s.id === id ? { ...s, ...updates } : s
+          );
+          return { cleaningServices: updated, services: updated };
+        });
+      },
+
+      deleteCleaningService: (id: string) => {
+        set((state) => {
+          const updated = state.cleaningServices.filter((s) => s.id !== id);
+          return { cleaningServices: updated, services: updated };
+        });
+      },
+
+      addCleaningAddon: (addon: CleaningAddon) => {
+        set((state) => ({
+          cleaningAddons: [...state.cleaningAddons, addon],
+        }));
+      },
+
+      updateCleaningAddon: (id: string, updates: Partial<CleaningAddon>) => {
+        set((state) => ({
+          cleaningAddons: state.cleaningAddons.map((a) =>
+            a.id === id ? { ...a, ...updates } : a
+          ),
+        }));
+      },
+
+      deleteCleaningAddon: (id: string) => {
+        set((state) => ({
+          cleaningAddons: state.cleaningAddons.filter((a) => a.id !== id),
         }));
       },
 

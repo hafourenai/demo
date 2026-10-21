@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Home, BellRing, Briefcase, Wallet, User, LogOut, Menu, X } from 'lucide-react';
+import { Home, BellRing, Briefcase, Wallet } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { MobileFrame, BottomNav } from '@/components/common';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { seedEmployees } from '@/lib/seed';
+import { ProfileSettingsModal } from '@/components/profile/ProfileSettingsModal';
 
 interface EmployeeLayoutProps {
   children: React.ReactNode;
@@ -13,19 +14,17 @@ interface EmployeeLayoutProps {
 }
 
 export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, currentPage }) => {
-  const router = useRouter();
-  const { currentUser, logout, cleaningOrders } = useAppStore();
-  const [showMenu, setShowMenu] = useState(false);
+  const { currentUser, employees, cleaningOrders } = useAppStore();
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    router.push('/');
-  };
+  const employee = employees.find((e) => e.id === currentUser?.id) || employees[0] || seedEmployees[0];
+  const photo = employee?.photo || seedEmployees[0].photo;
+  const name = employee?.name || 'Budi Santoso';
 
   const availableCount = cleaningOrders.filter((o) => o.status === 'searching_employee').length;
   const activeCount = cleaningOrders.filter(
     (o) =>
-      o.employeeId === currentUser?.id &&
+      o.employeeId === (currentUser?.id || employee.id) &&
       ['assigned', 'on_the_way', 'arrived', 'in_service'].includes(o.status)
   ).length;
 
@@ -62,7 +61,6 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
       page: 'active' as const,
     },
     { icon: <Wallet size={22} />, label: 'Pendapatan', href: '/employee/history', page: 'history' as const },
-    { icon: <User size={22} />, label: 'Akun', href: '/employee/account', page: 'account' as const },
   ];
 
   return (
@@ -75,44 +73,36 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
               Clean&amp;Nail <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-semibold">Employee</span>
             </h1>
             <p className="text-xs text-text-secondary truncate">
-              {currentUser?.name || 'Budi Santoso'} • Home Cleaning
+              {name} • Home Cleaning
             </p>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <Link
               href="/demo"
-              className="text-[11px] font-semibold text-primary bg-primary/10 hover:bg-primary/20 px-2.5 py-1 rounded-full transition-colors"
+              className="text-[11px] font-semibold text-primary bg-primary/10 hover:bg-primary/20 px-2.5 py-1 rounded-full transition-colors hidden sm:inline-block"
             >
               Role ⇄
             </Link>
+
+            {/* Circular Profile Avatar Button */}
             <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="p-2 hover:bg-canvas-alt rounded-md transition-colors duration-base"
-              aria-label="Toggle menu"
-              style={{ minHeight: '44px', minWidth: '44px' }}
+              type="button"
+              onClick={() => setShowProfileModal(true)}
+              className="relative p-0.5 rounded-full ring-2 ring-primary/25 hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary transition-all group shadow-sm active:scale-95 flex items-center justify-center cursor-pointer"
+              title="Profil & Pengaturan Mitra"
+              aria-label="Profil & Pengaturan Mitra"
             >
-              {showMenu ? <X size={22} /> : <Menu size={22} />}
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-pink-100 flex items-center justify-center">
+                <img
+                  src={photo}
+                  alt={name}
+                  className="w-full h-full object-cover rounded-full"
+                />
+              </div>
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full group-hover:scale-110 transition-transform" />
             </button>
           </div>
         </header>
-
-        {/* Mobile Menu */}
-        {showMenu && (
-          <div className="bg-card border-b border-border p-4 space-y-2">
-            <Link
-              href="/employee/account"
-              className="block px-4 py-2 text-text-primary hover:bg-canvas-alt rounded-md text-sm transition-colors duration-base"
-            >
-              Profil &amp; Rekening Pembayaran
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="w-full text-left px-4 py-2 text-danger hover:bg-danger/10 rounded-md transition-colors duration-base flex items-center gap-2 text-sm"
-            >
-              <LogOut size={16} /> Logout
-            </button>
-          </div>
-        )}
 
         {/* Main Content */}
         <main className="flex-1 pb-16">{children}</main>
@@ -123,6 +113,12 @@ export const EmployeeLayout: React.FC<EmployeeLayoutProps> = ({ children, curren
             ...item,
             active: item.page === currentPage,
           }))}
+        />
+
+        {/* Profile & Settings Modal */}
+        <ProfileSettingsModal
+          isOpen={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
         />
       </MobileFrame>
     </div>
