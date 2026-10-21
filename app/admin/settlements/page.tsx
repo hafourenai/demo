@@ -7,7 +7,6 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import {
   CheckCircle2,
   History,
-  Search,
   X,
 } from 'lucide-react';
 import { EmployeeSettlement } from '@/lib/types';
@@ -165,9 +164,8 @@ export default function AdminSettlementsPage() {
             placeholder="Cari nama karyawan atau bulan (e.g. 2026-10)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white px-4 py-2.5 pl-10 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className="w-full bg-white px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
           />
-          <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
         </div>
 
         {/* Settlements Table */}

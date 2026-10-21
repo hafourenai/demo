@@ -7,7 +7,6 @@ import { formatCurrency } from '@/lib/utils';
 import {
   Package,
   AlertTriangle,
-  Search,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -153,9 +152,8 @@ export default function AdminInventoryPage() {
               placeholder="Cari SKU produk, nama, atau varian..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white px-4 py-2.5 pl-10 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
+              className="w-full bg-white px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
             />
-            <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
           </div>
 
           <button

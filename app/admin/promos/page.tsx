@@ -4,7 +4,6 @@ import { useState } from 'react';
 import useAppStore from '@/lib/store';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { Search } from 'lucide-react';
 
 export default function PromosPage() {
   const { promos } = useAppStore();
@@ -37,9 +36,8 @@ export default function PromosPage() {
             placeholder="Cari voucher berdasarkan nama atau kode promo..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white px-4 py-2.5 pl-10 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className="w-full bg-white px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
           />
-          <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
         </div>
 
         {/* Promos Table */}

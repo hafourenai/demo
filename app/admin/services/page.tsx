@@ -277,63 +277,64 @@ export default function AdminServicesPage() {
           </div>
         )}
 
-        {/* Top Header */}
-        <div className="space-y-4">
-          <div>
-            <h1 className="text-2xl font-serif font-bold text-slate-900">
-              Katalog Layanan Home Cleaning
-            </h1>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Kelola jenis layanan pembersihan, checklist operasional standar, dan pilihan add-on.
-            </p>
+        {/* Match the neutral header used by the other admin catalog pages. */}
+        <div>
+          <h1 className="text-2xl font-serif font-bold text-slate-900">
+            Katalog Layanan Home Cleaning
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Kelola jenis layanan pembersihan, checklist operasional standar, dan pilihan add-on secara lengkap.
+          </p>
+        </div>
+
+        <div>
+          <label htmlFor="cleaning-catalog-search" className="sr-only">
+            {selectedTab === 'services' ? 'Cari layanan cleaning' : 'Cari add-on'}
+          </label>
+          <input
+            id="cleaning-catalog-search"
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={selectedTab === 'services' ? 'Cari layanan cleaning...' : 'Cari add-on...'}
+            className="w-full bg-white px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900"
+          />
+        </div>
+
+        {/* Tab & Add Button */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex w-fit bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+            <button
+              onClick={() => { setSelectedTab('services'); handleCancelServiceEdit(); handleCancelAddonEdit(); setSearchQuery(''); }}
+              className={`px-4 py-2 rounded-md transition-all ${
+                selectedTab === 'services'
+                  ? 'bg-white shadow-sm text-slate-900'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Layanan ({cleaningServices.length})
+            </button>
+            <button
+              onClick={() => { setSelectedTab('addons'); handleCancelServiceEdit(); handleCancelAddonEdit(); setSearchQuery(''); }}
+              className={`px-4 py-2 rounded-md transition-all ${
+                selectedTab === 'addons'
+                  ? 'bg-white shadow-sm text-slate-900'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Add-on ({cleaningAddons.length})
+            </button>
           </div>
 
-          {/* Search Bar */}
-          <div className="w-full">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={selectedTab === 'services' ? 'Cari layanan cleaning...' : 'Cari add-on...'}
-              className="w-full px-4 py-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 bg-white placeholder:text-slate-400 font-medium"
-            />
-          </div>
-
-          {/* Tab & Add Button */}
-          <div className="flex items-center justify-between">
-            <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
-              <button
-                onClick={() => { setSelectedTab('services'); handleCancelServiceEdit(); handleCancelAddonEdit(); setSearchQuery(''); }}
-                className={`px-4 py-2 rounded-lg transition-all ${
-                  selectedTab === 'services'
-                    ? 'bg-white shadow-sm text-slate-900'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Layanan ({cleaningServices.length})
-              </button>
-              <button
-                onClick={() => { setSelectedTab('addons'); handleCancelServiceEdit(); handleCancelAddonEdit(); setSearchQuery(''); }}
-                className={`px-4 py-2 rounded-lg transition-all ${
-                  selectedTab === 'addons'
-                    ? 'bg-white shadow-sm text-slate-900'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Add-on ({cleaningAddons.length})
-              </button>
-            </div>
-
-            {/* Add Button */}
-            {!isEditingOrAdding && (
-              <button
-                onClick={selectedTab === 'services' ? handleStartAddService : handleStartAddAddon}
-                className="px-4 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-colors shadow-sm"
-              >
-                <Plus size={14} /> Tambah {selectedTab === 'services' ? 'Layanan' : 'Add-on'}
-              </button>
-            )}
-          </div>
+          {/* Add Button */}
+          {!isEditingOrAdding && (
+            <button
+              onClick={selectedTab === 'services' ? handleStartAddService : handleStartAddAddon}
+              className="self-start sm:self-auto px-4 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+            >
+              <Plus size={16} /> Tambah {selectedTab === 'services' ? 'Layanan' : 'Add-on'}
+            </button>
+          )}
         </div>
 
         {/* ========================================== */}

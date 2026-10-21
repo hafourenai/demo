@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import useAppStore from '@/lib/store';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { formatCurrency, getStatusLabel } from '@/lib/utils';
-import { Sparkles, ShoppingBag, Eye, X, Search } from 'lucide-react';
+import { Sparkles, ShoppingBag, Eye, X } from 'lucide-react';
 import { CleaningOrder, ProductOrder } from '@/lib/types';
 
 function AdminOrdersContent() {
@@ -106,9 +106,8 @@ function AdminOrdersContent() {
             placeholder="Cari berdasarkan No. Invoice, Nama Customer, atau Layanan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white px-4 py-2.5 pl-10 rounded-xl border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full bg-white px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
-          <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
         </div>
 
         {/* TAB 1: CLEANING ORDERS */}

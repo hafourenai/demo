@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import useAppStore from '@/lib/store';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { Printer, Search, Eye, X } from 'lucide-react';
+import { Printer, Eye, X } from 'lucide-react';
 import { CleaningOrder, ProductOrder } from '@/lib/types';
 
 export default function AdminInvoicesPage() {
@@ -72,9 +72,8 @@ export default function AdminInvoicesPage() {
               placeholder="Cari nomor invoice resmi atau nama customer..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-50 px-4 py-2 pl-9 rounded-xl border border-slate-200 text-xs focus:outline-none"
+              className="w-full bg-slate-50 px-4 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none"
             />
-            <Search size={15} className="absolute left-3 top-2.5 text-slate-400" />
           </div>
 
           <div className="flex gap-2">

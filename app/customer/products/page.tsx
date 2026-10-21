@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Star, Heart, Search, ShoppingBag, Sparkles } from 'lucide-react';
+import { Star, Heart, ShoppingBag, Sparkles } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import { CustomerLayout } from '@/components/layouts/CustomerLayout';
 import { formatCurrency } from '@/lib/utils';
@@ -58,7 +58,7 @@ export default function ProductsPage() {
             Koleksi press-on nails handmade, uv gel polish, sticker 3D, dan starter kit lengkap.
           </p>
 
-          <div className="mt-4 relative">
+          <div className="mt-4">
             <input
               type="text"
               placeholder="Cari press-on nails, gel polish, stiker..."
@@ -66,7 +66,6 @@ export default function ProductsPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-white text-text-primary px-3.5 py-2.5 rounded-xl text-xs placeholder:text-text-muted focus:outline-none shadow-sm"
             />
-            <Search size={16} className="absolute right-3.5 top-2.5 text-text-muted" />
           </div>
         </div>
 

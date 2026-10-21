@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense } from 'react';
 import {
   LayoutDashboard,
   Sparkles,
@@ -16,12 +16,33 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  Menu,
-  X,
+  ChevronRight,
 } from 'lucide-react';
 import useAppStore from '@/lib/store';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import {
+  Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent,
+  SidebarGroupLabel, SidebarHeader, SidebarInset, SidebarMenu,
+  SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar,
+} from '@/components/ui/sidebar';
+
+function AdminNavigationLink({ item }: { item: { icon: React.ReactNode; label: string; href: string } }) {
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const { setOpenMobile } = useSidebar();
+  const [path, query] = item.href.split('?');
+  const active = pathname === path && (!query || (params.get('type') || 'cleaning') === new URLSearchParams(query).get('type'));
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton asChild isActive={active} tooltip={item.label} className="h-10 gap-3 text-[13px] data-[active=true]:bg-rose-50 data-[active=true]:text-rose-900">
+        <Link href={item.href} onClick={() => setOpenMobile(false)} aria-current={active ? 'page' : undefined}>
+          {item.icon}<span>{item.label}</span>
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  );
+}
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -31,7 +52,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { logout } = useAppStore();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const handleLogout = () => {
     logout();
@@ -76,83 +96,49 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="flex h-screen bg-canvas overflow-hidden">
-      {/* Sidebar */}
-      <aside
-        className={`${
-          sidebarOpen ? 'w-64' : 'w-20'
-        } bg-[#1e293b] text-white shadow-xl transition-all duration-300 flex flex-col flex-shrink-0 z-20`}
-      >
-        {/* Header */}
-        <div className="p-4 border-b border-white/10 flex items-center justify-between">
-          {sidebarOpen ? (
-            <div>
-              <h1 className="font-bold text-base tracking-wide flex items-center gap-1.5 text-white">
-                Clean<span className="text-pink-400">&amp;</span>Nail <span className="text-[10px] bg-pink-500/20 text-pink-300 px-1.5 py-0.5 rounded">Admin V2</span>
-              </h1>
-              <p className="text-[11px] text-slate-400">Management Dashboard</p>
-            </div>
-          ) : (
-            <span className="font-bold text-pink-400 text-lg">CN</span>
-          )}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1.5 hover:bg-white/10 rounded-md transition-colors text-slate-300"
-            aria-label="Toggle sidebar"
-          >
-            {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-        </div>
-
-        {/* Menu Navigation */}
-        <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
-          {menuSections.map((section, idx) => (
-            <div key={idx}>
-              {sidebarOpen && (
-                <p className="px-3 text-[10px] font-bold text-slate-400 tracking-wider mb-1.5">
-                  {section.title}
-                </p>
-              )}
-              <div className="space-y-1">
-                {section.items.map((item) => {
-                  const isActive = pathname === item.href.split('?')[0];
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
-                        isActive
-                          ? 'bg-pink-600 text-white shadow-sm'
-                          : 'text-slate-300 hover:bg-white/10 hover:text-white'
-                      }`}
-                      title={!sidebarOpen ? item.label : undefined}
-                    >
-                      <span className="flex-shrink-0">{item.icon}</span>
-                      {sidebarOpen && <span className="truncate">{item.label}</span>}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </nav>
-
-        {/* Logout */}
-        <div className="p-3 border-t border-white/10">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-3 py-2 text-rose-300 hover:bg-rose-500/20 rounded-lg text-xs font-medium transition-colors"
-          >
-            <LogOut size={18} />
-            {sidebarOpen && <span>Keluar / Switch Role</span>}
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        <div className="flex-1 p-6 w-full">{children}</div>
-      </main>
-    </div>
+    <SidebarProvider className="admin-shell bg-slate-50 text-slate-900" style={{ '--sidebar-width': '17rem' } as React.CSSProperties}>
+      <Sidebar collapsible="icon" className="admin-sidebar border-r border-slate-200">
+        <SidebarHeader className="h-20 justify-center border-b border-slate-200">
+          <SidebarMenu><SidebarMenuItem>
+            <SidebarMenuButton asChild size="lg" className="gap-3 hover:bg-transparent">
+              <Link href="/admin">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-rose-900 text-xs font-bold text-white">CN</span>
+                <span className="flex flex-col"><span className="text-base font-semibold">Clean &amp; Nail</span><span className="text-xs text-slate-500">Administration</span></span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem></SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent className="gap-1 py-3">
+          <Suspense fallback={null}>
+            {menuSections.map((section) => (
+              <SidebarGroup key={section.title}>
+                <SidebarGroupLabel className="text-[10px] tracking-widest text-slate-400">{section.title}</SidebarGroupLabel>
+                <SidebarGroupContent><SidebarMenu>
+                  {section.items.map((item) => <AdminNavigationLink key={item.href} item={item} />)}
+                </SidebarMenu></SidebarGroupContent>
+              </SidebarGroup>
+            ))}
+          </Suspense>
+        </SidebarContent>
+        <SidebarFooter className="border-t border-slate-200">
+          <SidebarMenu><SidebarMenuItem>
+            <SidebarMenuButton onClick={handleLogout} tooltip="Keluar / Switch Role" className="h-10 gap-3 text-rose-800">
+              <LogOut size={18} /><span>Keluar / Switch Role</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem></SidebarMenu>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset className="min-w-0 bg-slate-50">
+        <header className="sticky top-0 z-20 flex h-20 shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 md:px-8">
+          <SidebarTrigger className="size-9 rounded-lg" aria-label="Buka atau tutup sidebar" />
+          <span className="h-5 border-l border-slate-200" />
+          <div className="flex min-w-0 items-center gap-2 text-xs text-slate-500">
+            <span>Workspace</span><ChevronRight size={12} /><span className="truncate font-medium text-slate-900">{menuSections.flatMap(s => s.items).find(i => i.href === pathname)?.label || 'Admin'}</span>
+          </div>
+          <span className="ml-auto flex size-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs font-semibold" aria-label="Administrator">AD</span>
+        </header>
+        <div className="w-full min-w-0 p-4 md:p-8">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 };
