@@ -15,7 +15,6 @@ import {
   Save,
   ToggleLeft,
   ToggleRight,
-  Sparkles,
   ChevronDown,
   ChevronUp,
   AlertCircle,
@@ -54,6 +53,7 @@ export default function AdminServicesPage() {
   } = useAppStore();
 
   const [selectedTab, setSelectedTab] = useState<'services' | 'addons'>('services');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Service editing
   const [editingServiceId, setEditingServiceId] = useState<string | null>(null);
@@ -77,6 +77,20 @@ export default function AdminServicesPage() {
     setToast(msg);
     setTimeout(() => setToast(''), 2500);
   };
+
+  // Filtered lists
+  const filteredServices = cleaningServices.filter(
+    (s) =>
+      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredAddons = cleaningAddons.filter(
+    (a) =>
+      a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      a.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // ====== SERVICE HANDLERS ======
   const handleStartEditService = (service: CleaningService) => {
@@ -264,7 +278,7 @@ export default function AdminServicesPage() {
         )}
 
         {/* Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="space-y-4">
           <div>
             <h1 className="text-2xl font-serif font-bold text-slate-900">
               Katalog Layanan Home Cleaning
@@ -274,23 +288,35 @@ export default function AdminServicesPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Search Bar */}
+          <div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={selectedTab === 'services' ? 'Cari layanan cleaning...' : 'Cari add-on...'}
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/20 bg-white"
+            />
+          </div>
+
+          {/* Tab & Add Button */}
+          <div className="flex items-center justify-between">
             <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
               <button
-                onClick={() => { setSelectedTab('services'); handleCancelServiceEdit(); handleCancelAddonEdit(); }}
+                onClick={() => { setSelectedTab('services'); handleCancelServiceEdit(); handleCancelAddonEdit(); setSearchQuery(''); }}
                 className={`px-4 py-2 rounded-lg transition-all ${
                   selectedTab === 'services'
-                    ? 'bg-white shadow-sm text-pink-600'
+                    ? 'bg-white shadow-sm text-slate-900'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Layanan ({cleaningServices.length})
               </button>
               <button
-                onClick={() => { setSelectedTab('addons'); handleCancelServiceEdit(); handleCancelAddonEdit(); }}
+                onClick={() => { setSelectedTab('addons'); handleCancelServiceEdit(); handleCancelAddonEdit(); setSearchQuery(''); }}
                 className={`px-4 py-2 rounded-lg transition-all ${
                   selectedTab === 'addons'
-                    ? 'bg-white shadow-sm text-pink-600'
+                    ? 'bg-white shadow-sm text-slate-900'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -302,7 +328,7 @@ export default function AdminServicesPage() {
             {!isEditingOrAdding && (
               <button
                 onClick={selectedTab === 'services' ? handleStartAddService : handleStartAddAddon}
-                className="px-4 py-2 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+                className="px-4 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-colors shadow-sm"
               >
                 <Plus size={14} /> Tambah {selectedTab === 'services' ? 'Layanan' : 'Add-on'}
               </button>
@@ -314,45 +340,51 @@ export default function AdminServicesPage() {
         {/* SERVICE ADD / EDIT FORM                    */}
         {/* ========================================== */}
         {selectedTab === 'services' && (isAddingService || editingServiceId) && (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-md p-5 space-y-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-md p-6 space-y-5 animate-fadeIn">
             <div className="flex items-center justify-between">
-              <h2 className="font-bold text-sm text-slate-900 flex items-center gap-2">
-                <Sparkles size={16} className="text-pink-600" />
-                {isAddingService ? 'Tambah Layanan Cleaning Baru' : `Edit: ${serviceForm.name}`}
-              </h2>
-              <button onClick={handleCancelServiceEdit} className="text-slate-400 hover:text-slate-700">
-                <X size={18} />
+              <div>
+                <h2 className="font-bold text-base text-slate-900">
+                  {isAddingService ? 'Tambah Layanan Cleaning Baru' : `Edit: ${serviceForm.name}`}
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  {isAddingService ? 'Isi detail lengkap layanan pembersihan.' : 'Perbarui informasi layanan.'}
+                </p>
+              </div>
+              <button onClick={handleCancelServiceEdit} className="text-slate-400 hover:text-slate-700 p-1">
+                <X size={20} />
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-3">
+            <div className="h-px bg-slate-100" />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Nama Layanan *</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-2">Nama Layanan *</label>
                   <input
                     type="text"
                     required
                     value={serviceForm.name || ''}
                     onChange={(e) => setServiceForm({ ...serviceForm, name: e.target.value })}
                     placeholder="Contoh: Deep Kitchen Cleaning"
-                    className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/10 bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Deskripsi</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-2">Deskripsi</label>
                   <textarea
                     rows={2}
                     value={serviceForm.description || ''}
                     onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
                     placeholder="Jelaskan layanan ini secara singkat..."
-                    className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/10 resize-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">Kategori</label>
+                    <label className="text-xs font-bold text-slate-700 block mb-2">Kategori</label>
                     <select
                       value={serviceForm.category || 'Home Service'}
                       onChange={(e) =>
@@ -361,28 +393,28 @@ export default function AdminServicesPage() {
                           category: e.target.value as CleaningService['category'],
                         })
                       }
-                      className="w-full p-2.5 rounded-xl border border-slate-200 text-xs bg-white"
+                      className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10"
                     >
                       <option value="Home Service">Home Service</option>
                       <option value="Specialized Cleaning">Specialized Cleaning</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">Durasi (menit)</label>
+                    <label className="text-xs font-bold text-slate-700 block mb-2">Durasi (menit)</label>
                     <input
                       type="number"
                       min={30}
                       max={480}
                       value={serviceForm.duration || 120}
                       onChange={(e) => setServiceForm({ ...serviceForm, duration: Number(e.target.value) })}
-                      className="w-full p-2.5 rounded-xl border border-slate-200 text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/10"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">Badge Populer</label>
+                    <label className="text-xs font-bold text-slate-700 block mb-2">Badge Populer</label>
                     <select
                       value={serviceForm.popularityBadge || ''}
                       onChange={(e) =>
@@ -391,7 +423,7 @@ export default function AdminServicesPage() {
                           popularityBadge: (e.target.value || undefined) as CleaningService['popularityBadge'],
                         })
                       }
-                      className="w-full p-2.5 rounded-xl border border-slate-200 text-xs bg-white"
+                      className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10"
                     >
                       <option value="">Tanpa Badge</option>
                       <option value="Most Popular">Most Popular</option>
@@ -405,49 +437,60 @@ export default function AdminServicesPage() {
                       onClick={() =>
                         setServiceForm({ ...serviceForm, isAvailable: !serviceForm.isAvailable })
                       }
-                      className={`w-full p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-colors ${
+                      className={`w-full px-3.5 py-2.5 rounded-lg border text-xs font-bold flex items-center justify-center gap-2 transition-colors ${
                         serviceForm.isAvailable
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-slate-50 text-slate-500 border-slate-200'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                          : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
                       }`}
                     >
                       {serviceForm.isAvailable ? (
-                        <><ToggleRight size={16} /> Aktif Ditawarkan</>
+                        <><ToggleRight size={15} /> Aktif</>
                       ) : (
-                        <><ToggleLeft size={16} /> Nonaktif</>
+                        <><ToggleLeft size={15} /> Nonaktif</>
                       )}
                     </button>
                   </div>
                 </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-2">URL Gambar</label>
+                  <input
+                    type="text"
+                    value={serviceForm.image || ''}
+                    onChange={(e) => setServiceForm({ ...serviceForm, image: e.target.value })}
+                    placeholder="/images/services/svc1.jpg"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                  />
+                </div>
               </div>
 
               {/* Checklist Template Builder */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Template Checklist Pekerjaan ({(serviceForm.checklistTemplate || []).length} item)
+                  <label className="text-xs font-bold text-slate-700 block mb-2">
+                    Template Checklist ({(serviceForm.checklistTemplate || []).length} item)
                   </label>
-                  <div className="bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2 max-h-[200px] overflow-y-auto">
+                  <div className="bg-slate-50 rounded-lg border border-slate-200 p-3.5 space-y-2 max-h-[240px] overflow-y-auto">
                     {(serviceForm.checklistTemplate || []).length === 0 && (
-                      <p className="text-[11px] text-slate-400 text-center py-2">Belum ada item checklist</p>
+                      <p className="text-xs text-slate-400 text-center py-4">Belum ada item</p>
                     )}
                     {(serviceForm.checklistTemplate || []).map((item, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-100 text-xs"
+                        className="flex items-center justify-between gap-2 bg-white p-2.5 rounded-lg border border-slate-100"
                       >
-                        <span className="text-slate-700 flex items-center gap-2">
-                          <span className="w-4 h-4 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center">
+                        <span className="text-xs text-slate-700 flex items-center gap-2 flex-1 min-w-0">
+                          <span className="flex-shrink-0 w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold flex items-center justify-center">
                             {idx + 1}
                           </span>
-                          {item}
+                          <span className="truncate">{item}</span>
                         </span>
                         <button
                           type="button"
                           onClick={() => removeChecklistItem(idx)}
-                          className="text-rose-400 hover:text-rose-600 p-0.5"
+                          className="flex-shrink-0 text-rose-400 hover:text-rose-600 p-1"
                         >
-                          <X size={13} />
+                          <X size={14} />
                         </button>
                       </div>
                     ))}
@@ -460,46 +503,37 @@ export default function AdminServicesPage() {
                     value={newChecklistItem}
                     onChange={(e) => setNewChecklistItem(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addChecklistItem())}
-                    placeholder="Tambah item checklist baru..."
-                    className="flex-1 p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    placeholder="Tambah item checklist..."
+                    className="flex-1 px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/10"
                   />
                   <button
                     type="button"
                     onClick={addChecklistItem}
                     disabled={!newChecklistItem.trim()}
-                    className="px-3 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold disabled:opacity-40"
+                    className="px-3.5 py-2.5 bg-slate-900 text-white rounded-lg text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black transition-colors"
                   >
                     <Plus size={14} />
                   </button>
                 </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">URL Gambar</label>
-                  <input
-                    type="text"
-                    value={serviceForm.image || ''}
-                    onChange={(e) => setServiceForm({ ...serviceForm, image: e.target.value })}
-                    placeholder="/images/services/svc1.jpg"
-                    className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  />
-                </div>
               </div>
             </div>
 
+            <div className="h-px bg-slate-100" />
+
             {/* Save / Cancel */}
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+            <div className="flex justify-end gap-2">
               <button
                 onClick={handleCancelServiceEdit}
-                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold"
+                className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors"
               >
                 Batal
               </button>
               <button
                 onClick={handleSaveService}
                 disabled={!serviceForm.name?.trim()}
-                className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md disabled:opacity-40"
+                className="px-5 py-2.5 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                <Save size={14} /> {isAddingService ? 'Simpan Layanan Baru' : 'Update Layanan'}
+                <Save size={14} /> {isAddingService ? 'Simpan Layanan' : 'Update Layanan'}
               </button>
             </div>
           </div>
@@ -509,62 +543,71 @@ export default function AdminServicesPage() {
         {/* ADDON ADD / EDIT FORM                      */}
         {/* ========================================== */}
         {selectedTab === 'addons' && (isAddingAddon || editingAddonId) && (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-md p-5 space-y-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-md p-6 space-y-5 animate-fadeIn">
             <div className="flex items-center justify-between">
-              <h2 className="font-bold text-sm text-slate-900">
-                {isAddingAddon ? '+ Tambah Add-on Baru' : `Edit: ${addonForm.name}`}
-              </h2>
-              <button onClick={handleCancelAddonEdit} className="text-slate-400 hover:text-slate-700">
-                <X size={18} />
+              <div>
+                <h2 className="font-bold text-base text-slate-900">
+                  {isAddingAddon ? 'Tambah Add-on Baru' : `Edit: ${addonForm.name}`}
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  {isAddingAddon ? 'Tambahkan pilihan layanan tambahan.' : 'Perbarui informasi add-on.'}
+                </p>
+              </div>
+              <button onClick={handleCancelAddonEdit} className="text-slate-400 hover:text-slate-700 p-1">
+                <X size={20} />
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="h-px bg-slate-100" />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Nama Add-on *</label>
+                <label className="text-xs font-bold text-slate-700 block mb-2">Nama Add-on *</label>
                 <input
                   type="text"
                   required
                   value={addonForm.name || ''}
                   onChange={(e) => setAddonForm({ ...addonForm, name: e.target.value })}
                   placeholder="Contoh: Cuci Gorden"
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/10"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Deskripsi</label>
+                <label className="text-xs font-bold text-slate-700 block mb-2">Deskripsi</label>
                 <input
                   type="text"
                   value={addonForm.description || ''}
                   onChange={(e) => setAddonForm({ ...addonForm, description: e.target.value })}
                   placeholder="Penjelasan singkat..."
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/10"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Harga Tambahan (Rp)</label>
+                <label className="text-xs font-bold text-slate-700 block mb-2">Harga Tambahan (Rp)</label>
                 <input
                   type="number"
                   min={0}
                   step={5000}
                   value={addonForm.price || 0}
                   onChange={(e) => setAddonForm({ ...addonForm, price: Number(e.target.value) })}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/10"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+            <div className="h-px bg-slate-100" />
+
+            <div className="flex justify-end gap-2">
               <button
                 onClick={handleCancelAddonEdit}
-                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold"
+                className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors"
               >
                 Batal
               </button>
               <button
                 onClick={handleSaveAddon}
                 disabled={!addonForm.name?.trim()}
-                className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md disabled:opacity-40"
+                className="px-5 py-2.5 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 <Save size={14} /> {isAddingAddon ? 'Simpan Add-on' : 'Update Add-on'}
               </button>
@@ -577,39 +620,39 @@ export default function AdminServicesPage() {
         {/* ========================================== */}
         {selectedTab === 'services' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {cleaningServices.map((service) => {
+            {filteredServices.map((service) => {
               const isExpanded = expandedServiceId === service.id;
               return (
                 <div
                   key={service.id}
-                  className={`bg-white rounded-2xl border overflow-hidden shadow-sm flex flex-col justify-between transition-all ${
-                    !service.isAvailable ? 'border-slate-200 opacity-60' : 'border-slate-200'
+                  className={`bg-white rounded-xl border shadow-xs flex flex-col justify-between overflow-hidden transition-all hover:shadow-sm ${
+                    !service.isAvailable ? 'border-slate-200 opacity-50' : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
-                  <div>
-                    <div className="relative aspect-[16/9] w-full bg-slate-100 overflow-hidden">
-                      <img
-                        src={service.image}
-                        alt={service.name}
-                        className="w-full h-full object-cover"
-                      />
-                      {service.popularityBadge && (
-                        <span className="absolute top-2 left-2 bg-pink-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
-                          {service.popularityBadge}
-                        </span>
-                      )}
-                      {!service.isAvailable && (
-                        <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
-                          <span className="bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
-                            NONAKTIF
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                  {/* Image */}
+                  <div className="relative aspect-video w-full bg-slate-100 overflow-hidden">
+                    <img
+                      src={service.image}
+                      alt={service.name}
+                      className="w-full h-full object-cover"
+                    />
+                    {service.popularityBadge && (
+                      <span className="absolute top-2.5 left-2.5 bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                        {service.popularityBadge}
+                      </span>
+                    )}
+                    {!service.isAvailable && (
+                      <div className="absolute inset-0 bg-slate-900/50 flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">NONAKTIF</span>
+                      </div>
+                    )}
+                  </div>
 
-                    <div className="p-4 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] uppercase font-bold text-slate-400">
+                  {/* Content */}
+                  <div className="p-4 space-y-3 flex-1 flex flex-col">
+                    <div>
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
                           {service.category}
                         </span>
                         <span className="flex items-center gap-1 text-xs font-semibold text-slate-700">
@@ -617,60 +660,58 @@ export default function AdminServicesPage() {
                           {service.rating}
                         </span>
                       </div>
+                      <h3 className="font-bold text-sm text-slate-900 line-clamp-2">{service.name}</h3>
+                      <p className="text-xs text-slate-500 line-clamp-1 mt-1">{service.description}</p>
+                    </div>
 
-                      <h3 className="font-bold text-sm text-slate-900">{service.name}</h3>
-                      <p className="text-xs text-slate-500 line-clamp-2">{service.description}</p>
-
-                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <span className="flex items-center gap-1 text-slate-500">
-                          <Clock size={13} /> {service.duration} Menit
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleToggleServiceAvailability(service)}
-                          className={`text-xs font-semibold flex items-center gap-1 px-2 py-0.5 rounded-lg transition-colors ${
-                            service.isAvailable
-                              ? 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'
-                              : 'text-slate-500 bg-slate-100 hover:bg-slate-200'
-                          }`}
-                        >
-                          {service.isAvailable ? (
-                            <><ToggleRight size={14} /> Aktif</>
-                          ) : (
-                            <><ToggleLeft size={14} /> Nonaktif</>
-                          )}
-                        </button>
-                      </div>
-
-                      {/* Expandable Checklist */}
+                    {/* Duration & Availability */}
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                        <Clock size={13} /> {service.duration} min
+                      </span>
                       <button
                         type="button"
-                        onClick={() => setExpandedServiceId(isExpanded ? null : service.id)}
-                        className="w-full flex items-center justify-between text-[11px] font-bold text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-100 hover:bg-slate-100 transition-colors"
+                        onClick={() => handleToggleServiceAvailability(service)}
+                        className={`text-xs font-bold flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
+                          service.isAvailable
+                            ? 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'
+                            : 'text-slate-500 bg-slate-100 hover:bg-slate-200'
+                        }`}
                       >
-                        <span>Checklist ({service.checklistTemplate?.length || 0} item)</span>
-                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                        {service.isAvailable ? (
+                          <><ToggleRight size={13} /> Aktif</>
+                        ) : (
+                          <><ToggleLeft size={13} /> Nonaktif</>
+                        )}
                       </button>
-
-                      {isExpanded && (
-                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-[11px] space-y-1 animate-fadeIn">
-                          {service.checklistTemplate?.length ? (
-                            <ul className="text-slate-600 space-y-0.5">
-                              {service.checklistTemplate.map((item, idx) => (
-                                <li key={idx} className="flex items-center gap-1.5">
-                                  <span className="w-3.5 h-3.5 rounded-full bg-primary/10 text-primary text-[9px] font-bold flex items-center justify-center">
-                                    {idx + 1}
-                                  </span>
-                                  {item}
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-slate-400 text-center py-1">Belum ada item checklist</p>
-                          )}
-                        </div>
-                      )}
                     </div>
+
+                    {/* Expandable Checklist */}
+                    <button
+                      type="button"
+                      onClick={() => setExpandedServiceId(isExpanded ? null : service.id)}
+                      className="w-full flex items-center justify-between text-[11px] font-bold text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-100 hover:border-slate-200 transition-colors"
+                    >
+                      <span>Checklist ({service.checklistTemplate?.length || 0})</span>
+                      {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                    </button>
+
+                    {isExpanded && (
+                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 text-[11px] space-y-1.5 animate-fadeIn max-h-[160px] overflow-y-auto">
+                        {service.checklistTemplate?.length ? (
+                          <ul className="text-slate-600 space-y-1">
+                            {service.checklistTemplate.map((item, idx) => (
+                              <li key={idx} className="flex items-center gap-2">
+                                <span className="text-[9px] font-bold text-slate-400">•</span>
+                                <span className="line-clamp-2">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-slate-400 text-center py-1.5">Belum ada checklist</p>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Action Buttons */}
@@ -678,7 +719,7 @@ export default function AdminServicesPage() {
                     <button
                       type="button"
                       onClick={() => handleStartEditService(service)}
-                      className="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+                      className="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
                     >
                       <Edit2 size={13} /> Edit
                     </button>
@@ -688,7 +729,7 @@ export default function AdminServicesPage() {
                         setConfirmDeleteId(service.id);
                         setConfirmDeleteType('service');
                       }}
-                      className="py-2 px-3 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+                      className="py-2 px-3 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold transition-colors"
                     >
                       <Trash2 size={13} />
                     </button>
@@ -708,6 +749,12 @@ export default function AdminServicesPage() {
                 </button>
               </div>
             )}
+
+            {cleaningServices.length > 0 && filteredServices.length === 0 && (
+              <div className="col-span-full bg-slate-50 rounded-2xl border border-dashed border-slate-300 p-8 text-center">
+                <p className="text-sm text-slate-500 font-medium">Tidak ada layanan yang cocok dengan pencarian "{searchQuery}".</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -716,30 +763,30 @@ export default function AdminServicesPage() {
         {/* ========================================== */}
         {selectedTab === 'addons' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {cleaningAddons.map((addon) => (
+            {filteredAddons.map((addon) => (
               <div
                 key={addon.id}
-                className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2 flex flex-col justify-between"
+                className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm hover:border-slate-300 transition-all space-y-3 flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-sm text-slate-900">{addon.name}</h3>
-                    <span className="text-xs font-bold text-pink-600 font-sans">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h3 className="font-bold text-sm text-slate-900 flex-1">{addon.name}</h3>
+                    <span className="text-xs font-bold text-slate-900 bg-slate-100 px-2.5 py-1 rounded-md flex-shrink-0">
                       +{formatCurrency(addon.price)}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">{addon.description}</p>
+                  <p className="text-xs text-slate-500 line-clamp-2">{addon.description}</p>
                 </div>
 
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400 font-mono">ID: {addon.id}</span>
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <span className="text-[10px] text-slate-400 font-mono">{addon.id}</span>
                   <div className="flex gap-1.5">
                     <button
                       type="button"
                       onClick={() => handleStartEditAddon(addon)}
                       className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors"
                     >
-                      <Edit2 size={12} /> Edit
+                      <Edit2 size={12} />
                     </button>
                     <button
                       type="button"
@@ -747,7 +794,7 @@ export default function AdminServicesPage() {
                         setConfirmDeleteId(addon.id);
                         setConfirmDeleteType('addon');
                       }}
-                      className="px-2 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-[11px] font-bold transition-colors"
+                      className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-[11px] font-bold transition-colors"
                     >
                       <Trash2 size={12} />
                     </button>
@@ -765,6 +812,12 @@ export default function AdminServicesPage() {
                 >
                   + Tambah Add-on Pertama
                 </button>
+              </div>
+            )}
+
+            {cleaningAddons.length > 0 && filteredAddons.length === 0 && (
+              <div className="col-span-full bg-slate-50 rounded-2xl border border-dashed border-slate-300 p-8 text-center">
+                <p className="text-sm text-slate-500 font-medium">Tidak ada add-on yang cocok dengan pencarian "{searchQuery}".</p>
               </div>
             )}
           </div>
